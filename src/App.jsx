@@ -8,7 +8,7 @@ Learning sequence:
 1. Put the problem before the method: let students play before naming induction.
 2. Enforce legal moves, track attempts and give optional next-move feedback.
 3. After a solution, ask what has actually been proved: possibility is not minimality.
-4. Focus attention on the largest disc. Reveal the unavoidable decomposition M(n) + 1 + M(n).
+4. For n > 1, construct a route using two transfers of n - 1 discs and one move of the largest disc.
 5. Distinguish CAN (a constructive upper bound) from MUST (a strategy-independent lower bound).
 6. Keep the strengthened proposition visible: n discs can be moved in 2^n - 1 moves, and every legal transfer requires at least 2^n - 1 moves.
 
@@ -21,8 +21,8 @@ Safeguards:
 export default function App({ classroom = null, onLeaveClass = null, onOpenClassroom = null, onProgress = null }) {
   const [stage, setStage] = useState('play')
   const [teacherLens, setTeacherLens] = useState(false)
-  const [discCount, setDiscCount] = useState(3)
-  const [pegs, setPegs] = useState(() => makePegs(3))
+  const [discCount, setDiscCount] = useState(classroom ? 3 : 2)
+  const [pegs, setPegs] = useState(() => makePegs(classroom ? 3 : 2))
   const [history, setHistory] = useState([])
   const [selectedPeg, setSelectedPeg] = useState(null)
   const [hintMove, setHintMove] = useState(null)
@@ -31,6 +31,8 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   const [proveAnswer, setProveAnswer] = useState(null)
   const [copied, setCopied] = useState(false)
   const [hintCount, setHintCount] = useState(0)
+  const [minimumRevealed, setMinimumRevealed] = useState(false)
+  const [demonstrating, setDemonstrating] = useState(false)
 
   const moveCount = history.length
   const target = optimalMoves(discCount)
@@ -58,6 +60,8 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     setNoticeAnswer(null)
     setProveAnswer(null)
     setHintCount(0)
+    setMinimumRevealed(false)
+    setDemonstrating(false)
     setMessage('Select the top disc, then choose a destination peg.')
   }
 
@@ -68,7 +72,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     if (nextStage === 'debrief' && !classroom) setTeacherLens(true)
   }
 
-  const attemptMove = (from, to) => {
+  const attemptMove = (from, to, demonstrationMove = false) => {
     const next = moveDisk(pegs, from, to)
     setHintMove(null)
     setSelectedPeg(null)
@@ -78,6 +82,8 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
       return
     }
 
+    if (!demonstrationMove) setDemonstrating(false)
+
     const nextHistory = [...history, pegs.map((peg) => [...peg])]
     setHistory(nextHistory)
     setPegs(next)
@@ -85,9 +91,9 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     if (isComplete(next, discCount)) {
       const result = nextHistory.length === target ? 'optimal' : 'complete'
       setMessage(
-        result === 'optimal'
-          ? `Solved in ${nextHistory.length} moves — you matched the target.`
-          : `Solved in ${nextHistory.length} moves. Now ask whether that proves a minimum.`,
+        minimumRevealed && result === 'optimal'
+          ? `Solved in ${nextHistory.length} moves, matching the minimum. Why can no shorter route work?`
+          : `Solved in ${nextHistory.length} moves. Could fewer moves work? Explain your reasoning.`,
       )
     } else {
       setMessage(`Legal move. ${nextHistory.length} move${nextHistory.length === 1 ? '' : 's'} so far.`)
@@ -101,6 +107,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     setHistory(history.slice(0, -1))
     setSelectedPeg(null)
     setHintMove(null)
+    setDemonstrating(false)
     setMessage('Last move undone.')
   }
 
@@ -115,6 +122,27 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     setMessage(`Try moving the top disc from peg ${'ABC'[hint.from]} to peg ${'ABC'[hint.to]}.`)
   }
 
+  const startDemonstration = () => {
+    resetGame()
+    setMinimumRevealed(true)
+    setDemonstrating(true)
+    setMessage('Shortest route from the starting position. Advance one move at a time and pause before the largest disc moves.')
+  }
+
+  const advanceDemonstration = () => {
+    const nextMove = findNextShortestMove(pegs, discCount)
+    if (!nextMove) return
+    const movedDisc = pegs[nextMove.from].at(-1)
+    attemptMove(nextMove.from, nextMove.to, true)
+    const nextPegs = moveDisk(pegs, nextMove.from, nextMove.to)
+    const followingMove = findNextShortestMove(nextPegs, discCount)
+    if (followingMove && nextPegs[followingMove.from].at(-1) === discCount) {
+      setMessage('Pause before moving the largest disc. Where is the smaller tower, and why must the target peg be empty?')
+    } else if (movedDisc === discCount) {
+      setMessage('The largest disc is on the target peg. Which smaller problem must now be solved again?')
+    }
+  }
+
   const copyBuildBrief = async () => {
     try {
       await navigator.clipboard.writeText(BUILD_BRIEF)
@@ -127,7 +155,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   }
 
   const restartExperience = () => {
-    resetGame(3)
+    resetGame(classroom ? 3 : 2)
     setTeacherLens(false)
     setStage('play')
   }
@@ -150,14 +178,19 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
           <PlayScreen
             completed={completed}
             count={discCount}
+            demonstrating={demonstrating}
             hintMove={hintMove}
             message={message}
             moveCount={moveCount}
+            minimumRevealed={minimumRevealed}
+            onAdvanceDemonstration={advanceDemonstration}
             onCountChange={(count) => resetGame(count)}
             onMove={attemptMove}
-            onNext={() => changeStage('notice')}
+            onNext={() => discCount === 2 ? resetGame(3) : changeStage('notice')}
             onReset={() => resetGame()}
+            onRevealMinimum={() => setMinimumRevealed(true)}
             onShowHint={showHint}
+            onStartDemonstration={startDemonstration}
             onUndo={undo}
             pegs={pegs}
             selectedPeg={selectedPeg}
@@ -170,11 +203,11 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
         {stage === 'notice' && (
           <NoticeScreen
             answer={noticeAnswer}
-            moveCount={completed ? moveCount : target}
+            count={discCount}
+            moveCount={completed ? moveCount : null}
             onAnswer={setNoticeAnswer}
             onBack={() => changeStage('play')}
             onNext={() => changeStage('prove')}
-            target={target}
             teacherLens={teacherLens}
           />
         )}

@@ -107,14 +107,19 @@ function RailButton({ children, icon, onClick, disabled = false, primary = false
 export function PlayScreen({
   completed,
   count,
+  demonstrating,
   hintMove,
   message,
   moveCount,
+  minimumRevealed,
+  onAdvanceDemonstration,
   onCountChange,
   onMove,
   onNext,
   onReset,
+  onRevealMinimum,
   onShowHint,
+  onStartDemonstration,
   onUndo,
   pegs,
   selectedPeg,
@@ -127,7 +132,7 @@ export function PlayScreen({
       <aside className="control-rail">
         <div>
           <h1>Move the tower.<br />Then prove your best.</h1>
-          <p className="lead">Move one disc at a time. Never place a larger disc on a smaller one.</p>
+          <p className="lead">Move the tower from A to C in as few moves as possible. Move one disc at a time. Never place a larger disc on a smaller one.</p>
         </div>
 
         <div className="disc-control">
@@ -147,9 +152,9 @@ export function PlayScreen({
           </div>
         </div>
 
-        <div className="move-stats" aria-label="Move count and target">
+        <div className="move-stats" aria-label="Move count and minimum">
           <div><span>MOVES</span><strong>{moveCount}</strong></div>
-          <div><span>TARGET</span><strong>{target}</strong></div>
+          <div><span>MINIMUM</span><strong>{minimumRevealed ? target : '?'}</strong></div>
         </div>
 
         <div className="rail-question">
@@ -160,13 +165,25 @@ export function PlayScreen({
         <div className="rail-actions">
           <RailButton disabled={moveCount === 0} icon={<UndoIcon />} onClick={onUndo}>Undo</RailButton>
           <RailButton icon={<ResetIcon />} onClick={onReset}>Reset</RailButton>
-          <RailButton icon={<EyeIcon />} onClick={onShowHint} primary>Show one move</RailButton>
+          {demonstrating ? (
+            <RailButton disabled={completed} icon={<PlayIcon />} onClick={onAdvanceDemonstration} primary>Next demonstration move</RailButton>
+          ) : (
+            <RailButton icon={<EyeIcon />} onClick={onShowHint} primary>Hint for this position</RailButton>
+          )}
         </div>
 
         {teacherLens && (
-          <LensNote time="0:00–2:00">
-            Invite moves and predictions. Let the problem create a need for the method; do not name induction yet.
-          </LensNote>
+          <>
+            <div className="facilitator-controls" role="group" aria-label="Facilitator controls">
+              <p>{count === 2 ? 'First volunteer: a non-Science teacher, two discs.' : count === 3 ? 'Second volunteer: a mathematics teacher, three discs.' : 'Try another tower size.'} Aim for the fewest moves.</p>
+              {completed && moveCount > target && <p>A shorter route is possible. Show it after this attempt.</p>}
+              <RailButton disabled={minimumRevealed} icon={<EyeIcon />} onClick={onRevealMinimum}>Reveal minimum</RailButton>
+              <RailButton icon={<PlayIcon />} onClick={onStartDemonstration}>Show shortest route from start</RailButton>
+            </div>
+            <LensNote time="PLAY">
+              Start with two discs, then select three for the second volunteer. Keep the minimum hidden during each attempt. If needed, demonstrate the shortest route. Ask the observing teachers: where would you pause, and what would you ask students to explain?
+            </LensNote>
+          </>
         )}
       </aside>
 
@@ -188,7 +205,7 @@ export function PlayScreen({
           <p>{message}</p>
           {completed && (
             <button onClick={onNext} type="button">
-              What did that prove? <ArrowIcon size={18} />
+              {count === 2 ? 'Next volunteer: three discs' : 'Set the audience task'} <ArrowIcon size={18} />
             </button>
           )}
         </div>
@@ -199,6 +216,7 @@ export function PlayScreen({
 
 export function NoticeScreen({
   answer,
+  count,
   moveCount,
   onAnswer,
   onBack,
@@ -206,24 +224,25 @@ export function NoticeScreen({
   teacherLens,
 }) {
   const correct = answer === 'possible'
+  const sevenMoveRoute = count === 3 && moveCount === 7
 
   return (
     <section className="screen notice-screen">
       <aside className="control-rail notice-rail">
         <div>
-          <h1>A solution is not a minimum.</h1>
-          <p className="lead">A successful route gives an upper bound. A minimum needs something more.</p>
+          <h1>{sevenMoveRoute ? 'Could six moves work?' : 'Could fewer moves work?'}</h1>
+          <p className="lead">{sevenMoveRoute ? 'We found a seven-move route for three discs. Could six moves or fewer work?' : 'Finding a route shows it can be done. Does it show that fewer moves are impossible?'} Think of a reason beyond “I tried it”. Keep your reasoning for now.</p>
         </div>
 
         <div className="notice-summary">
-          <div><strong>{moveCount}</strong><span>moves found</span></div>
+          <div><strong>{moveCount ?? '?'}</strong><span>{moveCount === null ? 'complete a route first' : `moves found with ${count} discs`}</span></div>
           <span className="not-equals" aria-hidden="true">≠</span>
           <div><strong>?</strong><span>minimum proved</span></div>
         </div>
 
         {teacherLens && (
-          <LensNote time="2:00–3:00">
-            A checked example is evidence, not a universal claim. Ask participants to name exactly what the run establishes.
+          <LensNote time="THINK · 20 SECONDS">
+            Give teachers 20 seconds to think, then park the answer. Switch to the teacher role: “A student says, ‘I tried lots of times, so this is the minimum.’ What would you ask next?” Model a pause before the largest disc moves, then revisit their reasoning.
           </LensNote>
         )}
 
@@ -234,12 +253,12 @@ export function NoticeScreen({
 
       <div className="notice-canvas">
         <div className="notice-tower">
-          <MiniTower count={3} stage="rebuild" />
-          <span className="found-stamp"><CheckIcon /> ROUTE FOUND</span>
+          <MiniTower count={moveCount === null ? 3 : count - 1} stage={moveCount === null ? 'start' : 'rebuild'} />
+          <span className="found-stamp"><CheckIcon /> {moveCount === null ? 'THINK FIRST' : 'ROUTE FOUND'}</span>
         </div>
 
         <div className="notice-question-block">
-          <h2>Finding {moveCount} moves proves…</h2>
+          <h2>What does a completed route establish?</h2>
           <div className="answer-list" role="group" aria-label="What has been proved">
             <button
               aria-pressed={answer === 'possible'}
@@ -248,7 +267,7 @@ export function NoticeScreen({
               type="button"
             >
               <span className="radio-dot" />
-              <span><strong>It can be done in {moveCount}.</strong><small>This establishes what is possible.</small></span>
+              <span><strong>It can be done in that many moves.</strong><small>This establishes what is possible.</small></span>
             </button>
             <button
               aria-pressed={answer === 'minimum'}
@@ -294,14 +313,14 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens }) {
     <section className="screen prove-screen">
       <aside className="proof-rail">
         <div>
-          <h1>One strategy is evidence. Is it proof?</h1>
-          <p className="lead">Finding 7 moves shows the tower can move in 7. It does not show that 7 is the minimum.</p>
+          <h1>Why the largest disc matters</h1>
+          <p className="lead">Let n &gt; 1 be the number of discs. M(n) is the minimum number of moves to transfer the tower between two pegs.</p>
         </div>
 
         <div className="can-must-rail">
           <div className="logic-item logic-can">
             <span className="logic-icon"><CheckIcon /></span>
-            <div><strong>CAN</strong><p>Exhibit a legal strategy. This shows what is possible.</p></div>
+            <div><strong>CAN</strong><p>Transfer the smaller tower to B, move the largest disc to C, then rebuild on C. Two shortest smaller transfers give 2M(n − 1) + 1 moves.</p></div>
           </div>
           <span className="versus">vs.</span>
           <div className={`logic-item logic-must ${correct ? 'is-complete' : ''}`}>
@@ -329,14 +348,14 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens }) {
         {answer === 'some' && <p className="compact-feedback">Some is not enough—the largest disc stays trapped.</p>}
         {correct && (
           <div className="lower-bound-result">
-            <p>Therefore any legal solution needs at least:</p>
-            <strong>M(n + 1) ≥ 2M(n) + 1</strong>
+            <p>Before the largest disc's first move: at least M(n − 1) moves. After its last move to C: at least M(n − 1) more. The largest disc moves at least once.</p>
+            <strong>M(n) ≥ 2M(n − 1) + 1</strong>
           </div>
         )}
 
         {teacherLens && (
-          <LensNote time="3:00–4:30">
-            Insist on “every legal solution”. That phrase turns an observed strategy into a strategy-independent lower bound.
+          <LensNote time="EXPLAIN THE GENERAL CASE">
+            A route with smaller-transfer counts a and b takes a + 1 + b moves. It need not be shortest. For the lower bound, use the first and last moves of the largest disc, so the argument also covers routes that move it more than once. Ask teachers which student explanation would show understanding.
           </LensNote>
         )}
 
@@ -347,16 +366,17 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens }) {
       </aside>
 
       <div className="proof-canvas">
-        <h2>What does every legal solution have to do?</h2>
+        <h2>A route for n &gt; 1 discs</h2>
+        <p className="proof-caption">A: start · B: temporary peg · C: target. Clear C before moving the largest disc there.</p>
         <div className="proof-stages">
-          <ProofStage label="move n smaller" math="M(n)" number="1" stage="clear" />
+          <ProofStage label="move n − 1 smaller to B" math="M(n − 1)" number="1" stage="clear" />
           <ArrowIcon className="stage-arrow" size={36} />
           <ProofStage label="move largest" math="1" number="2" stage="largest" />
           <ArrowIcon className="stage-arrow" size={36} />
-          <ProofStage label="move n smaller" math="M(n)" number="3" stage="rebuild" />
+          <ProofStage label="move n − 1 smaller to C" math="M(n − 1)" number="3" stage="rebuild" />
         </div>
-        <div className="proof-sum" aria-label="M of n plus one plus M of n">
-          <span>M(n)</span><b>+</b><span>1</span><b>+</b><span>M(n)</span>
+        <div className="proof-sum" aria-label="M of n minus one, plus one, plus M of n minus one">
+          <span>M(n − 1)</span><b>+</b><span>1</span><b>+</b><span>M(n − 1)</span>
         </div>
       </div>
     </section>
@@ -377,11 +397,11 @@ export function DebriefScreen({ copied, onCopy, onRestart }) {
     <section className="screen debrief-screen">
       <aside className="teacher-takeaways">
         <span className="takeaway-label">TEACHER TAKEAWAYS</span>
-        <Takeaway icon={<TargetIcon />} title="Problem before method" tone="amber">
-          Let the puzzle create a need for the proof.
+        <Takeaway icon={<TargetIcon />} title="Pause before the largest move" tone="amber">
+          Pause the demonstration. Ask students to predict where the smaller tower must go and explain why the target peg must be empty.
         </Takeaway>
-        <Takeaway icon={<RiseIcon />} title={<>Strengthen <i>P(n)</i></>} tone="green">
-          Prove achievability and minimality together.
+        <Takeaway icon={<RiseIcon />} title="Ask why fewer moves cannot work" tone="green">
+          If a student says “I tried it”, ask for the moves that cannot be avoided. Listen for two smaller transfers and at least one largest-disc move.
         </Takeaway>
         <Takeaway icon={<MessageIcon />} title="LLM design move" tone="blue">
           Ask for manipulable state, live feedback and a reveal that follows the mathematics.
@@ -391,23 +411,24 @@ export function DebriefScreen({ copied, onCopy, onRestart }) {
       <div className="debrief-main">
         <div className="debrief-heading">
           <h1>The proof was hiding in the play.</h1>
-          <p>The largest disc forces every legal solution into three stages.</p>
+          <p>A shortest route moves the largest disc once, directly to the target. The two smaller transfers explain why.</p>
         </div>
 
         <div className="debrief-stages" aria-label="Three-stage recursive decomposition">
-          <ProofStage label="move n smaller" math="M(n)" number="1" stage="clear" />
+          <ProofStage label="move n − 1 smaller" math="M(n − 1)" number="1" stage="clear" />
           <ArrowIcon className="stage-arrow" size={30} />
           <ProofStage label="move largest" math="1" number="2" stage="largest" />
           <ArrowIcon className="stage-arrow" size={30} />
-          <ProofStage label="move n smaller" math="M(n)" number="3" stage="rebuild" />
+          <ProofStage label="move n − 1 smaller" math="M(n − 1)" number="3" stage="rebuild" />
         </div>
 
         <div className="logic-resolution">
-          <div className="logic-box can-box"><span>CAN</span><strong>M(n + 1) ≤ 2M(n) + 1</strong></div>
-          <div className="logic-box must-box"><span>MUST</span><strong>M(n + 1) ≥ 2M(n) + 1</strong></div>
+          <div className="logic-box can-box"><span>CAN</span><strong>M(n) ≤ 2M(n − 1) + 1</strong></div>
+          <div className="logic-box must-box"><span>MUST</span><strong>M(n) ≥ 2M(n − 1) + 1</strong></div>
           <div className="therefore">
-            <span>Therefore</span><strong>M(n + 1) = 2M(n) + 1</strong>
-            <p>A found strategy proves <em>CAN</em>. Unavoidable stages prove <b>MUST</b>.</p>
+            <span>Therefore, for n &gt; 1</span><strong>M(n) = 2M(n − 1) + 1</strong>
+            <p>M(1) = 1. For three discs: M(3) = 3 + 1 + 3 = 7. These unavoidable moves explain why six cannot work.</p>
+            <p>Bridge to induction: if M(n − 1) = 2<sup>n − 1</sup> − 1, the recurrence gives M(n) = 2(2<sup>n − 1</sup> − 1) + 1 = 2<sup>n</sup> − 1. Ask students where the smaller-case result was used.</p>
           </div>
         </div>
 
@@ -425,7 +446,7 @@ export function DebriefScreen({ copied, onCopy, onRestart }) {
         </div>
 
         <div className="debrief-footer">
-          <p>Teacher verifies the mathematics <span>•</span> No student data <span>•</span> Accessible alternatives</p>
+          <p>Teacher verifies the mathematics <span>•</span> Review classroom data settings <span>•</span> Accessible alternatives</p>
           <div>
             <button onClick={onRestart} type="button"><ResetIcon /> Restart</button>
             <button className="copy-button" onClick={onCopy} type="button"><CopyIcon /> {copied ? 'Copied' : 'Copy the build brief'}</button>
