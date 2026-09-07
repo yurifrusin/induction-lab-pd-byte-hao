@@ -161,7 +161,7 @@ export function PlayScreen({
           <RailButton icon={<ResetIcon />} onClick={onReset}>Reset</RailButton>
           {demonstrating ? (
             <RailButton disabled={completed} icon={<PlayIcon />} onClick={onAdvanceDemonstration} primary>Next demonstration move</RailButton>
-          ) : (
+          ) : !studentMode && (
             <RailButton icon={<EyeIcon />} onClick={onShowHint} primary>Hint for this position</RailButton>
           )}
         </div>
@@ -191,9 +191,11 @@ export function PlayScreen({
           setSelectedPeg={setSelectedPeg}
         />
 
-        <div className="play-equation" aria-label="Unknown moves plus one plus unknown moves">
-          <span>?</span><b>+</b><span>1</span><b>+</b><span>?</span>
-        </div>
+        {!studentMode && (
+          <div className="play-equation" aria-label="Unknown moves plus one plus unknown moves">
+            <span>?</span><b>+</b><span>1</span><b>+</b><span>?</span>
+          </div>
+        )}
 
         <div className={`game-message ${completed ? 'is-complete' : ''}`}>
           <p>{message}</p>
