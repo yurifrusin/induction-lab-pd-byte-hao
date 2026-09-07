@@ -1,14 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import App from './App.jsx'
 import { isSupabaseConfigured, supabase } from './supabase.js'
+import { classroomAccess, createProgressSync } from './classroomProgress.js'
 
 const STORAGE_KEY = 'induction-class:v1'
 const STAGE_LABELS = {
   play: 'Playing',
   notice: 'Noticing',
-  prove: 'Proving',
-  debrief: 'Debrief',
+  prove: 'Shortest?',
+  steps: 'Steps',
+  debrief: 'Prove',
+  can: 'Why believe CAN?',
 }
+
+const SESSION_COLUMNS = 'id, join_code, title, is_active, created_at, expires_at, workflow_version, shortest_released_at, steps_released_at'
 
 function readStoredParticipant() {
   try {
@@ -59,6 +64,9 @@ function routeUrl(mode, code = '') {
 
 function friendlyError(error) {
   const message = error?.message ?? 'Something went wrong. Please try again.'
+  if (/guided_sequence|class_gate|get_induction_class_state|workflow_version|released_at/i.test(message)) {
+    return 'The guided classroom update needs to be applied in Supabase. Ask the project owner to run the guided sequence migration.'
+  }
   if (/anonymous sign-ins are disabled/i.test(message)) {
     return 'Anonymous student access is not enabled in Supabase yet.'
   }
@@ -236,33 +244,106 @@ function StudentJoin({ initialCode, onBack, onJoined }) {
 
 function StudentActivity({ participant, onLeave }) {
   const [syncState, setSyncState] = useState('connected')
-  const timerRef = useRef(null)
-  const pendingRef = useRef(null)
-  const lastPayloadRef = useRef('')
+  const [classState, setClassState] = useState(null)
+  const [gateStatus, setGateStatus] = useState('loading')
+  const [initialProgress, setInitialProgress] = useState(null)
+  const [error, setError] = useState('')
+  const [reload, setReload] = useState(0)
+  const syncRef = useRef(null)
 
-  useEffect(() => () => window.clearTimeout(timerRef.current), [])
+  useEffect(() => {
+    const sync = createProgressSync({
+      onState: setSyncState,
+      write: async (payload) => {
+        const { data, error: saveError } = await supabase
+          .from('participants')
+          .update(payload)
+          .eq('id', participant.participantId)
+          .select('id')
+          .single()
+        if (saveError) throw saveError
+        if (!data) throw new Error('Progress could not be saved for this participant.')
+      },
+    })
+    syncRef.current = sync
+    const retry = () => sync.retry()
+    window.addEventListener('online', retry)
+    return () => {
+      sync.dispose()
+      syncRef.current = null
+      window.removeEventListener('online', retry)
+    }
+  }, [participant.participantId])
+
+  useEffect(() => {
+    let active = true
+    let fetching = false
+    const loadState = async () => {
+      if (fetching) return
+      if (!navigator.onLine) {
+        if (active) setGateStatus('error')
+        return
+      }
+      fetching = true
+      try {
+        const { data, error: loadError } = await supabase.rpc('get_induction_class_state', {
+          p_participant_id: participant.participantId,
+        })
+        if (loadError) throw loadError
+        if (!data?.progress) throw new Error('The classroom state could not be loaded.')
+        if (!active) return
+        setClassState(data)
+        setInitialProgress((current) => current ?? data.progress)
+        setGateStatus(data.is_active ? 'ready' : 'ended')
+        setError('')
+      } catch (loadError) {
+        if (!active) return
+        setGateStatus('error')
+        setError(friendlyError(loadError))
+      } finally {
+        fetching = false
+      }
+    }
+    const onFocus = () => { if (document.visibilityState === 'visible') loadState() }
+    const onOffline = () => { if (active) setGateStatus('error') }
+    loadState()
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === 'visible') loadState()
+    }, 2500)
+    window.addEventListener('online', loadState)
+    window.addEventListener('offline', onOffline)
+    window.addEventListener('focus', loadState)
+    document.addEventListener('visibilitychange', onFocus)
+    return () => {
+      active = false
+      window.clearInterval(interval)
+      window.removeEventListener('online', loadState)
+      window.removeEventListener('offline', onOffline)
+      window.removeEventListener('focus', loadState)
+      document.removeEventListener('visibilitychange', onFocus)
+    }
+  }, [participant.participantId, reload])
 
   const syncProgress = useCallback((progress) => {
-    if (!supabase) return
-    const serialized = JSON.stringify(progress)
-    if (serialized === lastPayloadRef.current) return
-    lastPayloadRef.current = serialized
-    pendingRef.current = progress
-    setSyncState('syncing')
-    window.clearTimeout(timerRef.current)
-    timerRef.current = window.setTimeout(async () => {
-      const payload = pendingRef.current
-      const { error } = await supabase
-        .from('participants')
-        .update(payload)
-        .eq('id', participant.participantId)
-      setSyncState(error ? 'error' : 'connected')
-    }, 300)
-  }, [participant.participantId])
+    syncRef.current?.submit(progress)
+  }, [])
 
   const leave = () => {
     clearStoredParticipant()
     onLeave()
+  }
+
+  if (!initialProgress) {
+    return (
+      <div className="classroom-page">
+        <BrandHeader onBack={leave} />
+        <main className="classroom-loading">
+          <p>{gateStatus === 'error' ? 'Classroom approval could not be checked.' : 'Opening your classroom progress…'}</p>
+          {error && <p className="classroom-error" role="alert">{error}</p>}
+          {gateStatus === 'error' && <button className="classroom-secondary" onClick={() => setReload((value) => value + 1)} type="button">Retry connection</button>}
+        </main>
+      </div>
+    )
   }
 
   return (
@@ -271,7 +352,10 @@ function StudentActivity({ participant, onLeave }) {
         code: participant.joinCode,
         displayName: participant.displayName,
         sessionTitle: participant.sessionTitle,
-        syncState,
+        syncState: gateStatus === 'error' ? 'error' : syncState,
+        ...classroomAccess(classState, gateStatus),
+        initialProgress,
+        initialProgressKey: participant.participantId,
       }}
       onLeaveClass={leave}
       onProgress={syncProgress}
@@ -369,12 +453,12 @@ function ParticipantRow({ participant }) {
       <td>{participant.hint_count}</td>
       <td>
         <span className={participant.notice_answer === 'possible' ? 'answer-good' : 'answer-pending'}>
-          {participant.notice_answer === 'possible' ? 'CAN ✓' : participant.notice_answer === 'minimum' ? 'Needs prompt' : '—'}
+          {participant.notice_answer === 'possible' ? 'Correct ✓' : participant.notice_answer === 'minimum' ? 'Needs prompt' : '—'}
         </span>
       </td>
       <td>
         <span className={participant.prove_answer === 'all' ? 'answer-good' : 'answer-pending'}>
-          {participant.prove_answer === 'all' ? 'MUST ✓' : participant.prove_answer === 'some' ? 'Needs prompt' : '—'}
+          {participant.prove_answer === 'all' ? 'Correct ✓' : participant.prove_answer === 'some' ? 'Needs prompt' : '—'}
         </span>
       </td>
     </tr>
@@ -389,13 +473,14 @@ function TeacherDashboard({ authSession, onBack }) {
   const [busy, setBusy] = useState(false)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState('')
+  const [gateBusy, setGateBusy] = useState('')
 
   const selectedSession = sessions.find((session) => session.id === selectedId) ?? null
 
   const loadSessions = useCallback(async () => {
     const { data, error: loadError } = await supabase
       .from('class_sessions')
-      .select('id, join_code, title, is_active, created_at, expires_at')
+      .select(SESSION_COLUMNS)
       .order('created_at', { ascending: false })
       .limit(12)
     if (loadError) {
@@ -408,6 +493,12 @@ function TeacherDashboard({ authSession, onBack }) {
 
   useEffect(() => {
     loadSessions()
+    const interval = window.setInterval(loadSessions, 5000)
+    window.addEventListener('focus', loadSessions)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener('focus', loadSessions)
+    }
   }, [loadSessions])
 
   useEffect(() => {
@@ -428,6 +519,7 @@ function TeacherDashboard({ authSession, onBack }) {
     }
 
     loadParticipants()
+    const interval = window.setInterval(loadParticipants, 5000)
     const channel = supabase
       .channel(`induction-session-${selectedId}`)
       .on('postgres_changes', {
@@ -440,6 +532,7 @@ function TeacherDashboard({ authSession, onBack }) {
 
     return () => {
       active = false
+      window.clearInterval(interval)
       supabase.removeChannel(channel)
     }
   }, [selectedId])
@@ -457,8 +550,9 @@ function TeacherDashboard({ authSession, onBack }) {
             join_code: randomJoinCode(),
             teacher_id: authSession.user.id,
             title: title.trim(),
+            workflow_version: 2,
           })
-          .select('id, join_code, title, is_active, created_at, expires_at')
+          .select(SESSION_COLUMNS)
           .single()
         if (!createError) created = data
         else if (createError.code !== '23505') throw createError
@@ -501,7 +595,27 @@ function TeacherDashboard({ authSession, onBack }) {
     onBack()
   }
 
-  const completedCount = participants.filter((participant) => participant.stage === 'debrief').length
+  const changeClassGate = async (gate) => {
+    if (!selectedSession || gateBusy) return
+    setGateBusy(gate)
+    setError('')
+    try {
+      const { error: gateError } = gate === 'enable'
+        ? await supabase.rpc('enable_induction_guided_sequence', { p_session_id: selectedSession.id })
+        : await supabase.rpc('release_induction_class_gate', { p_session_id: selectedSession.id, p_gate: gate })
+      if (gateError) throw gateError
+      await loadSessions()
+    } catch (gateError) {
+      setError(friendlyError(gateError))
+    } finally {
+      setGateBusy('')
+    }
+  }
+
+  const completedCount = participants.filter((participant) => ['debrief', 'can'].includes(participant.stage)).length
+  const classIsActive = selectedSession?.is_active && new Date(selectedSession.expires_at).getTime() > Date.now()
+  const noticeCorrectCount = participants.filter((participant) => participant.notice_answer === 'possible').length
+  const shortestCorrectCount = participants.filter((participant) => participant.prove_answer === 'all').length
 
   return (
     <div className="teacher-dashboard">
@@ -562,8 +676,53 @@ function TeacherDashboard({ authSession, onBack }) {
               <section className="dashboard-stats" aria-label="Class progress summary">
                 <div><strong>{participants.length}</strong><span>joined</span></div>
                 <div><strong>{participants.filter((participant) => participant.completed).length}</strong><span>towers solved</span></div>
-                <div><strong>{completedCount}</strong><span>reached debrief</span></div>
+                <div><strong>{completedCount}</strong><span>reached PROVE</span></div>
                 <div><strong>{participants.reduce((sum, participant) => sum + participant.hint_count, 0)}</strong><span>hints used</span></div>
+              </section>
+
+              <section className="class-gates progress-panel" aria-label="Class progression approvals">
+                <div className="progress-heading">
+                  <div>
+                    <h2>Guide the class together</h2>
+                    <p>Your approval applies to the class. Each learner must also answer the preceding question correctly.</p>
+                  </div>
+                </div>
+                {selectedSession.workflow_version !== 2 ? (
+                  <div className="class-gate-actions">
+                    <p>This class uses the earlier sequence. Enable the two approval points; learners beyond NOTICE return to NOTICE, with their saved answers kept.</p>
+                    <button className="classroom-primary" disabled={!classIsActive || Boolean(gateBusy)} onClick={() => changeClassGate('enable')} type="button">
+                      {gateBusy === 'enable' ? 'Enabling…' : 'Use guided sequence'}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="class-gate-actions">
+                    <article>
+                      <h3>NOTICE → SHORTEST?</h3>
+                      <p>{noticeCorrectCount} / {participants.length} have answered NOTICE correctly.</p>
+                      <button
+                        className="classroom-primary"
+                        disabled={!classIsActive || Boolean(gateBusy) || Boolean(selectedSession.shortest_released_at)}
+                        onClick={() => changeClassGate('shortest')}
+                        type="button"
+                      >
+                        {selectedSession.shortest_released_at ? 'SHORTEST? approved ✓' : gateBusy === 'shortest' ? 'Approving…' : 'Approve class: SHORTEST?'}
+                      </button>
+                    </article>
+                    <article>
+                      <h3>SHORTEST? → STEPS</h3>
+                      <p>{shortestCorrectCount} / {participants.length} have answered SHORTEST? correctly.</p>
+                      <button
+                        className="classroom-primary"
+                        disabled={!classIsActive || Boolean(gateBusy) || !selectedSession.shortest_released_at || Boolean(selectedSession.steps_released_at)}
+                        onClick={() => changeClassGate('steps')}
+                        type="button"
+                      >
+                        {selectedSession.steps_released_at ? 'STEPS approved ✓' : gateBusy === 'steps' ? 'Approving…' : 'Approve class: STEPS'}
+                      </button>
+                    </article>
+                    <p className="gate-followup">After STEPS, learners can continue to PROVE and WHY BELIEVE CAN? without another class approval.</p>
+                  </div>
+                )}
               </section>
 
               <section className="progress-panel">
@@ -574,7 +733,7 @@ function TeacherDashboard({ authSession, onBack }) {
                 {participants.length ? (
                   <div className="progress-table-wrap">
                     <table>
-                      <thead><tr><th>Learner</th><th>Stage</th><th>Moves</th><th>Hints</th><th>Upper bound</th><th>Lower bound</th></tr></thead>
+                      <thead><tr><th>Learner</th><th>Stage</th><th>Moves</th><th>Hints</th><th>NOTICE</th><th>SHORTEST?</th></tr></thead>
                       <tbody>{participants.map((participant) => <ParticipantRow key={participant.id} participant={participant} />)}</tbody>
                     </table>
                   </div>

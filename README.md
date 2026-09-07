@@ -1,109 +1,104 @@
 # Induction Lab
 
-Induction Lab is a five-minute interactive segment for a 15-minute EDUC7604 PD Byte. It lets preservice teachers experience a Year 12 Tower of Hanoi task before revealing the mathematical induction underneath it.
+Induction Lab supports a 15-minute EDUC7604 PD Byte about teaching mathematical induction. Teachers experience a Tower of Hanoi activity, then examine how a timed pause and a focused question can reveal students' reasoning.
 
-## Live website
+## Open the activity
 
-The published activity is available at:
+- [Standalone activity with Teacher lens](https://yurifrusin.github.io/induction-lab-pd-byte-hao/)
+- [Classroom entrance](https://yurifrusin.github.io/induction-lab-pd-byte-hao/?classroom=1)
+- [Teacher dashboard](https://yurifrusin.github.io/induction-lab-pd-byte-hao/?teacher=1)
 
-**https://yurifrusin.github.io/induction-lab-pd-byte-hao/**
+Classroom mode uses Supabase for pseudonymous progress and class approvals. Apply the database updates described in [CLASSROOM_SETUP.md](CLASSROOM_SETUP.md) before using the guided classroom sequence. Publishing the website does not apply those updates.
 
-Classroom tracking is also available as an optional mode. Teachers can create short join codes and watch pseudonymous learner progress update in real time. See `CLASSROOM_SETUP.md` for the one-time Supabase configuration.
+## The six-stage sequence
 
-## Use it immediately
-
-Use the live website above, or start the local development server:
-
-```powershell
-pnpm install
-pnpm dev
-```
-
-Then open the local URL printed in the terminal and use browser full-screen mode.
-
-## Five-minute facilitation run
-
-| Time | Screen | Facilitation move |
+| Screen | Learner task | Classroom progression |
 |---|---|---|
-| 0:00-2:00 | Play | Invite a non-Science teacher to try two discs, then a mathematics teacher to try three. Both aim for the fewest moves. After each completed attempt, show the shortest route immediately if the attempt used extra moves. |
-| 2:00-3:00 | Notice | Ask: “We have found a seven-move route for three discs. Could six or fewer moves work? How could we decide?” Give 20 seconds of quiet thinking, then park the question. Ask what one completed route establishes: it can be done in that many moves. |
-| 3:00-4:30 | Prove | Explain the general case for n > 1. Separate the three-stage construction from the lower bound using the largest disc's first and last moves. Select “all” and then reveal the equality. |
-| 4:30-5:00 | Debrief | Return to three discs: 3 + 1 + 3 = 7, and the lower bound rules out six. Switch explicitly from experiencing the task as learners to planning its use as teachers. Ask what student explanation would show understanding. |
+| PLAY | Explore two and three discs. Aim for the fewest moves without seeing a target. | Continue to NOTICE. |
+| NOTICE | Decide what one completed route establishes: it can be done in that many moves. | A correct answer **and** the teacher's **Approve class: SHORTEST?** action unlock SHORTEST?. |
+| SHORTEST? | Explain why the smaller discs must be together before the largest disc moves. | A correct answer **and** the teacher's **Approve class: STEPS** action unlock STEPS. |
+| STEPS | Explore one, two, three or four discs. Pause a construction before and after the largest-disc move. | Continue to PROVE without another approval. |
+| PROVE | Use the smaller-case lower bound to show that fewer moves cannot work. | Continue to WHY CAN? without another approval. |
+| WHY CAN? | Explain why the smaller-case construction produces a legal route with the stated sum. | Combine existence and the lower bound to establish the minimum. |
 
-The header steps are directly selectable. Teacher lens adds facilitation cues and reveal controls. Rehearse the two attempts and demonstrations to fit the available time.
+The last navigation label is **WHY CAN?**; its page heading is **Why believe “CAN”?**. The standalone site has no class approval gates, so a presenter can move between pages during the PD.
+
+### Teacher approval in a live class
+
+Create a new class in the teacher dashboard and share its student link or six-character code. New classes created by this version use the guided sequence.
+
+The dashboard has two class-wide approval buttons. Approval may be given before every learner has answered correctly; each learner still needs their own correct answer to enter the next stage. The second approval follows the first. There is no third approval for PROVE or WHY CAN?.
+
+For an existing class, select **Use guided sequence**. On its first upgrade, learners beyond NOTICE return to NOTICE and their saved answers are kept. Earlier game counts outside two or three discs are reset to a three-disc starting record. Selecting this action again does not reset an already upgraded class. Other classes remain on their earlier workflow until enabled separately.
+
+Approvals are stored for the class in Supabase. Late joiners receive the same class approval state but must answer their own questions. Saved answers are restored after rejoining on the same authenticated browser. The moving tower itself starts again after a reload; a stored move count does not reconstruct its positions. During a connection problem, progression waits until the approval state can be checked again.
+
+## Facilitation for the PD
+
+Rehearse the two volunteer attempts, demonstrations and pauses within the presentation's time allocation. The six screens support the explanation; they are not six separate lectures.
+
+1. **Frame the teacher learning.** Say: “We will practise pausing for prediction and explanation, then questioning whether a successful route proves a minimum.”
+2. **Invite the two volunteers.** A non-Science teacher tries two discs, then a mathematics teacher tries three. Keep the answer hidden at the start of each attempt. If a completed attempt used extra moves, demonstrate the shortest route afterwards.
+3. **Set the audience problem.** After a seven-move route, ask: “Could six moves or fewer work? Give a reason beyond ‘I tried it’.” Allow about 20 seconds of quiet thinking and keep the explanation open.
+4. **Switch to the teacher role.** Ask participants to write one question they would ask a student who says, “I tried lots of times, so seven is the minimum.” Hear a response before modelling your own prompt.
+5. **Use SHORTEST? and STEPS.** Establish why the smaller tower must move. Use four discs in STEPS to pause before and after the largest-disc move, and connect the two smaller tasks to the displayed sum.
+6. **Separate the two proof obligations.** PROVE explains why fewer moves cannot work. WHY CAN? supplies the construction for each larger case. Ask where the smaller-case assumption is used.
+7. **Check the teaching strategy.** Ask: “Where would you pause this tool, what would you ask, and what student explanation would you listen for?”
 
 ### Presenter controls
 
-- The standalone activity starts with two discs. The minimum stays hidden during an attempt, including after completion.
-- Student play shows only the actual move count, with no TARGET or MINIMUM field. Teacher lens contains the minimum field and reveal controls; switching it off hides the answer and stops the demonstration.
-- Turn on **Teacher lens** for **Reveal minimum** and **Show shortest route from start**.
-- **Show shortest route from start** resets the current tower and reveals its minimum. Use **Next demonstration move** to advance one move at a time. Pause at the cue before moving the largest disc, then ask which smaller problem remains afterwards.
-- Selecting a disc count or resetting the game hides the minimum again. After the two-disc attempt and any demonstration, use **Next volunteer: three discs**, or select **3**. Move to **NOTICE** after the three-disc activity.
-- Students who join a classroom can play with two or three discs. The standalone site with Teacher lens retains two, three, four and five discs. A shortest-route demonstration reveals the three-disc number. Keep the audience task on **why six or fewer moves cannot work**; return to that reasoning after the general argument.
+- Standalone PLAY starts with two discs and retains the two, three, four and five-disc choices. Student PLAY in a joined class has only two and three.
+- Student PLAY shows the move count without a TARGET or MINIMUM field. Completion does not announce whether the result is shortest.
+- Turn on **Teacher lens** for **Reveal minimum** and **Show shortest route from start**. The latter resets the tower; **Next demonstration move** then advances one move at a time.
+- Switching Teacher lens off hides the revealed minimum and stops that demonstration. Resetting or changing the disc count also hides the minimum.
+- STEPS has one to four discs in both modes. Use **Next move** for single steps or **Play** for a walkthrough that pauses around the largest-disc move. With four discs, those pauses occur after the first smaller transfer and immediately after moving the largest disc.
+- A manual move away from the demonstrated route stops the walkthrough. **Restart walkthrough** returns to its starting position.
 
-### Two strategies teachers can reuse
+## The mathematical thread
 
-Introduce the activity with: “Today we will practise two teaching strategies: pause the tool for prediction and explanation, then question whether a successful route proves a minimum.” After setting the three-disc thinking task, say: “Now switch to your teacher role. A student says, ‘I tried lots of times, so seven is the minimum.’ Write one question you would ask next.” Invite one response, model the pause with that question, and revisit the strategy at the debrief.
+Keep the move count in sum form:
 
-1. **Pause and predict.** Stop before the largest-disc move. Ask students where the smaller tower must be and why the target peg must be empty. Advance one move, then ask which smaller problem appears again. The controlled replay gives students time to explain the change.
-2. **Compare a successful route with a reason it is shortest.** Keep the seven-move route visible and ask whether six moves could work. Use the move record as evidence of achievability, then ask students to justify the unavoidable smaller transfers. Assess that explanation, not just the answer seven.
+    S(n) = 1 + 2 + 2² + … + 2^(n − 1)
+    S(1) = 1
+    S(n) = 1 + 2S(n − 1), for n > 1
 
-## Mathematical and pedagogical through-line
+The one-disc sum contains only its first term. In the four-disc walkthrough, the visual connection is:
 
-- Put the problem before the method: exploration creates a need for proof.
-- A found strategy establishes an upper bound (CAN); it does not prove a minimum.
-- For n > 1, a route using two smaller transfers with move counts a and b takes `a + 1 + b` moves. Using shortest smaller transfers establishes `M(n) ≤ 2M(n − 1) + 1` (CAN).
-- Every complete legal transfer needs at least `M(n − 1)` moves before the largest disc's first move and at least `M(n − 1)` moves after its last move to the target. The largest disc moves at least once, so `M(n) ≥ 2M(n − 1) + 1` (MUST). This argument also covers routes that move the largest disc more than once.
-- Together these bounds give `M(n) = 2M(n − 1) + 1`, with `M(1) = 1`. A shortest route moves the largest disc once, directly to the target.
-- The proposition must be strong enough to contain both achievability and minimality.
-- Induction can explain recursive structure, not merely verify a supplied formula.
-- A few checked examples are not the same as a universal claim.
+    1 + 2(1 + 2 + 2²) = 1 + 2 + 2² + 2³
 
-Here `M(n)` means the minimum number of moves for a complete tower transfer. To connect the activity to induction, make the inference explicit: if `M(n − 1) = 2^(n − 1) − 1`, the recurrence gives `M(n) = 2^n − 1`. The initial case and this step establish the formula for every positive integer n. Playing successfully or watching a shortest route does not by itself demonstrate understanding of that inference.
+**PROVE establishes a lower bound.** Let n be an integer greater than 1. Assume the smaller-case lower bound holds for transfers between distinct pegs. Before the largest disc's first move, its smaller tower must have been transferred to another peg, costing at least S(n − 1). After the largest disc's final move onto the target, the smaller tower must be transferred onto it, again costing at least S(n − 1). The largest disc moves at least once. These portions of the route do not overlap, so each completed route costs at least S(n − 1) + 1 + S(n − 1) = S(n). This reasoning includes routes with detours.
 
-These ideas were synthesised from the supplied deficient-chessboard/ordinary-induction chapters, the induction revision document, and the three-lesson Year 12 sequence. The EDUC7604 task description shaped the short timing, participant engagement, APST alignment, and safe/ethical ICT debrief.
+**WHY CAN? establishes achievability.** The one-disc case is a legal single move. For the next case, apply the smaller-case construction to transfer the smaller tower to the temporary peg, move the largest disc onto the empty target, then apply the smaller-case construction again to rebuild the tower there. Renaming the pegs preserves the puzzle rules. For n > 1, this uses 1 + 2S(n − 1) moves. Together with the initial case, the construction gives a legal route using S(n) moves for every integer n ≥ 1.
+
+Only after both arguments is S(n) established as the minimum. A working route or a numerical pattern alone does not establish either general inference. Ask students to point to the two places where the smaller-case assumption does work.
 
 ### 中文主持提示
 
-“我们先以学习者的身份体验，随后再以教师的身份分析怎样使用这个工具。先请一位非 Science 教师尝试两个碟子，再请一位数学教师尝试三个碟子，目标都是尽量少走。如果完成后的路线还能缩短，我会马上展示最短路线。”
+“我们先以学习者身份体验，然后分析怎样教学生。今天练习两种策略：在关键状态暂停，请学生预测并解释；完成路线后，继续追问为什么不能更少。”
 
-“我们已经找到三个碟子的七步路线。有没有六步或更少的路线？怎样判断？先静思二十秒。我们暂时保留理由，先看一般情形。”
+“我们找到三个碟子的七步路线。六步或更少是否可能？请给出超出‘我试过了’的理由。先静思二十秒，暂时保留你的解释。”
 
-“设 n 是大于 1 的整数，M(n) 表示最少步数。先把上面的 n−1 个碟子搬到临时柱，清空目标柱；把最大碟搬到目标柱；最后把小塔叠回去。这给出一条可行路线。两段都采用最短路线，就能用 M(n−1)+1+M(n−1) 步完成。”
+“现在切换到教师角色。学生说：‘我试了很多次，所以七步最少。’请写一句你会问他的追问。”
 
-“为什么不能更少？对于每个完整解，最大碟第一次移动前，小塔至少需要 M(n−1) 步完成转移；最大碟最后一次移到目标柱后，小塔还至少需要 M(n−1) 步。最大碟本身至少移动一次。因此，这个步数既能达到，也不能再少。”
+“到了步骤页面，我们用四个碟子观察。最大碟移动前，小塔在哪里？目标柱为什么必须清空？移动最大碟后，哪个较小任务再次出现？画面中的两段小塔任务，对应 1 + 2(1 + 2 + 2²)。”
 
-“回到三个碟子：3+1+3=7。前后的两个小塔任务都不能省，所以六步不够。现在请切换到教师视角：你会怎样用这个工具，让学生自己说出这个理由？”
+“设 n 是大于 1 的整数。对于每个完整解，最大碟第一次移动前，以及最后一次移到目标柱后，都有一个较小的转移任务。这两个阶段加上最大碟至少一步，给出不能更少的理由。”
 
-“第一种做法是在最大碟移动前暂停，请学生预测小塔的位置并解释目标柱为什么必须清空。第二种做法是展示七步路线后，追问六步是否可能。学生只答七还不够；请他们解释两个较小任务为何必需。”
+“但我们还没有证明这个和式一定能达到。最后一页要说明：如何用较小情形的可行路线，构造下一情形的路线？初始情形为什么能启动这个推理？”
 
-“这里还要连接回 mathematical induction。递推关系本身没有完成公式的归纳证明：需要说明 n−1 情形的已知结论怎样用于 n 情形，再结合初始情形。请学生指出推理中哪一步用了较小情形的结论，而不只是套入公式。”
+“如果你明天使用这个工具，你会在哪里暂停、问什么、期待学生说出什么？学生只给出步数，还不能说明他理解了推理。”
 
-## Interaction and access
+## Interaction and data
 
-- Click or tap a top disc, then choose a destination peg.
-- Dragging is also supported on desktop.
-- Keyboard users can activate discs and pegs with Enter or Space.
-- Undo, reset, disc-count selection, live legal-move feedback and a shortest-route hint for the current position are included. Teacher lens also supports a controlled demonstration from the starting position.
-- Optional classroom mode records stage, move count, hint count and conceptual responses for a live teacher dashboard.
-- Motion respects `prefers-reduced-motion`, and all core controls have visible focus states and accessible names.
+Click or tap a top disc, then choose a destination peg. Desktop dragging and keyboard activation with Enter or Space are supported. PLAY includes undo, reset and a hint for the current position. STEPS includes controlled playback; reduced-motion preferences disable automatic playback while retaining manual steps.
 
-## Safe, responsible and ethical LLM use
+The standalone activity runs in the browser without submitting learner progress. Classroom mode records stage, disc count, move count, hint count, completion and the two conceptual responses in Supabase. Students join with an alias or seat number. The game sends no prompts to an LLM service. AI supports the teacher's authoring process; the teaching strategies are the pause, the question and the explanation elicited from students.
 
-The site models an LLM as a teacher's design collaborator, not an assessor or mathematical authority. The standalone game runs in the browser without submitting learner progress; optional classroom mode records the progress listed above through the configured Supabase service. The game sends no prompts to an LLM service. Teachers should still verify the mathematics, test edge cases, review accessibility and keep a non-digital alternative available.
+## Development and deployment
 
-## Editable source
+    pnpm install
+    pnpm dev
+    pnpm build
+    node --test src/flow.test.js src/classroomProgress.test.js
 
-This repository contains the React + Vite project. Useful commands:
-
-```powershell
-pnpm install
-pnpm dev
-pnpm build
-```
-
-The production build is written to `dist`.
-
-## GitHub Pages deployment
-
-Pushing to `main` automatically builds and publishes the site through the workflow in `.github/workflows/deploy-pages.yml`. The workflow deploys the generated `dist` directory and does not publish `node_modules` or local development files.
+The production build is written to dist. Pushing to main runs .github/workflows/deploy-pages.yml to publish GitHub Pages. Supabase migrations must be applied separately; see [CLASSROOM_SETUP.md](CLASSROOM_SETUP.md).

@@ -140,15 +140,15 @@ input:focus-visible + .toggle-track {
 .stage-nav {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   align-self: stretch;
 }
 
 .stage-nav::after {
   position: absolute;
-  right: 12.5%;
+  right: 8.333%;
   bottom: 17px;
-  left: 12.5%;
+  left: 8.333%;
   height: 2px;
   background: #304150;
   content: "";
@@ -190,6 +190,57 @@ input:focus-visible + .toggle-track {
 
 .stage-nav button:first-child::after {
   display: none;
+}
+
+.stage-nav button:disabled {
+  color: var(--dim);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.stage-nav button:disabled .nav-node {
+  border-style: dashed;
+}
+
+.gate-message {
+  padding: 12px 14px;
+  border-left: 3px solid var(--amber);
+  background: rgba(239, 170, 60, 0.07);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.answer-feedback button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.class-gates {
+  margin-bottom: 24px;
+}
+
+.class-gate-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.class-gate-actions article {
+  padding: 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.class-gate-actions h3 {
+  margin-bottom: 10px;
+}
+
+.class-gate-actions p,
+.gate-followup {
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .stage-nav button:hover,
@@ -1938,6 +1989,16 @@ button.hanoi-disk:active {
 }
 
 @media (max-width: 650px) {
+  .stage-nav button {
+    padding-right: 2px;
+    padding-left: 2px;
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+
+  .class-gate-actions {
+    grid-template-columns: 1fr;
+  }
   .app-header {
     padding-right: 13px;
     padding-left: 13px;

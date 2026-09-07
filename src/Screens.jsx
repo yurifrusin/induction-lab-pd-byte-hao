@@ -1,27 +1,18 @@
 import {
   ArrowIcon,
   CheckIcon,
-  CopyIcon,
   EyeIcon,
-  MessageIcon,
   PlayIcon,
   ResetIcon,
-  RiseIcon,
-  TargetIcon,
   UndoIcon,
 } from './icons.jsx'
 import { MiniTower, Tower } from './Tower.jsx'
-
-const STAGES = [
-  { id: 'play', label: 'PLAY' },
-  { id: 'notice', label: 'NOTICE' },
-  { id: 'prove', label: 'PROVE' },
-  { id: 'debrief', label: 'DEBRIEF' },
-]
+import { STAGES } from './flow.js'
 
 export function AppHeader({
   activeStage,
   classroom,
+  stageLocks = {},
   onLeaveClass,
   onOpenClassroom,
   onStageChange,
@@ -42,12 +33,14 @@ export function AppHeader({
         <span>Induction Lab</span>
       </button>
 
-      <nav className="stage-nav" aria-label="Five-minute experience">
+      <nav className="stage-nav" aria-label="Activity sequence">
         {STAGES.map(({ id, label }, index) => (
           <button
             aria-current={activeStage === id ? 'step' : undefined}
             className={`${activeStage === id ? 'is-active' : ''} ${index < activeIndex ? 'is-complete' : ''}`}
             key={id}
+            disabled={Boolean(stageLocks[id])}
+            title={stageLocks[id] || label}
             onClick={() => onStageChange(id)}
             type="button"
           >
@@ -223,6 +216,8 @@ export function NoticeScreen({
   onBack,
   onNext,
   teacherLens,
+  nextUnlocked = true,
+  gateMessage = '',
 }) {
   const correct = answer === 'possible'
   const sevenMoveRoute = count === 3 && moveCount === 7
@@ -288,7 +283,8 @@ export function NoticeScreen({
           {correct && (
             <div className="answer-feedback is-correct">
               <p><strong>Exactly.</strong> Now look for a cost that every legal solution must pay.</p>
-              <button onClick={onNext} type="button">Find the unavoidable move <ArrowIcon /></button>
+              {gateMessage && <p className="gate-message" role="status">{gateMessage}</p>}
+              <button disabled={!nextUnlocked} onClick={onNext} type="button">{nextUnlocked ? 'Open SHORTEST?' : 'Waiting for teacher'} <ArrowIcon /></button>
             </div>
           )}
         </div>
@@ -307,23 +303,18 @@ function ProofStage({ label, math, number, stage }) {
   )
 }
 
-export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens }) {
+export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nextUnlocked = true, gateMessage = '' }) {
   const correct = answer === 'all'
 
   return (
     <section className="screen prove-screen">
       <aside className="proof-rail">
         <div>
-          <h1>Why the largest disc matters</h1>
+          <h1>Could fewer moves work?</h1>
           <p className="lead">Let n &gt; 1 be the number of discs. M(n) is the minimum number of moves to transfer the tower between two pegs.</p>
         </div>
 
         <div className="can-must-rail">
-          <div className="logic-item logic-can">
-            <span className="logic-icon"><CheckIcon /></span>
-            <div><strong>CAN</strong><p>Transfer the smaller tower to B, move the largest disc to C, then rebuild on C. Two shortest smaller transfers give 2M(n − 1) + 1 moves.</p></div>
-          </div>
-          <span className="versus">vs.</span>
           <div className={`logic-item logic-must ${correct ? 'is-complete' : ''}`}>
             <span className="logic-icon">{correct && <CheckIcon />}</span>
             <div><strong>MUST</strong><p>Show every legal solution must pay a cost. This creates a lower bound.</p></div>
@@ -350,7 +341,7 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens }) {
         {correct && (
           <div className="lower-bound-result">
             <p>Before the largest disc's first move: at least M(n − 1) moves. After its last move to C: at least M(n − 1) more. The largest disc moves at least once.</p>
-            <strong>M(n) ≥ 2M(n − 1) + 1</strong>
+            <strong>M(n) ≥ 1 + 2M(n − 1)</strong>
           </div>
         )}
 
@@ -360,9 +351,10 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens }) {
           </LensNote>
         )}
 
+        {correct && gateMessage && <p className="gate-message" role="status">{gateMessage}</p>}
         <div className="proof-rail-actions">
           <RailButton icon={<ArrowIcon direction="left" />} onClick={onBack}>Back</RailButton>
-          <RailButton disabled={!correct} icon={<ArrowIcon />} onClick={onNext} primary>Reveal the equality</RailButton>
+          <RailButton disabled={!correct || !nextUnlocked} icon={<ArrowIcon />} onClick={onNext} primary>{correct && !nextUnlocked ? 'Waiting for teacher' : 'Explore the steps'}</RailButton>
         </div>
       </aside>
 
@@ -378,80 +370,6 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens }) {
         </div>
         <div className="proof-sum" aria-label="M of n minus one, plus one, plus M of n minus one">
           <span>M(n − 1)</span><b>+</b><span>1</span><b>+</b><span>M(n − 1)</span>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Takeaway({ children, icon, title, tone }) {
-  return (
-    <div className="takeaway">
-      <span className={`takeaway-icon tone-${tone}`}>{icon}</span>
-      <div><h3>{title}</h3><p>{children}</p></div>
-    </div>
-  )
-}
-
-export function DebriefScreen({ copied, onCopy, onRestart }) {
-  return (
-    <section className="screen debrief-screen">
-      <aside className="teacher-takeaways">
-        <span className="takeaway-label">TEACHER TAKEAWAYS</span>
-        <Takeaway icon={<TargetIcon />} title="Pause before the largest move" tone="amber">
-          Pause the demonstration. Ask students to predict where the smaller tower must go and explain why the target peg must be empty.
-        </Takeaway>
-        <Takeaway icon={<RiseIcon />} title="Ask why fewer moves cannot work" tone="green">
-          If a student says “I tried it”, ask for the moves that cannot be avoided. Listen for two smaller transfers and at least one largest-disc move.
-        </Takeaway>
-        <Takeaway icon={<MessageIcon />} title="LLM design move" tone="blue">
-          Ask for manipulable state, live feedback and a reveal that follows the mathematics.
-        </Takeaway>
-      </aside>
-
-      <div className="debrief-main">
-        <div className="debrief-heading">
-          <h1>The proof was hiding in the play.</h1>
-          <p>A shortest route moves the largest disc once, directly to the target. The two smaller transfers explain why.</p>
-        </div>
-
-        <div className="debrief-stages" aria-label="Three-stage recursive decomposition">
-          <ProofStage label="move n − 1 smaller" math="M(n − 1)" number="1" stage="clear" />
-          <ArrowIcon className="stage-arrow" size={30} />
-          <ProofStage label="move largest" math="1" number="2" stage="largest" />
-          <ArrowIcon className="stage-arrow" size={30} />
-          <ProofStage label="move n − 1 smaller" math="M(n − 1)" number="3" stage="rebuild" />
-        </div>
-
-        <div className="logic-resolution">
-          <div className="logic-box can-box"><span>CAN</span><strong>M(n) ≤ 2M(n − 1) + 1</strong></div>
-          <div className="logic-box must-box"><span>MUST</span><strong>M(n) ≥ 2M(n − 1) + 1</strong></div>
-          <div className="therefore">
-            <span>Therefore, for n &gt; 1</span><strong>M(n) = 2M(n − 1) + 1</strong>
-            <p>M(1) = 1. For three discs: M(3) = 3 + 1 + 3 = 7. These unavoidable moves explain why six cannot work.</p>
-            <p>Bridge to induction: if M(n − 1) = 2<sup>n − 1</sup> − 1, the recurrence gives M(n) = 2(2<sup>n − 1</sup> − 1) + 1 = 2<sup>n</sup> − 1. Ask students where the smaller-case result was used.</p>
-          </div>
-        </div>
-
-        <div className="run-line" aria-label="Five-minute facilitation timing">
-          {[
-            ['0:00', 'PLAY'],
-            ['2:00', 'NOTICE'],
-            ['3:00', 'PROVE'],
-            ['4:30', 'DEBRIEF'],
-          ].map(([time, label], index) => (
-            <div className={index === 3 ? 'is-active' : ''} key={label}>
-              <span>{time}</span><strong>{label}</strong><i aria-hidden="true" />
-            </div>
-          ))}
-        </div>
-
-        <div className="debrief-footer">
-          <p>Teacher verifies the mathematics <span>•</span> Review classroom data settings <span>•</span> Accessible alternatives</p>
-          <div>
-            <button onClick={onRestart} type="button"><ResetIcon /> Restart</button>
-            <button className="copy-button" onClick={onCopy} type="button"><CopyIcon /> {copied ? 'Copied' : 'Copy the build brief'}</button>
-          </div>
         </div>
       </div>
     </section>

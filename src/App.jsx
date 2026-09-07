@@ -1,35 +1,26 @@
 import { useEffect, useState } from 'react'
 import { findNextShortestMove, isComplete, makePegs, moveDisk, optimalMoves } from './game.js'
-import { AppHeader, DebriefScreen, NoticeScreen, PlayScreen, ProveScreen } from './Screens.jsx'
-
-const BUILD_BRIEF = `Design an accessible Tower of Hanoi simulator for Year 12 Specialist Mathematics.
-
-Learning sequence:
-1. Put the problem before the method: let students play before naming induction.
-2. Enforce legal moves, track attempts and give optional next-move feedback.
-3. After a solution, ask what has actually been proved: possibility is not minimality.
-4. For n > 1, construct a route using two transfers of n - 1 discs and one move of the largest disc.
-5. Distinguish CAN (a constructive upper bound) from MUST (a strategy-independent lower bound).
-6. Keep the strengthened proposition visible: n discs can be moved in 2^n - 1 moves, and every legal transfer requires at least 2^n - 1 moves.
-
-Safeguards:
-- The teacher verifies every mathematical statement and tests edge cases.
-- Collect no student names, prompts or personal data.
-- Provide click, keyboard and touch alternatives, clear feedback and reduced-motion support.
-- Use the LLM as a design collaborator, not an automated assessor.`
+import { AppHeader, NoticeScreen, PlayScreen, ProveScreen } from './Screens.jsx'
+import { CanScreen, MinimumProofScreen, StepsScreen } from './SequenceScreens.jsx'
+import { accessibleStage, stageLockReason, STAGES } from './flow.js'
 
 export default function App({ classroom = null, onLeaveClass = null, onOpenClassroom = null, onProgress = null }) {
-  const [stage, setStage] = useState('play')
+  const initialProgress = classroom?.initialProgress
+  const initialPlayCount = classroom && initialProgress?.disc_count === 2 ? 2 : classroom ? 3 : 2
+  const [stage, setStage] = useState(() => accessibleStage(initialProgress?.stage ?? 'play', classroom, initialProgress?.notice_answer, initialProgress?.prove_answer))
   const [teacherLens, setTeacherLens] = useState(false)
-  const [discCount, setDiscCount] = useState(classroom ? 3 : 2)
-  const [pegs, setPegs] = useState(() => makePegs(classroom ? 3 : 2))
+  const [discCount, setDiscCount] = useState(initialPlayCount)
+  const [pegs, setPegs] = useState(() => makePegs(initialPlayCount))
   const [history, setHistory] = useState([])
   const [selectedPeg, setSelectedPeg] = useState(null)
   const [hintMove, setHintMove] = useState(null)
   const [message, setMessage] = useState('Select the top disc, then choose a destination peg.')
-  const [noticeAnswer, setNoticeAnswer] = useState(null)
-  const [proveAnswer, setProveAnswer] = useState(null)
-  const [copied, setCopied] = useState(false)
+  const [noticeAnswer, setNoticeAnswer] = useState(initialProgress?.notice_answer ?? null)
+  const [proveAnswer, setProveAnswer] = useState(initialProgress?.prove_answer ?? null)
+  const [stepsProgress, setStepsProgress] = useState(() => ({
+    disc_count: ['steps', 'debrief', 'can'].includes(initialProgress?.stage) && [1, 2, 3, 4].includes(initialProgress?.disc_count) ? initialProgress.disc_count : 4,
+    move_count: 0, hint_count: 0, completed: false,
+  }))
   const [hintCount, setHintCount] = useState(0)
   const [minimumRevealed, setMinimumRevealed] = useState(false)
   const [demonstrating, setDemonstrating] = useState(false)
@@ -39,19 +30,21 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   const completed = isComplete(pegs, discCount)
   const presenterMode = !classroom && teacherLens
   const showMinimum = presenterMode && minimumRevealed
+  const activeStage = accessibleStage(stage, classroom, noticeAnswer, proveAnswer)
+  const stageLocks = Object.fromEntries(STAGES.map(({ id }) => [id, stageLockReason(id, classroom, noticeAnswer, proveAnswer)]))
+  const trackingSteps = ['steps', 'debrief', 'can'].includes(activeStage)
+
+  useEffect(() => { window.scrollTo(0, 0) }, [activeStage])
 
   useEffect(() => {
-    if (!onProgress) return
+    if (!onProgress || (classroom && classroom.gateStatus !== 'ready')) return
     onProgress({
-      stage,
-      disc_count: discCount,
-      move_count: moveCount,
-      hint_count: hintCount,
-      completed,
+      stage: activeStage,
+      ...(trackingSteps ? stepsProgress : { disc_count: discCount, move_count: moveCount, hint_count: hintCount, completed }),
       notice_answer: noticeAnswer,
       prove_answer: proveAnswer,
     })
-  }, [completed, discCount, hintCount, moveCount, noticeAnswer, onProgress, proveAnswer, stage])
+  }, [activeStage, classroom?.gateStatus, completed, discCount, hintCount, moveCount, noticeAnswer, onProgress, proveAnswer, stepsProgress, trackingSteps])
 
   const resetGame = (nextCount = discCount) => {
     setDiscCount(nextCount)
@@ -59,8 +52,6 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     setHistory([])
     setSelectedPeg(null)
     setHintMove(null)
-    setNoticeAnswer(null)
-    setProveAnswer(null)
     setHintCount(0)
     setMinimumRevealed(false)
     setDemonstrating(false)
@@ -68,10 +59,10 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   }
 
   const changeStage = (nextStage) => {
+    if (stageLockReason(nextStage, classroom, noticeAnswer, proveAnswer)) return
     setStage(nextStage)
     setSelectedPeg(null)
     setHintMove(null)
-    if (nextStage === 'debrief' && !classroom) setTeacherLens(true)
   }
 
   const attemptMove = (from, to, demonstrationMove = false) => {
@@ -145,19 +136,11 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     }
   }
 
-  const copyBuildBrief = async () => {
-    try {
-      await navigator.clipboard.writeText(BUILD_BRIEF)
-      setCopied(true)
-      window.setTimeout(() => setCopied(false), 2200)
-    } catch {
-      setCopied(false)
-      setMessage('Copy was blocked by the browser. The build brief is available in the facilitator notes.')
-    }
-  }
-
   const restartExperience = () => {
     resetGame(classroom ? 3 : 2)
+    setNoticeAnswer(null)
+    setProveAnswer(null)
+    setStepsProgress({ disc_count: 4, move_count: 0, hint_count: 0, completed: false })
     setTeacherLens(false)
     setStage('play')
   }
@@ -174,11 +157,12 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   }
 
   return (
-    <div className={`app stage-${stage}`}>
+    <div className={`app stage-${activeStage}`}>
       <a className="skip-link" href="#main-content">Skip to activity</a>
       <AppHeader
-        activeStage={stage}
+        activeStage={activeStage}
         classroom={classroom}
+        stageLocks={stageLocks}
         onLeaveClass={onLeaveClass}
         onOpenClassroom={onOpenClassroom}
         onStageChange={changeStage}
@@ -187,7 +171,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
       />
 
       <main id="main-content">
-        {stage === 'play' && (
+        {activeStage === 'play' && (
           <PlayScreen
             completed={completed}
             count={discCount}
@@ -214,7 +198,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
           />
         )}
 
-        {stage === 'notice' && (
+        {activeStage === 'notice' && (
           <NoticeScreen
             answer={noticeAnswer}
             count={discCount}
@@ -222,30 +206,41 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
             onAnswer={setNoticeAnswer}
             onBack={() => changeStage('play')}
             onNext={() => changeStage('prove')}
-            teacherLens={teacherLens}
+            teacherLens={presenterMode}
+            nextUnlocked={!stageLocks.prove}
+            gateMessage={stageLocks.prove}
           />
         )}
 
-        {stage === 'prove' && (
+        {activeStage === 'prove' && (
           <ProveScreen
             answer={proveAnswer}
             onAnswer={setProveAnswer}
             onBack={() => changeStage('notice')}
-            onNext={() => changeStage('debrief')}
-            teacherLens={teacherLens}
+            onNext={() => changeStage('steps')}
+            teacherLens={presenterMode}
+            nextUnlocked={!stageLocks.steps}
+            gateMessage={stageLocks.steps}
           />
         )}
 
-        {stage === 'debrief' && (
-          <DebriefScreen
-            copied={copied}
-            onCopy={copyBuildBrief}
+        {activeStage === 'steps' && (
+          <StepsScreen teacherLens={presenterMode} onBack={() => changeStage('prove')} onNext={() => changeStage('debrief')} onProgress={setStepsProgress} initialProgress={stepsProgress} />
+        )}
+
+        {activeStage === 'debrief' && (
+          <MinimumProofScreen teacherLens={presenterMode} onBack={() => changeStage('steps')} onNext={() => changeStage('can')} />
+        )}
+
+        {activeStage === 'can' && (
+          <CanScreen
+            teacherLens={presenterMode}
+            onBack={() => changeStage('debrief')}
             onRestart={restartExperience}
           />
         )}
       </main>
       <p className="sr-only" aria-live="polite">{message}</p>
-      {copied && <div className="toast" role="status">Build brief copied</div>}
     </div>
   )
 }

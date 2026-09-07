@@ -48,7 +48,7 @@ export function Tower({
   }
 
   return (
-    <div className="tower-shell" aria-label={`Tower of Hanoi with ${count} discs`}>
+    <div className="tower-shell" aria-label={`Tower of Hanoi with ${count} disc${count === 1 ? '' : 's'}`}>
       <div className="tower-board">
         <div className="board-surface">
           {pegs.map((peg, pegIndex) => (
