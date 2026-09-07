@@ -39,7 +39,7 @@ The header steps are directly selectable. Teacher lens adds facilitation cues an
 - Turn on **Teacher lens** for **Reveal minimum** and **Show shortest route from start**.
 - **Show shortest route from start** resets the current tower and reveals its minimum. Use **Next demonstration move** to advance one move at a time. Pause at the cue before moving the largest disc, then ask which smaller problem remains afterwards.
 - Selecting a disc count or resetting the game hides the minimum again. After the two-disc attempt and any demonstration, use **Next volunteer: three discs**, or select **3**. Move to **NOTICE** after the three-disc activity.
-- A shortest-route demonstration reveals the three-disc number. Keep the audience task on **why six or fewer moves cannot work**; return to that reasoning after the general argument. Four discs can be an optional extension.
+- The playable disc counts are two and three. A shortest-route demonstration reveals the three-disc number. Keep the audience task on **why six or fewer moves cannot work**; return to that reasoning after the general argument.
 
 ### Two strategies teachers can reuse
 
