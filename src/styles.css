@@ -3007,3 +3007,42 @@ button.hanoi-disk:active {
   .dashboard-stats > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
   .progress-heading { align-items: flex-start; flex-direction: column; }
 }
+
+/* Language controls and Chinese typesetting. */
+.language-switch,
+.class-status .language-switch {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 6px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.language-switch:hover { border-color: var(--amber); color: var(--amber-bright); }
+.header-actions { gap: 12px; }
+:lang(zh-CN) { --serif: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", SimSun, serif; }
+html:lang(zh-CN) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; }
+:lang(zh-CN) h1, :lang(zh-CN) h2, :lang(zh-CN) h3 { letter-spacing: 0; line-height: 1.4; text-wrap: pretty; }
+:lang(zh-CN) .brand { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 24px; letter-spacing: .02em; white-space: nowrap; }
+:lang(zh-CN) .control-rail h1, :lang(zh-CN) .proof-rail h1 { font-size: clamp(30px, 3vw, 42px); }
+:lang(zh-CN) .sequence-step-controls h1 { font-size: clamp(29px, 2.7vw, 38px); }
+:lang(zh-CN) .lead, :lang(zh-CN) .sequence-screen p { line-height: 1.85; }
+:lang(zh-CN) .stage-nav button { letter-spacing: 0; padding-left: 3px; padding-right: 3px; }
+:lang(zh-CN) .sequence-sum, :lang(zh-CN) .sequence-definition { font-family: Georgia, "Times New Roman", serif; }
+@media (min-width: 901px) {
+  .app-header { grid-template-columns: minmax(195px, .8fr) minmax(390px, 1.6fr) auto; gap: 16px; }
+}
+@media (max-width: 700px) {
+  :lang(zh-CN) .brand { font-size: 19px; }
+  .language-switch, .class-status .language-switch { min-height: 34px; padding: 5px 8px; font-size: 12px; }
+  .header-actions { gap: 7px; }
+  .classroom-header .classroom-kicker { display: none; }
+  :lang(zh-CN) .stage-nav button { font-size: 11px; }
+  :lang(zh-CN) .sequence-heading h1 { font-size: 32px; }
+  :lang(zh-CN) .sequence-inference-box p { line-height: 1.8; }
+}

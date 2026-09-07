@@ -1,3 +1,4 @@
+import { t, useLanguage } from './Language.jsx'
 import { useEffect, useState } from 'react'
 import { findNextShortestMove, isComplete, makePegs, moveDisk, optimalMoves } from './game.js'
 import { AppHeader, NoticeScreen, PlayScreen, ProveScreen } from './Screens.jsx'
@@ -5,6 +6,7 @@ import { CanScreen, MinimumProofScreen, StepsScreen } from './SequenceScreens.js
 import { accessibleStage, stageLockReason, STAGES } from './flow.js'
 
 export default function App({ classroom = null, onLeaveClass = null, onOpenClassroom = null, onProgress = null }) {
+  useLanguage()
   const initialProgress = classroom?.initialProgress
   const initialPlayCount = classroom && initialProgress?.disc_count === 2 ? 2 : classroom ? 3 : 2
   const [stage, setStage] = useState(() => accessibleStage(initialProgress?.stage ?? 'play', classroom, initialProgress?.notice_answer, initialProgress?.prove_answer))
@@ -158,7 +160,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
 
   return (
     <div className={`app stage-${activeStage}`}>
-      <a className="skip-link" href="#main-content">Skip to activity</a>
+      <a className="skip-link" href="#main-content">{t("Skip to activity")}</a>
       <AppHeader
         activeStage={activeStage}
         classroom={classroom}
@@ -240,7 +242,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
           />
         )}
       </main>
-      <p className="sr-only" aria-live="polite">{message}</p>
+      <p className="sr-only" aria-live="polite">{t(message)}</p>
     </div>
   )
 }

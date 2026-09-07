@@ -1,3 +1,4 @@
+import { t, useLanguage } from './Language.jsx'
 import { useMemo } from 'react'
 
 const PEG_NAMES = ['A', 'B', 'C']
@@ -16,6 +17,7 @@ export function Tower({
   selectedPeg,
   setSelectedPeg,
 }) {
+  useLanguage()
   const topDisks = useMemo(
     () => pegs.map((peg) => peg[peg.length - 1]),
     [pegs],
@@ -48,7 +50,7 @@ export function Tower({
   }
 
   return (
-    <div className="tower-shell" aria-label={`Tower of Hanoi with ${count} disc${count === 1 ? '' : 's'}`}>
+    <div className="tower-shell" aria-label={t(`Tower of Hanoi with ${count} disc${count === 1 ? '' : 's'}`)}>
       <div className="tower-board">
         <div className="board-surface">
           {pegs.map((peg, pegIndex) => (
@@ -59,7 +61,7 @@ export function Tower({
               onDrop={(event) => onDrop(event, pegIndex)}
             >
               <button
-                aria-label={`Peg ${PEG_NAMES[pegIndex]}${selectedPeg !== null ? ', select as move destination' : ''}`}
+                aria-label={t(`Peg ${PEG_NAMES[pegIndex]}${selectedPeg !== null ? ', select as move destination' : ''}`)}
                 className="peg-target-button"
                 onClick={() => choosePeg(pegIndex)}
                 onKeyDown={(event) => {
@@ -97,11 +99,9 @@ export function Tower({
 
                 return (
                   <button
-                    aria-label={
-                      selectedPeg !== null && selectedPeg !== pegIndex
+                    aria-label={t(selectedPeg !== null && selectedPeg !== pegIndex
                         ? `Move selected disc to peg ${PEG_NAMES[pegIndex]}`
-                        : `${isSelected ? 'Deselect' : 'Select'} disc ${disk} on peg ${PEG_NAMES[pegIndex]}`
-                    }
+                        : `${isSelected ? 'Deselect' : 'Select'} disc ${disk} on peg ${PEG_NAMES[pegIndex]}`)}
                     className={`hanoi-disk disk-${color} is-top ${isSelected ? 'is-selected' : ''} ${hintMove?.from === pegIndex ? 'is-hint-source' : ''}`}
                     draggable
                     key={disk}
@@ -139,6 +139,7 @@ export function Tower({
 }
 
 export function MiniTower({ stage = 'start', count = 4, number }) {
+  useLanguage()
   const disks = Array.from({ length: count }, (_, index) => count - index)
   let distribution = [[], [], []]
 
