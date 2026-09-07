@@ -208,6 +208,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
             pegs={pegs}
             selectedPeg={selectedPeg}
             setSelectedPeg={setSelectedPeg}
+            studentMode={Boolean(classroom)}
             target={target}
             teacherLens={presenterMode}
           />

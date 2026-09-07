@@ -124,6 +124,7 @@ export function PlayScreen({
   pegs,
   selectedPeg,
   setSelectedPeg,
+  studentMode,
   target,
   teacherLens,
 }) {
@@ -138,7 +139,7 @@ export function PlayScreen({
         <div className="disc-control">
           <span className="control-label">DISCS</span>
           <div className="segmented-control" aria-label="Number of discs">
-            {[2, 3].map((value) => (
+            {(studentMode ? [2, 3] : [2, 3, 4, 5]).map((value) => (
               <button
                 aria-pressed={count === value}
                 className={count === value ? 'is-active' : ''}
