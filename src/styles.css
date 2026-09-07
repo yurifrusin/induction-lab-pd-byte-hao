@@ -453,6 +453,10 @@ p {
   gap: 8px;
 }
 
+.move-stats.moves-only {
+  grid-template-columns: 1fr;
+}
+
 .facilitator-controls {
   display: grid;
   gap: 8px;

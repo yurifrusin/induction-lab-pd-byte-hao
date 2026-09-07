@@ -37,6 +37,8 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   const moveCount = history.length
   const target = optimalMoves(discCount)
   const completed = isComplete(pegs, discCount)
+  const presenterMode = !classroom && teacherLens
+  const showMinimum = presenterMode && minimumRevealed
 
   useEffect(() => {
     if (!onProgress) return
@@ -91,7 +93,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     if (isComplete(next, discCount)) {
       const result = nextHistory.length === target ? 'optimal' : 'complete'
       setMessage(
-        minimumRevealed && result === 'optimal'
+        showMinimum && result === 'optimal'
           ? `Solved in ${nextHistory.length} moves, matching the minimum. Why can no shorter route work?`
           : `Solved in ${nextHistory.length} moves. Could fewer moves work? Explain your reasoning.`,
       )
@@ -160,6 +162,17 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     setStage('play')
   }
 
+  const changeTeacherLens = (enabled) => {
+    setTeacherLens(enabled)
+    if (!enabled) {
+      setMinimumRevealed(false)
+      setDemonstrating(false)
+      setMessage(completed
+        ? `Solved in ${moveCount} moves. Could fewer moves work? Explain your reasoning.`
+        : 'Select the top disc, then choose a destination peg.')
+    }
+  }
+
   return (
     <div className={`app stage-${stage}`}>
       <a className="skip-link" href="#main-content">Skip to activity</a>
@@ -169,7 +182,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
         onLeaveClass={onLeaveClass}
         onOpenClassroom={onOpenClassroom}
         onStageChange={changeStage}
-        onTeacherLensChange={setTeacherLens}
+        onTeacherLensChange={changeTeacherLens}
         teacherLens={teacherLens}
       />
 
@@ -182,7 +195,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
             hintMove={hintMove}
             message={message}
             moveCount={moveCount}
-            minimumRevealed={minimumRevealed}
+            minimumRevealed={showMinimum}
             onAdvanceDemonstration={advanceDemonstration}
             onCountChange={(count) => resetGame(count)}
             onMove={attemptMove}
@@ -196,7 +209,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
             selectedPeg={selectedPeg}
             setSelectedPeg={setSelectedPeg}
             target={target}
-            teacherLens={teacherLens}
+            teacherLens={presenterMode}
           />
         )}
 

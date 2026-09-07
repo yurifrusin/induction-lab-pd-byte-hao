@@ -152,9 +152,9 @@ export function PlayScreen({
           </div>
         </div>
 
-        <div className="move-stats" aria-label="Move count and minimum">
+        <div className={`move-stats ${teacherLens ? '' : 'moves-only'}`} aria-label={teacherLens ? 'Move count and minimum' : 'Move count'}>
           <div><span>MOVES</span><strong>{moveCount}</strong></div>
-          <div><span>MINIMUM</span><strong>{minimumRevealed ? target : '?'}</strong></div>
+          {teacherLens && <div><span>MINIMUM</span><strong>{minimumRevealed ? target : '?'}</strong></div>}
         </div>
 
         <div className="rail-question">

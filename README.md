@@ -35,6 +35,7 @@ The header steps are directly selectable. Teacher lens adds facilitation cues an
 ### Presenter controls
 
 - The standalone activity starts with two discs. The minimum stays hidden during an attempt, including after completion.
+- Student play shows only the actual move count, with no TARGET or MINIMUM field. Teacher lens contains the minimum field and reveal controls; switching it off hides the answer and stops the demonstration.
 - Turn on **Teacher lens** for **Reveal minimum** and **Show shortest route from start**.
 - **Show shortest route from start** resets the current tower and reveals its minimum. Use **Next demonstration move** to advance one move at a time. Pause at the cue before moving the largest disc, then ask which smaller problem remains afterwards.
 - Selecting a disc count or resetting the game hides the minimum again. After the two-disc attempt and any demonstration, use **Next volunteer: three discs**, or select **3**. Move to **NOTICE** after the three-disc activity.
