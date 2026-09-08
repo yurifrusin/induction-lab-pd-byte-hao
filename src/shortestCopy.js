@@ -20,6 +20,31 @@ export const shortestCopy = {
       '前一次搬小塔和后一次搬小塔是两段不同的步骤，中间最大碟至少还要移动一步。中途即使绕路，也省不掉这前后两段。',
     ],
     teacherLabel: '从规则一步步推出步数',
+    practiceTitle: '分别想清每个圆盘至少要动几次',
+    answerLabel: '展开答案与理由',
+    practice: [
+      {
+        title: '两个圆盘，至少要移动几步？',
+        prompt: '小圆盘要先让大圆盘动起来，最后又要叠回它上面。小圆盘至少得动几次？大圆盘呢？',
+        reasons: [
+          '大圆盘要动，小圆盘必须先从它上面移开，至少一次。',
+          '最后，小圆盘还要叠回大圆盘上，所以它至少还得移动一次。大圆盘自己也至少得移动一次。',
+          '分别看这两个盘：大圆盘至少动一次，小圆盘至少动两次。合起来至少三步，换一种走法也省不掉。',
+        ],
+        count: '至少 1 + 2 = 3 步',
+      },
+      {
+        title: '三个圆盘，至少要移动几步？',
+        prompt: '还是分别看大、中、小三个盘。用刚才对两个圆盘的理由，说明它们各自至少要动几次。',
+        reasons: [
+          '最大盘第一次移动前，上面两个盘必须先完整地搬到另一根柱上。最大盘最后一次到达目标柱后，这两个盘又必须完整地搬到目标柱。因此，上面这座两盘塔前后要搬两遍。',
+          '看中盘：它在这座两盘塔中是大盘，搬一遍至少动一次；前后各搬一遍，就至少动两次。',
+          '看最小盘：它在这座两盘塔中是小盘，搬一遍至少动两次；前后各搬一遍，就至少动四次。',
+          '最大盘自己至少动一次。把每个盘的次数加起来，就是至少一步、两步、四步，合计七步。',
+        ],
+        count: '至少 1 + 2 + 2² = 7 步',
+      },
+    ],
     teacher: '先让学生解释最大碟为什么能移动，再展开理由与图示。随后从一个碟子开始，让学生把刚刚说明的步数用到两个、三个碟子上。重点听他们能否说清前后两次搬小塔，而不只是选对选项或报出数字。',
     back: '返回', next: '拆解步骤', waiting: '等待教师放行',
   },
@@ -44,6 +69,31 @@ export const shortestCopy = {
       'The first smaller transfer and the final smaller transfer are separate intervals. Between them, the largest disc moves at least once. Detours cannot remove either interval.',
     ],
     teacherLabel: 'BUILD THE COUNT FROM THE RULES',
+    practiceTitle: 'Reason through the moves each disc must make',
+    answerLabel: 'Show the answer and reasoning',
+    practice: [
+      {
+        title: 'How many moves must two discs take?',
+        prompt: 'The smaller disc must let the larger disc move and finish on top of it again. How often must each disc move?',
+        reasons: [
+          'The smaller disc must first move off the larger one so that the larger disc can move. That requires at least one move.',
+          'The smaller disc must finish on top of the larger one again, so it must move at least once more. The larger disc itself must also move at least once.',
+          'The smaller disc contributes at least two moves and the larger disc at least one. Two discs therefore need at least three moves. A different route cannot avoid these movements.',
+        ],
+        count: 'At least 1 + 2 = 3 moves',
+      },
+      {
+        title: 'How many moves must three discs take?',
+        prompt: 'Consider the large, middle and small discs separately. Use the two-disc reasoning to explain how often each must move.',
+        reasons: [
+          'Before the largest disc first moves, the complete two-disc tower must reach another peg. After the largest disc’s final arrival on the target, that two-disc tower must still reach the target. These are two separate complete transfers.',
+          'The middle disc is the larger disc within that two-disc tower. It must move at least once per transfer, so at least twice in total.',
+          'The smallest disc is the smaller disc within that tower. It must move at least twice per transfer, so at least four times in total.',
+          'The largest disc itself moves at least once. Add the individual requirements: one, two and four moves give at least seven in total.',
+        ],
+        count: 'At least 1 + 2 + 2² = 7 moves',
+      },
+    ],
     teacher: 'Ask students to explain what lets the largest disc move before opening the reasoning and diagrams. Then start with one disc and ask them to use each established bound for two discs and then three. Listen for why the two smaller transfers are needed, rather than just a correct selection or a number.',
     back: 'Back', next: 'Explore the steps', waiting: 'Waiting for teacher',
   },

@@ -3,7 +3,9 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { isComplete, makePegs, moveDisk } from './game.js'
 import { ArrowIcon, PlayIcon, ResetIcon } from './icons.jsx'
 import { Tower } from './Tower.jsx'
+import { discCountsCopy } from './discCountsCopy.js'
 import './sequence.css'
+import './discCounts.css'
 
 function construction(count, from = 0, to = 2, temporary = 1) {
   if (count === 0) return []
@@ -16,9 +18,35 @@ function construction(count, from = 0, to = 2, temporary = 1) {
 
 function newWalkthrough(count) {
   return {
-    count, pegs: makePegs(count), moves: 0, cursor: 0,
+    count, pegs: makePegs(count), moves: 0, cursor: 0, discMoves: Array(count).fill(0),
     selectedPeg: null, playing: false, deviated: false, feedback: '',
   }
+}
+
+function countDiscMove(current, from) {
+  const disc = current.pegs[from].at(-1)
+  return current.discMoves.map((value, index) => value + (index === disc - 1 ? 1 : 0))
+}
+
+function DiscCounts({ count, discMoves, moves, copy }) {
+  const discs = Array.from({ length: count }, (_, index) => count - index)
+  const colors = ['sky', 'teal', 'green', 'amber', 'coral']
+  return (
+    <section className="disc-counts" aria-label={copy.title}>
+      <h2>{copy.title}</h2>
+      <p className="disc-counts-note">{copy.note}</p>
+      <ol>
+        {discs.map((disc, index) => (
+          <li key={disc}>
+            <span className="disc-counts-shape" aria-hidden="true"><i className={`disk-${colors[colors.length - count + disc - 1]}`} style={{ width: `${40 + 60 * disc / count}%` }} /></span>
+            <span className="disc-counts-label">{count === 1 ? copy.only : disc === 1 ? copy.smallest : copy.labels[index]}</span>
+            <span className="disc-counts-value"><strong>{discMoves[disc - 1]}</strong><small>{copy.unit(discMoves[disc - 1])}</small></span>
+          </li>
+        ))}
+      </ol>
+      <div className="disc-counts-total"><span>{copy.total}</span><strong>{count > 1 && `${discs.map((disc) => discMoves[disc - 1]).join(' + ')} = `}{moves}</strong></div>
+    </section>
+  )
 }
 
 function expandedSum(count) {
@@ -49,13 +77,14 @@ function SequenceFooter({ onBack, onNext, nextLabel, restart }) {
 }
 
 export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialProgress }) {
-  useLanguage()
+  const language = useLanguage()
+  const copy = discCountsCopy[language]
   const [walkthrough, setWalkthrough] = useState(() => newWalkthrough(
     [1, 2, 3, 4].includes(initialProgress?.disc_count) ? initialProgress.disc_count : 4,
   ))
   const [reducedMotion, setReducedMotion] = useState(false)
   const progressCallback = useRef(onProgress)
-  const { count, pegs, moves, cursor, selectedPeg, playing, deviated, feedback } = walkthrough
+  const { count, pegs, moves, cursor, selectedPeg, playing, deviated, feedback, discMoves } = walkthrough
   const route = useMemo(() => construction(count), [count])
   const smallerMoves = Math.floor(route.length / 2)
   const completed = isComplete(pegs, count)
@@ -85,6 +114,7 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
     const mustPause = nextCursor === smallerMoves || nextCursor === smallerMoves + 1 || nextCursor === route.length
     return {
       ...current, pegs: nextPegs, moves: current.moves + 1, cursor: nextCursor,
+      discMoves: countDiscMove(current, move.from),
       selectedPeg: null, playing: continuePlaying && !mustPause, feedback: '',
     }
   }
@@ -104,41 +134,34 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
       if (!current.deviated && expected?.from === from && expected?.to === to) return advance(current)
       return {
         ...current, pegs: nextPegs, moves: current.moves + 1, selectedPeg: null,
+        discMoves: countDiscMove(current, from),
         playing: false, deviated: true, feedback: '',
       }
     })
   }
 
   const choosePeg = (value) => setWalkthrough((current) => ({ ...current, selectedPeg: value, playing: false }))
-  let pauseTitle = 'Where can you use the earlier reasoning?'
-  let pausePrompt = 'Before moving anything, explain what must happen before the largest disc can move directly to C.'
+  let pauseKey = 'start'
   if (count === 1 && cursor === 0) {
-    pauseTitle = 'Start with one disc'
-    pausePrompt = 'One legal move transfers the disc from A to C. No smaller tower is needed.'
+    pauseKey = 'one'
   } else if (cursor === smallerMoves) {
-    pauseTitle = 'Pause before the largest disc'
-    pausePrompt = 'Can the largest disc move directly to C now? Use the movement rules to explain.'
+    pauseKey = 'before'
   } else if (cursor === smallerMoves + 1 && !completed) {
-    pauseTitle = 'Pause after the largest disc'
-    pausePrompt = 'What remains to finish the tower? Explain which earlier task you can recognise here.'
+    pauseKey = 'after'
   } else if (cursor > smallerMoves + 1 && !completed) {
-    pauseTitle = 'Transfer the smaller tower again'
-    pausePrompt = 'The smaller tower moves from B to C, using A as its temporary peg.'
+    pauseKey = 'second'
   } else if (completed && !deviated) {
-    pauseTitle = 'The construction is complete'
-    pausePrompt = count === 1
-      ? 'One disc reaches its target in one move. This initial case starts the construction.'
-      : 'Explain how the smaller-tower reasoning applies to the transfers you just watched. Open the move count when you are ready to compare.'
+    pauseKey = count === 1 ? 'oneComplete' : 'complete'
   }
   if (deviated) {
-    pauseTitle = completed ? 'Your route is complete' : 'You are exploring a different route'
-    pausePrompt = 'The sum below counts the walkthrough, not this route. Select Restart walkthrough to return to that construction.'
+    pauseKey = completed ? 'exploredComplete' : 'exploring'
   }
+  const [pauseTitle, pausePrompt] = copy.pause[pauseKey]
 
   return (
     <section className="sequence-screen sequence-steps">
       <aside className="sequence-step-controls">
-        <header><span className="sequence-eyebrow">{t("STEPS · BUILD THE PATTERN")}</span><h1>{t("Pause. Predict.")}<br />{t(" Explain.")}</h1><p>{t("You have reasoned through two and three discs. Watch four discs now: where can you use the same reasoning? You can return to one, two or three discs to compare.")}</p></header>
+        <header><span className="sequence-eyebrow">{copy.eyebrow}</span><h1>{copy.heading}</h1><p>{copy.intro}</p></header>
         <div className="disc-control"><span className="control-label">{t("DISCS")}</span><div className="segmented-control" aria-label={t("Walkthrough disc count")}>{[1, 2, 3, 4].map((value) => <button aria-pressed={count === value} className={count === value ? 'is-active' : ''} key={value} onClick={() => setWalkthrough(newWalkthrough(value))} type="button">{value}</button>)}</div></div>
         <div className="sequence-move-counter"><span>{t("MOVES")}</span><strong>{moves}</strong><small>{t(playing ? 'Playing' : completed ? 'Complete' : 'Paused')}</small></div>
         <div className="sequence-controls" role="group" aria-label={t("Walkthrough controls")}>
@@ -147,19 +170,21 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
           <SequenceButton icon={<ResetIcon />} onClick={() => setWalkthrough(newWalkthrough(count))}>{t(deviated ? 'Restart walkthrough' : 'Reset')}</SequenceButton>
         </div>
         <p className="sequence-control-help">{t(reducedMotion ? 'Reduced motion is on. Use Next move to advance at your pace.' : 'Play pauses before and after the largest-disc move, then at the finish. You can also move the discs yourself.')}</p>
-        {teacherLens && <TeacherCue>{t("With four discs, pause after moves 7 and 8. Ask students to explain the changing peg roles before continuing. Then ask the observing teachers: which answer would show that a student understands the repeated smaller task?")}</TeacherCue>}
+        {teacherLens && <TeacherCue>{copy.teacher}</TeacherCue>}
       </aside>
       <div className="sequence-board-area">
-        <div className={`sequence-pause-card${deviated ? ' is-exploring' : ''}`} role="status" aria-live="polite"><span>{t(deviated ? 'YOUR EXPLORATION' : playing ? 'WATCH THE SMALLER TASK' : 'PAUSE & EXPLAIN')}</span><h2>{t(pauseTitle)}</h2><p>{t(feedback || pausePrompt)}</p></div>
+        <div className={`sequence-pause-card${deviated ? ' is-exploring' : ''}`} role="status" aria-live="polite"><span>{copy.status[deviated ? 'exploring' : playing ? 'playing' : 'paused']}</span><h2>{pauseTitle}</h2><p>{feedback ? t(feedback) : pausePrompt}</p></div>
         <div className="sequence-board"><Tower count={count} pegs={pegs} onMove={manualMove} selectedPeg={selectedPeg} setSelectedPeg={choosePeg} /></div>
+        <DiscCounts count={count} discMoves={discMoves} moves={moves} copy={copy} />
         <details className="sequence-counting" key={count}>
           <summary>{t('Open the move count for this walkthrough')}</summary>
           <span className="sequence-eyebrow">{t("MOVES IN THIS CONSTRUCTION")}</span>
           {count === 1 ? <div className="sequence-sum"><strong>1</strong></div> : <div className="sequence-sum"><span><b className="sequence-single">1</b> + <b className="sequence-pair">2</b>({expandedSum(count - 1)})</span><span className="sequence-equals">=</span><span>{expandedSum(count)}</span></div>}
           <p>{t(count === 1 ? 'The initial case: one disc, one move.' : `One largest-disc move + two transfers of the ${count - 1}-disc tower.`)}</p>
-          <p>{t('This counts the demonstrated route. The next page explains why the bound you developed continues to hold as the number of discs grows.')}</p>
+          <p>{copy.sumNote}</p>
+          <p>{copy.connection}</p>
         </details>
-        <SequenceFooter onBack={onBack} onNext={onNext} nextLabel={t("PROVE: rule out fewer")} />
+        <SequenceFooter onBack={onBack} onNext={onNext} nextLabel={copy.next} />
       </div>
     </section>
   )
