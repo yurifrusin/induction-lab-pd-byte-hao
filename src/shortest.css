@@ -129,6 +129,23 @@
   margin-top: 30px;
 }
 
+.existence-proof {
+  margin-top: 38px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.existence-proof h2 { margin: 0 0 16px; font-size: 26px; line-height: 1.5; }
+.existence-proof h3 { margin: 26px 0 12px; font-size: 20px; line-height: 1.55; }
+.existence-proof p, .existence-proof li { font-size: 17px; line-height: 1.8; color: var(--muted); }
+.existence-proof details { margin: 24px 0; padding: 0 20px 12px; border: 1px solid var(--line); border-radius: 12px; }
+.existence-proof summary { padding: 18px 0; color: var(--blue); cursor: pointer; font-size: 19px; line-height: 1.6; }
+.existence-proof summary:focus-visible { outline: 2px solid var(--amber-bright); outline-offset: 4px; }
+.existence-proof ol { padding-left: 24px; }
+.existence-proof li { padding-left: 6px; margin: 14px 0; }
+.existence-proof .existence-implication { color: var(--ink); padding: 12px 16px; border-left: 3px solid var(--green); }
+.existence-proof .existence-name { color: var(--amber-bright); }
+
 .shortest-actions .rail-button {
   width: auto;
   min-width: 135px;

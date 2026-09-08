@@ -2,7 +2,7 @@ import { t, useLanguage } from './Language.jsx'
 import { useEffect, useState } from 'react'
 import { findNextShortestMove, isComplete, makePegs, moveDisk, optimalMoves } from './game.js'
 import { AppHeader, NoticeScreen, PlayScreen, ProveScreen } from './Screens.jsx'
-import { CanScreen, MinimumProofScreen, StepsScreen } from './SequenceScreens.jsx'
+import { MinimumProofScreen, StepsScreen } from './SequenceScreens.jsx'
 import { accessibleStage, stageLockReason, STAGES } from './flow.js'
 
 export default function App({ classroom = null, onLeaveClass = null, onOpenClassroom = null, onProgress = null }) {
@@ -34,7 +34,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   const showMinimum = presenterMode && minimumRevealed
   const activeStage = accessibleStage(stage, classroom, noticeAnswer, proveAnswer)
   const stageLocks = Object.fromEntries(STAGES.map(({ id }) => [id, stageLockReason(id, classroom, noticeAnswer, proveAnswer)]))
-  const trackingSteps = ['steps', 'debrief', 'can'].includes(activeStage)
+  const trackingSteps = ['steps', 'debrief'].includes(activeStage)
 
   useEffect(() => { window.scrollTo(0, 0) }, [activeStage])
 
@@ -231,15 +231,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
         )}
 
         {activeStage === 'debrief' && (
-          <MinimumProofScreen teacherLens={presenterMode} onBack={() => changeStage('steps')} onNext={() => changeStage('can')} />
-        )}
-
-        {activeStage === 'can' && (
-          <CanScreen
-            teacherLens={presenterMode}
-            onBack={() => changeStage('debrief')}
-            onRestart={restartExperience}
-          />
+          <MinimumProofScreen teacherLens={presenterMode} onBack={() => changeStage('steps')} onNext={restartExperience} />
         )}
       </main>
       <p className="sr-only" aria-live="polite">{t(message)}</p>

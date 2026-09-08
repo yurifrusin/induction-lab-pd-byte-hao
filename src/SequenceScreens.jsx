@@ -190,4 +190,4 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
   )
 }
 
-export { MinimumProofScreen, CanScreen } from './ProofReading.jsx'
+export { MinimumProofScreen } from './ProofReading.jsx'

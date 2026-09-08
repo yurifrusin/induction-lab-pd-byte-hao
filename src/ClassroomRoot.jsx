@@ -11,7 +11,7 @@ const STAGE_LABELS = {
   prove: 'Shortest?',
   steps: 'Steps',
   debrief: 'Prove',
-  can: 'Why believe CAN?',
+  can: 'Prove',
 }
 
 const SESSION_COLUMNS = 'id, join_code, title, is_active, created_at, expires_at, workflow_version, shortest_released_at, steps_released_at'
@@ -723,7 +723,7 @@ function TeacherDashboard({ authSession, onBack }) {
                         {t(selectedSession.steps_released_at ? 'STEPS approved ✓' : gateBusy === 'steps' ? 'Approving…' : 'Approve class: STEPS')}
                       </button>
                     </article>
-                    <p className="gate-followup">{t("After STEPS, learners can continue to PROVE and WHY BELIEVE CAN? without another class approval.")}</p>
+                    <p className="gate-followup">{t("The existence proof is part of SHORTEST?. After STEPS, learners can continue to PROVE without another class approval.")}</p>
                   </div>
                 )}
               </section>

@@ -11,6 +11,8 @@ import { MiniTower, Tower } from './Tower.jsx'
 import { STAGES } from './flow.js'
 import { shortestCopy } from './shortestCopy.js'
 import { LowerBoundLadder } from './ProofReading.jsx'
+import { ExistenceProof } from './ExistenceProof.jsx'
+import { existenceCopy } from './existenceCopy.js'
 import './shortest.css'
 
 export function AppHeader({
@@ -356,8 +358,9 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
           <p>{copy.constructionNote}</p>
         </details>
         <LowerBoundLadder compact />
+        <ExistenceProof />
         {teacherLens && (
-          <LensNote time={copy.teacherLabel}>{copy.teacher}</LensNote>
+          <LensNote time={copy.teacherLabel}>{copy.teacher} {existenceCopy[locale].teacher}</LensNote>
         )}
 
         {correct && gateMessage && <p className="gate-message" role="status">{t(gateMessage)}</p>}

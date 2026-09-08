@@ -142,7 +142,7 @@ export const zh = {
   'have answered NOTICE correctly.': '人已答对“想一想”。', 'have answered SHORTEST? correctly.': '人已答对“还能更少吗？”。',
   'SHORTEST? approved ✓': '“还能更少吗？”已开放 ✓', 'STEPS approved ✓': '“拆解步骤”已开放 ✓', 'Approving…': '正在放行…',
   'Approve class: SHORTEST?': '全班放行：还能更少吗？', 'Approve class: STEPS': '全班放行：拆解步骤',
-  'After STEPS, learners can continue to PROVE and WHY BELIEVE CAN? without another class approval.': '“拆解步骤”开放后，学生可继续查看“说明理由”和“为何做得到？”，不需要再次放行。',
+  'The existence proof is part of SHORTEST?. After STEPS, learners can continue to PROVE without another class approval.': '“有解”的证明在“还能更少吗？”页内。“拆解步骤”开放后，学生可继续查看“说明理由”，不需要再次放行。',
   'Learner progress': '学生进度', 'Updates appear live as each browser moves through the activity.': '学生的操作进度和作答情况会持续更新。', 'End class': '结束课堂',
   'Learner': '学生', 'Stage': '当前阶段', 'Moves': '步数', 'Hints': '提示次数', 'Waiting for students to join': '等待学生加入，课堂码：', 'Opening classroom…': '正在打开课堂…',
   'Something went wrong. Please try again.': '操作未完成，请重试。',

@@ -5,8 +5,8 @@ import { createServer } from 'vite'
 const server = await createServer({ server: { middlewareMode: true }, appType: 'custom' })
 try {
   const lang = await server.ssrLoadModule('/src/Language.jsx')
-  const { PlayScreen } = await server.ssrLoadModule('/src/Screens.jsx')
-  const { CanScreen } = await server.ssrLoadModule('/src/SequenceScreens.jsx')
+  const { PlayScreen, ProveScreen } = await server.ssrLoadModule('/src/Screens.jsx')
+  const { MinimumProofScreen } = await server.ssrLoadModule('/src/SequenceScreens.jsx')
   const props = {count: 3, pegs: [[3,2,1],[],[]], moveCount: 0, message: 'Select a top disc, then choose its destination.', target: 7}
   for (const locale of ['en','zh']) {
     lang.setLanguage(locale)
@@ -19,7 +19,10 @@ try {
     assert.ok(teacher.includes(hint))
   }
   lang.setLanguage('zh')
-  assert.match(renderToStaticMarkup(React.createElement(CanScreen)), /前面我们暂时搁置了一个问题/)
+  const shortest = renderToStaticMarkup(React.createElement(ProveScreen))
+  assert.match(shortest, /对于每个正整数 n/)
+  assert.ok(shortest.indexOf('三个圆盘') < shortest.indexOf('existence-proof'))
+  assert.match(renderToStaticMarkup(React.createElement(MinimumProofScreen)), /这套走法恰好用这些步数完成/)
   assert.equal(lang.t('Yuri'), 'Yuri')
   assert.equal(lang.t('possible'), 'possible')
   assert.equal(lang.localizedUrl('join','RGGTVQ',true,'https://example.com/lab/'), 'https://example.com/lab/?join=RGGTVQ&lang=zh')

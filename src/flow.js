@@ -4,10 +4,10 @@ export const STAGES = [
   { id: 'prove', label: 'SHORTEST?' },
   { id: 'steps', label: 'STEPS' },
   { id: 'debrief', label: 'PROVE' },
-  { id: 'can', label: 'WHY CAN?' },
 ]
 
 export function stageLockReason(stage, classroom, noticeAnswer, proveAnswer) {
+  if (stage === 'can') stage = 'debrief'
   if (!classroom || stage === 'play' || stage === 'notice') return ''
   if (!STAGES.some(({ id }) => id === stage)) return 'This page is unavailable.'
   if (noticeAnswer !== 'possible') return 'Answer the NOTICE question correctly first.'
@@ -21,6 +21,7 @@ export function stageLockReason(stage, classroom, noticeAnswer, proveAnswer) {
 }
 
 export function accessibleStage(requested, classroom, noticeAnswer, proveAnswer) {
+  if (requested === 'can') requested = 'debrief'
   const stage = STAGES.some(({ id }) => id === requested) ? requested : 'play'
   if (!stageLockReason(stage, classroom, noticeAnswer, proveAnswer)) return stage
   return stageLockReason('prove', classroom, noticeAnswer, proveAnswer) ? 'notice' : 'prove'

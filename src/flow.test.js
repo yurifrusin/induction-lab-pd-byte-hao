@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { accessibleStage, stageLockReason } from './flow.js'
+import { accessibleStage, stageLockReason, STAGES } from './flow.js'
 
 const classroom = (shortest, steps) => ({ workflowVersion: 2, gateStatus: 'ready', releases: { shortest, steps } })
 
@@ -29,7 +29,7 @@ test('offline, loading and legacy classes do not silently unlock', () => {
 test('restored navigation cannot bypass a missing gate', () => {
   assert.equal(accessibleStage('can', classroom(false, false), 'possible', 'all'), 'notice')
   assert.equal(accessibleStage('can', classroom(true, false), 'possible', 'all'), 'prove')
-  assert.equal(accessibleStage('can', classroom(true, true), 'possible', 'all'), 'can')
+  assert.equal(accessibleStage('can', classroom(true, true), 'possible', 'all'), 'debrief')
   assert.equal(accessibleStage('unknown', classroom(true, true), 'possible', 'all'), 'play')
 })
 
@@ -37,4 +37,11 @@ test('standalone presenters can navigate without classroom approvals', () => {
   for (const stage of ['play', 'notice', 'prove', 'steps', 'debrief', 'can']) {
     assert.equal(stageLockReason(stage, null, null, null), '')
   }
+})
+
+test('the integrated sequence ends at PROVE and restores the former last page there', () => {
+  assert.deepEqual(STAGES.map(({ id }) => id), ['play', 'notice', 'prove', 'steps', 'debrief'])
+  assert.equal(accessibleStage('can', null, null, null), 'debrief')
+  assert.equal(stageLockReason('prove', classroom(true, false), 'possible', null), '')
+  assert.notEqual(stageLockReason('steps', classroom(true, false), 'possible', 'all'), '')
 })
