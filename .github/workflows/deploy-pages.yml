@@ -49,6 +49,18 @@ jobs:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
+      - name: Check out the four-disc preview
+        uses: actions/checkout@v7
+        with:
+          ref: 3b83f37431799b34659361703dadffa31f5d5967
+          path: .preview-four-discs
+
+      - name: Build the four-disc preview
+        run: pnpm exec vite build .preview-four-discs --base=/induction-lab-pd-byte-hao/preview-four-discs/ --outDir=../dist/preview-four-discs --emptyOutDir
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
 
