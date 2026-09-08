@@ -702,6 +702,7 @@ function TeacherDashboard({ authSession, onBack }) {
                     <article>
                       <h3>{t("NOTICE → SHORTEST?")}</h3>
                       <p>{noticeCorrectCount} / {participants.length}{t(" have answered NOTICE correctly.")}</p>
+                      <p>{t('Still to answer correctly:')} {participants.length - noticeCorrectCount}</p>
                       <button
                         className="classroom-primary"
                         disabled={!classIsActive || Boolean(gateBusy) || Boolean(selectedSession.shortest_released_at)}
@@ -714,6 +715,7 @@ function TeacherDashboard({ authSession, onBack }) {
                     <article>
                       <h3>{t("SHORTEST? → STEPS")}</h3>
                       <p>{shortestCorrectCount} / {participants.length}{t(" have answered SHORTEST? correctly.")}</p>
+                      <p>{t('Still to answer correctly:')} {participants.length - shortestCorrectCount}</p>
                       <button
                         className="classroom-primary"
                         disabled={!classIsActive || Boolean(gateBusy) || !selectedSession.shortest_released_at || Boolean(selectedSession.steps_released_at)}

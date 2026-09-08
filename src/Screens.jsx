@@ -1,7 +1,6 @@
 import { t, useLanguage, LanguageSwitcher } from './Language.jsx'
 import {
   ArrowIcon,
-  CheckIcon,
   EyeIcon,
   PlayIcon,
   ResetIcon,
@@ -182,12 +181,12 @@ export function PlayScreen({
         {teacherLens && (
           <>
             <div className="facilitator-controls" role="group" aria-label={t("Facilitator controls")}>
-              <p>{t(count === 2 ? 'First volunteer: a non-Science teacher, two discs.' : count === 3 ? 'Second volunteer: a mathematics teacher, three discs.' : 'Try another tower size.')}{t(" Aim for the fewest moves.")}</p>
+              <p>{t('Everyone starts with two discs, then tries three. Keep the minimum hidden while they explore.')}</p>
               {completed && moveCount > target && <p>{t("A shorter route is possible. Show it after this attempt.")}</p>}
               <RailButton disabled={minimumRevealed} icon={<EyeIcon />} onClick={onRevealMinimum}>{t("Reveal minimum")}</RailButton>
               <RailButton icon={<PlayIcon />} onClick={onStartDemonstration}>{t("Show shortest route from start")}</RailButton>
             </div>
-            <LensNote time={t("PLAY")}>{t("Start with two discs, then select three for the second volunteer. Keep the minimum hidden during each attempt. If needed, demonstrate the shortest route. Ask the observing teachers: where would you pause, and what would you ask students to explain?")}</LensNote>
+            <LensNote time={t("PLAY")}>{t('Invite everyone to join with a nickname. After a short attempt, check the dashboard together. Ask teachers what they would ask a student who reports a move count without explaining it.')}</LensNote>
           </>
         )}
       </aside>
@@ -212,7 +211,7 @@ export function PlayScreen({
           <p>{t(message)}</p>
           {completed && (
             <button onClick={onNext} type="button">
-              {t(count === 2 ? 'Next volunteer: three discs' : 'Set the audience task')} <ArrowIcon size={18} />
+              {t(count === 2 ? 'Try three discs' : 'Think about your attempt')} <ArrowIcon size={18} />
             </button>
           )}
         </div>
@@ -228,45 +227,20 @@ export function NoticeScreen({
   onAnswer,
   onBack,
   onNext,
-  teacherLens,
   nextUnlocked = true,
   gateMessage = '',
 }) {
   useLanguage()
   const correct = answer === 'possible'
-  const sevenMoveRoute = count === 3 && moveCount === 7
 
   return (
-    <section className="screen notice-screen">
-      <aside className="control-rail notice-rail">
-        <div>
-          <h1>{t(sevenMoveRoute ? 'Could six moves work?' : 'Could fewer moves work?')}</h1>
-          <p className="lead">{t(sevenMoveRoute ? 'We found a seven-move route for three discs. Could six moves or fewer work?' : 'Finding a route shows it can be done. Does it show that fewer moves are impossible?')}{t(" Think of a reason beyond “I tried it”. Keep your reasoning for now.")}</p>
-        </div>
-
-        <div className="notice-summary">
-          <div><strong>{moveCount ?? '—'}</strong><span>{t(moveCount === null ? 'complete a route first' : `moves found with ${count} discs`)}</span></div>
-          <div><span>{t('Still to explain')}</span><strong className="notice-open-question">{t('Could fewer moves work?')}</strong></div>
-          <p className="notice-summary-note">{t('A completed route does not by itself establish the minimum.')}</p>
-        </div>
-
-        {teacherLens && (
-          <LensNote time={t("THINK · 20 SECONDS")}>{t("Give teachers 20 seconds to think, then park the answer. Switch to the teacher role: “A student says, ‘I tried lots of times, so this is the minimum.’ What would you ask next?” Model a pause before the largest disc moves, then revisit their reasoning.")}</LensNote>
-        )}
-
-        <div className="bottom-rail-actions">
-          <RailButton icon={<ArrowIcon direction="left" />} onClick={onBack}>{t("Back to play")}</RailButton>
-        </div>
-      </aside>
-
-      <div className="notice-canvas">
-        <div className="notice-tower">
-          <MiniTower count={moveCount === null ? 3 : count - 1} stage={moveCount === null ? 'start' : 'rebuild'} />
-          <span className="found-stamp"><CheckIcon /> {t(moveCount === null ? 'THINK FIRST' : 'ROUTE FOUND')}</span>
-        </div>
-
+    <section className="screen notice-screen notice-checkpoint">
+      <header>
+        <h1>{t('Think about your attempt')}</h1>
+        {moveCount != null && <p className="notice-attempt"><strong>{moveCount}</strong><span>{t(`moves found with ${count} discs`)}</span></p>}
+      </header>
         <div className="notice-question-block">
-          <h2>{t("What does a completed route establish?")}</h2>
+          <h2>{t('Suppose you finish a legal route. What can you conclude?')}</h2>
           <div className="answer-list" role="group" aria-label={t("What has been proved")}>
             <button
               aria-pressed={answer === 'possible'}
@@ -275,7 +249,7 @@ export function NoticeScreen({
               type="button"
             >
               <span className="radio-dot" />
-              <span><strong>{t("It can be done in that many moves.")}</strong><small>{t("This establishes what is possible.")}</small></span>
+              <span><strong>{t('A route with that number of moves exists.')}</strong></span>
             </button>
             <button
               aria-pressed={answer === 'minimum'}
@@ -284,23 +258,25 @@ export function NoticeScreen({
               type="button"
             >
               <span className="radio-dot" />
-              <span><strong>{t("It cannot be done faster.")}</strong><small>{t("This would require a lower bound.")}</small></span>
+              <span><strong>{t('No route uses fewer moves.')}</strong></span>
             </button>
           </div>
 
           {answer === 'minimum' && (
-            <p className="answer-feedback is-wrong">{t("Not yet. One route cannot rule out every shorter route.")}</p>
+            <p className="answer-feedback is-wrong" role="status">{t('Try again.')}</p>
           )}
 
           {correct && (
             <div className="answer-feedback is-correct">
-              <p><strong>{t("Exactly.")}</strong>{t(" Now look for a cost that every legal solution must pay.")}</p>
+              <p role="status"><strong>{t('Correct.')}</strong></p>
               {gateMessage && <p className="gate-message" role="status">{t(gateMessage)}</p>}
               <button disabled={!nextUnlocked} onClick={onNext} type="button">{t(nextUnlocked ? 'Open SHORTEST?' : 'Waiting for teacher')} <ArrowIcon /></button>
             </div>
           )}
         </div>
-      </div>
+        <div className="notice-back">
+          <RailButton icon={<ArrowIcon direction="left" />} onClick={onBack}>{t("Back to play")}</RailButton>
+        </div>
     </section>
   )
 }
