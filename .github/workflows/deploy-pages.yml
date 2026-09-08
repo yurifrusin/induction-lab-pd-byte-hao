@@ -52,7 +52,7 @@ jobs:
       - name: Check out the four-disc preview
         uses: actions/checkout@v7
         with:
-          ref: 3b83f37431799b34659361703dadffa31f5d5967
+          ref: edb0af0f40cf3caa4ffccfb24ffecd5b7b850009
           path: .preview-four-discs
 
       - name: Build the four-disc preview
