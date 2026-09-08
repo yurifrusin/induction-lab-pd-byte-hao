@@ -2489,6 +2489,7 @@ button.hanoi-disk:active {
 .classroom-card label,
 .join-form label,
 .teacher-signin-card label,
+.teacher-password-form label,
 .new-session-form label {
   display: grid;
   gap: 8px;
@@ -2501,6 +2502,7 @@ button.hanoi-disk:active {
 .classroom-card input,
 .join-form input,
 .teacher-signin-card input,
+.teacher-password-form input,
 .new-session-form input {
   width: 100%;
   min-height: 49px;
@@ -2515,6 +2517,7 @@ button.hanoi-disk:active {
 .classroom-card input:focus,
 .join-form input:focus,
 .teacher-signin-card input:focus,
+.teacher-password-form input:focus,
 .new-session-form input:focus {
   border-color: var(--amber);
   box-shadow: 0 0 0 3px rgba(239, 170, 60, 0.1);
@@ -2670,8 +2673,50 @@ button.hanoi-disk:active {
 }
 
 /* Teacher dashboard */
+.teacher-auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.teacher-auth-tabs button {
+  min-width: 0;
+  padding: 10px;
+}
+
+.teacher-auth-tabs button[aria-pressed="true"] {
+  background: var(--amber);
+  color: #071724;
+}
+
+.teacher-auth-help summary {
+  color: var(--blue);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.teacher-auth-help p { padding-top: 12px; }
+
+.teacher-password-panel {
+  max-width: 650px;
+  margin: 24px auto;
+  padding: 28px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: #091e2d;
+}
+
+.teacher-password-panel p { color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; }
+.teacher-password-form { display: grid; gap: 16px; }
+.teacher-auth-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
 .dashboard-header {
-  height: 70px;
+  min-height: 70px;
+  height: auto;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 14px;
+  padding-bottom: 14px;
 }
 
 .dashboard-header .brand {
@@ -2680,6 +2725,7 @@ button.hanoi-disk:active {
 
 .dashboard-header > div {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 18px;
   color: var(--muted);

@@ -32,7 +32,9 @@ In **Authentication → Sign In / Providers → Anonymous Sign-Ins**, enable ano
 
 ## 3. Configure teacher sign-in
 
-The teacher dashboard uses an email sign-in link. In **Authentication → URL Configuration**, allow this exact redirect URL:
+The teacher dashboard defaults to email and password. A teacher who is already signed in can choose **Set or change login password** and set a password of at least 12 characters. This updates the existing account and preserves its classes. The teacher must enter their password themselves. If no device is signed in and no password has been set, authenticate once through the email-link fallback before setting a password. Password sign-ins do not send an email; the fallback still depends on the configured mail service and its quota. The app prevents duplicate email submissions and keeps a 60-second resend guard across refreshes; this does not reset the provider quota. See [Supabase password authentication](https://supabase.com/docs/guides/auth/passwords).
+
+For the email-link fallback, in **Authentication → URL Configuration**, allow this exact redirect URL:
 
     https://yurifrusin.github.io/induction-lab-pd-byte-hao/?teacher=1
 

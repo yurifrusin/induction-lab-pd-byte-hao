@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import App from './App.jsx'
 import { isSupabaseConfigured, supabase } from './supabase.js'
 import { classroomAccess, createProgressSync } from './classroomProgress.js'
+import { authErrorMessage, createEmailLinkSender } from './teacherAuth.js'
+import { TeacherPasswordSettings } from './TeacherPasswordSettings.jsx'
 
 const STORAGE_KEY = 'induction-class:v1'
 const STAGE_LABELS = {
@@ -362,31 +364,70 @@ function StudentActivity({ participant, onLeave }) {
   )
 }
 
-function TeacherSignIn({ authSession, onBack }) {
+function TeacherSignIn({ onBack }) {
   useLanguage()
+  const [mode, setMode] = useState('password')
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [sent, setSent] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const passwordPending = useRef(false)
+  const sender = useMemo(() => createEmailLinkSender({
+    send: (address) => supabase.auth.signInWithOtp({
+      email: address,
+      options: { emailRedirectTo: routeUrl('teacher', '', false) },
+    }),
+    storage: {
+      getItem: (key) => window.localStorage.getItem(key),
+      setItem: (key, value) => window.localStorage.setItem(key, value),
+    },
+    withLock: typeof navigator !== 'undefined' && navigator.locks
+      ? (perform, cooldownError) => navigator.locks.request('induction-teacher-email', { ifAvailable: true }, (lock) => {
+          if (!lock) throw cooldownError()
+          return perform()
+        })
+      : undefined,
+  }), [])
+  const [remaining, setRemaining] = useState(() => sender.secondsRemaining())
+  useEffect(() => {
+    const update = () => setRemaining(sender.secondsRemaining())
+    const interval = window.setInterval(update, 1000)
+    window.addEventListener('storage', update)
+    return () => { window.clearInterval(interval); window.removeEventListener('storage', update) }
+  }, [sender])
 
-  const sendLink = async (event) => {
+  const signInWithPassword = async (event) => {
     event.preventDefault()
-    if (!supabase) return
+    if (!supabase || passwordPending.current || busy) return
+    passwordPending.current = true
     setBusy(true)
     setError('')
     try {
-      if (authSession?.user?.is_anonymous) await supabase.auth.signOut()
-      const { error: signInError } = await supabase.auth.signInWithOtp({
-        email: email.trim(),
-        // Keep the existing allowlisted sign-in URL; this browser remembers its language.
-        options: { emailRedirectTo: routeUrl('teacher', '', false) },
-      })
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
       if (signInError) throw signInError
+    } catch (signInError) {
+      setError(authErrorMessage(signInError))
+    } finally {
+      setPassword('')
+      passwordPending.current = false
+      setBusy(false)
+    }
+  }
+
+  const sendLink = async (event) => {
+    event.preventDefault()
+    if (!supabase || busy) return
+    setBusy(true)
+    setError('')
+    try {
+      await sender.request(email)
       setSent(true)
     } catch (signInError) {
-      setError(friendlyError(signInError))
+      setError(authErrorMessage(signInError))
     } finally {
       setBusy(false)
+      setRemaining(sender.secondsRemaining())
     }
   }
 
@@ -397,14 +438,28 @@ function TeacherSignIn({ authSession, onBack }) {
         <section>
           <span className="eyebrow">{t("TEACHER ACCESS")}</span>
           <h1>{t("Your live view of the room.")}</h1>
-          <p>{t("A secure email link keeps student progress visible only to the teacher who created the class.")}</p>
+          <p>{t('Sign in with your teacher email and password. Only the teacher who created a class can access its progress.')}</p>
         </section>
-        <form className="teacher-signin-card" onSubmit={sendLink}>
-          {sent ? (
+        <form className="teacher-signin-card" onSubmit={mode === 'password' ? signInWithPassword : sendLink}>
+          <div className="teacher-auth-tabs" role="group" aria-label={t('Sign-in method')}>
+            {['password', 'email'].map(value => <button className="classroom-secondary" aria-pressed={mode === value} disabled={busy} key={value} onClick={() => { setMode(value); setError(''); setPassword(''); setSent(false) }} type="button">{t(value === 'password' ? 'Email and password' : 'Email link')}</button>)}
+          </div>
+          {error && <p className="classroom-error" role="alert">{t(error)}</p>}
+          {mode === 'password' ? (
+            <>
+              <h2>{t('Sign in with a password')}</h2>
+              <label><span>{t('Email address')}</span><input autoComplete="username" required type="email" value={email} onChange={event => setEmail(event.target.value)} /></label>
+              <label><span>{t('Password')}</span><input autoComplete="current-password" required type="password" value={password} onChange={event => setPassword(event.target.value)} /></label>
+              {!isSupabaseConfigured && <p className="classroom-error" role="alert">{t('Classroom mode is not configured in this build.')}</p>}
+              <button className="classroom-primary" disabled={busy || !isSupabaseConfigured} type="submit">{t(busy ? 'Signing in…' : 'Sign in')}</button>
+              <details className="teacher-auth-help"><summary>{t('First time setting a password, or forgotten it?')}</summary><p>{t('If you are already signed in on another device, open its teacher dashboard and choose Set or change login password. Otherwise, use an email link once, then set your password in the dashboard. Email links remain subject to the mail service quota.')}</p></details>
+            </>
+          ) : sent ? (
             <div className="email-sent">
               <span aria-hidden="true">✓</span>
               <h2>{t("Check your email")}</h2>
               <p>{t("Open the Supabase sign-in link on this device to continue.")}</p>
+              <button className="classroom-primary" disabled={busy || remaining > 0} onClick={sendLink} type="button">{t(busy ? 'Sending…' : 'Send another link')}</button>
               <button className="classroom-secondary" onClick={() => setSent(false)} type="button">{t("Use another email")}</button>
             </div>
           ) : (
@@ -422,13 +477,13 @@ function TeacherSignIn({ authSession, onBack }) {
                   value={email}
                 />
               </label>
-              {error && <p className="classroom-error" role="alert">{t(error)}</p>}
               {!isSupabaseConfigured && <p className="classroom-error" role="alert">{t("Classroom mode is not configured in this build.")}</p>}
-              <button className="classroom-primary" disabled={busy || !isSupabaseConfigured} type="submit">
+              <button className="classroom-primary" disabled={busy || remaining > 0 || !isSupabaseConfigured} type="submit">
                 {t(busy ? 'Sending…' : 'Email sign-in link')}
               </button>
             </>
           )}
+          {mode === 'email' && remaining > 0 && <p role="status">{t('Resend available in')} {remaining} {t('seconds. This does not reset the email service quota.')}</p>}
         </form>
       </main>
     </div>
@@ -469,6 +524,7 @@ function ParticipantRow({ participant }) {
 
 function TeacherDashboard({ authSession, onBack }) {
   useLanguage()
+  const [passwordSettings, setPasswordSettings] = useState(false)
   const [sessions, setSessions] = useState([])
   const [selectedId, setSelectedId] = useState(null)
   const [participants, setParticipants] = useState([])
@@ -627,8 +683,10 @@ function TeacherDashboard({ authSession, onBack }) {
           <span className="brand-mark" aria-hidden="true"><i /><i /><i /><i /></span>
           <span>{t("Induction Lab")}</span>
         </button>
-        <div><LanguageSwitcher /><span>{authSession.user.email}</span><button onClick={signOut} type="button">{t("Sign out")}</button></div>
+        <div><LanguageSwitcher /><span>{authSession.user.email}</span><button aria-expanded={passwordSettings} onClick={() => setPasswordSettings(value => !value)} type="button">{t('Set or change login password')}</button><button onClick={signOut} type="button">{t("Sign out")}</button></div>
       </header>
+
+      {passwordSettings && <TeacherPasswordSettings email={authSession.user.email} onClose={() => setPasswordSettings(false)} />}
 
       <div className="dashboard-layout">
         <aside className="session-sidebar">
@@ -777,7 +835,7 @@ function TeacherPortal({ onBack }) {
 
   if (loading) return <div className="classroom-loading">{t("Opening classroom…")}</div>
   if (!authSession || authSession.user?.is_anonymous) {
-    return <TeacherSignIn authSession={authSession} onBack={onBack} />
+    return <TeacherSignIn onBack={onBack} />
   }
   return <TeacherDashboard authSession={authSession} onBack={onBack} />
 }
