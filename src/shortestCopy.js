@@ -15,7 +15,7 @@ export const shortestCopy = {
     captions: ['先把上面五个盘搬到 B，留出 C', '把最大盘从 A 移到 C', '再把五个小盘从 B 搬到 C'],
     constructionNote: '图中画出了五个小盘搬好后的位置。怎样用最少的步数完成这两次搬运，我们还没有构造出具体走法。这个问题先留到后面的“为何做得到？”再补上。',
     teacherLabel: '从规则一步步推出步数',
-    practiceTitle: '分别想清每个圆盘至少要动几次',
+    practiceTitle: '把刚才的理由用到两个、三个盘上',
     answerLabel: '展开答案与理由',
     practice: [
       {
@@ -30,14 +30,11 @@ export const shortestCopy = {
       },
       {
         title: '三个圆盘，至少要移动几步？',
-        prompt: '还是分别看大、中、小三个盘。用刚才对两个圆盘的理由，说明它们各自至少要动几次。',
+        prompt: '根据图示中的同一个理由，上面的两盘塔要搬几遍？',
         reasons: [
-          '最大盘第一次移动前，上面两个盘必须先完整地搬到另一根柱上。最大盘最后一次到达目标柱后，这两个盘又必须完整地搬到目标柱。因此，上面这座两盘塔前后要搬两遍。',
-          '看中盘：它在这座两盘塔中是大盘，搬一遍至少动一次；前后各搬一遍，就至少动两次。',
-          '看最小盘：它在这座两盘塔中是小盘，搬一遍至少动两次；前后各搬一遍，就至少动四次。',
-          '最大盘自己至少动一次。把每个盘的次数加起来，就是至少一步、两步、四步，合计七步。',
+          '根据图示中的同一个理由，上面的两盘塔前后要搬两遍，最大盘移动一步。搬一遍两盘塔最少要（1 + 2）步，所以三个盘的最短步数是：',
         ],
-        count: '至少（1 + 2 + 2²）步，即 7 步',
+        count: '（1 + 2(1 + 2)）步，即 7 步',
       },
     ],
     teacher: '先让学生解释最大碟为什么能移动，再展开理由与图示。随后从一个碟子开始，让学生把刚刚说明的步数用到两个、三个碟子上。重点听他们能否说清前后两次搬小塔，而不只是选对选项或报出数字。',
@@ -59,7 +56,7 @@ export const shortestCopy = {
     captions: ['Move the five smaller discs to B, leaving C empty', 'Move the largest disc from A to C', 'Move the five smaller discs from B to C'],
     constructionNote: 'The pictures show where the five smaller discs end up, but we have not yet constructed the individual moves that complete each transfer in the fewest steps. We will return to this question in “WHY CAN?”.',
     teacherLabel: 'BUILD THE COUNT FROM THE RULES',
-    practiceTitle: 'Reason through the moves each disc must make',
+    practiceTitle: 'Use the same reasoning for two and three discs',
     answerLabel: 'Show the answer and reasoning',
     practice: [
       {
@@ -74,14 +71,11 @@ export const shortestCopy = {
       },
       {
         title: 'How many moves must three discs take?',
-        prompt: 'Consider the large, middle and small discs separately. Use the two-disc reasoning to explain how often each must move.',
+        prompt: 'Using the same reasoning as in the diagrams, how many times must the two-disc tower be transferred?',
         reasons: [
-          'Before the largest disc first moves, the complete two-disc tower must reach another peg. After the largest disc’s final arrival on the target, that two-disc tower must still reach the target. These are two separate complete transfers.',
-          'The middle disc is the larger disc within that two-disc tower. It must move at least once per transfer, so at least twice in total.',
-          'The smallest disc is the smaller disc within that tower. It must move at least twice per transfer, so at least four times in total.',
-          'The largest disc itself moves at least once. Add the individual requirements: one, two and four moves give at least seven in total.',
+          'For the same reason shown in the diagrams, the two-disc tower must be transferred twice, with one move of the largest disc between them. Each two-disc transfer takes a minimum of (1 + 2) moves. The minimum for three discs is therefore:',
         ],
-        count: 'At least (1 + 2 + 2²) moves, that is, 7 moves',
+        count: '(1 + 2(1 + 2)) moves, that is, 7 moves',
       },
     ],
     teacher: 'Ask students to explain what lets the largest disc move before opening the reasoning and diagrams. Then start with one disc and ask them to use each established bound for two discs and then three. Listen for why the two smaller transfers are needed, rather than just a correct selection or a number.',

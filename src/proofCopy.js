@@ -9,17 +9,13 @@ export const proofCopy = {
       "eyebrow": "把刚才的推理接着用下去",
       "title": "把刚才想明白的理由连起来",
       "intro": "从移动规则想清楚小塔为什么必须搬两遍，就已经抓住了归纳推进的论证：原有每个圆盘的次数限制要用两次，再加上新最大盘的一次。这里把这段理由整理出来，并接上一个圆盘的起点。",
-      "structureTitle": "回看：每个小圆盘为什么都要参加两次搬运？",
-      "structure": [
-        "最大盘第一次移动前，上面的小圆盘必须先完整地搬到另一根柱上。否则，最大盘还被压着，或者它要去的柱上有小圆盘。",
-        "最大盘最后一次移到目标柱时，小圆盘又完整地叠在第三根柱上。要完成任务，还必须把它们搬到目标柱。从这以后最大盘不再离开目标柱，否则它还得再回来，这就不是最后一次到达了。",
-        "这两段搬运一前一后，互不重叠。同一个小圆盘，在每一段里都要完成小塔搬运对它的要求。所以，它原来至少需要的移动次数，要在这里算两遍。"
-      ],
-      "bridgeTitle": "柱子换了，底下还有大碟子，为什么仍能用小塔的结论？",
+      "bridgeTitle": "补充理由：换了柱子，为什么还能用原来的结论？",
       "bridge": "只看小碟子：每一段都从一座完整的小塔开始，到另一根柱上的完整小塔结束，每一步仍遵守原来的规则。底下的大碟子比它们都大，不会给小碟子提供新的移动方式。柱子的名字也不会改变规则。因此，每一段本身就是一次完整的小塔搬运。",
-      "detoursTitle": "最大碟中途来回移动，也能这样算吗？",
+      "detoursTitle": "补充理由：最大盘中途来回移动，也能这样算",
       "detours": [
-        "能。前一段在最大碟第一次移动之前，后一段在它最后一次到达目标柱之后。这两段没有重叠，中间最大碟至少移动了一次。多绕路也不能省掉这两段搬运。"
+        "先看最大盘第一次移动前：上面的小盘已经从起始柱完整地搬到另一根柱上，否则最大盘动不了。",
+        "再看最大盘最后一次移到目标柱之后：小盘还叠在第三根柱上，必须再完整地搬到目标柱。这以后最大盘不会再离开，否则它还得回来，就不是最后一次到达了。",
+        "前后这两段没有重叠，每段都是一次完整的小塔搬运。最大盘中间多走几步，也省不掉这两段，所以原来对小塔的结论仍要用两次。"
       ],
       "growTitle": "先想两个圆盘，再想三个",
       "start": "一个碟子要换到另一根柱上，至少得移动一步。这是我们已经确定的起点。",
@@ -30,8 +26,8 @@ export const proofCopy = {
         "只要两个圆盘至少分别要移动 1、2 次，那么三个圆盘就至少分别要移动 1、2、4 次。",
         "只要三个圆盘至少分别要移动 1、2、4 次，那么四个圆盘就至少分别要移动 1、2、4、8 次。"
       ],
-      "compareTitle": "把这个结论和刚才的走法对照",
-      "compare": "现在已经说明：三个碟子少于七步不能完成。如果刚才也用七步完成了搬运，两件事合起来，就说明七步是最少步数。一次成功的走法和刚才这段理由，各自补上了不同的一半。",
+      "compareTitle": "三个盘能做到，继续加盘呢？",
+      "compare": "三个盘的七步走法，我们已经能一步步做出来，所以知道这七步确实够用。继续加盘呢？是不是每增加一个盘，都能把已有的走法接下去，恰好用算出的步数搬完？会不会加到某个数量，就做不到了？这个问题先留着，后面的“为何做得到？”再来回答。",
       "compactNext": "接下来把四个圆盘的搬运过程想清楚，再用演示对照每个圆盘的移动。",
       "connect": "展开理由：逐个圆盘说明移动次数",
       "let": "设 n 是大于 1 的整数。加入一个新的最大盘之前，上面的小塔有 n − 1 个圆盘。",
@@ -50,9 +46,9 @@ export const proofCopy = {
     can: {
       "eyebrow": "回头补上 · 这些步数确实够用",
       "title": "凭什么说做得到？",
-      "intro": "前面我们暂时搁置了一个问题：对于更多碟子，已经说明更少的步数不够，可是，用这些步数真的能完成吗？现在来补上这部分。可以借助图示，也可以在脑中回想：怎样把一套已经会用的走法接着用下去？",
+      "intro": "前面我们暂时搁置了一个问题：三个盘的七步走法已经做出来了；继续加盘，还能不能按算出的步数搬完？会不会加到某个数量就做不到了？现在用已经会的走法，说明为什么每增加一个盘，方法都能接下去。",
       "setupTitle": "每个圆盘的这些次数，能同时做到吗？",
-      "setup": "设 n 是大于 1 的整数。已经有一套搬 n − 1 个圆盘的方法，并且每个圆盘恰好用到了前面算出的次数。现在加入一个新的最大盘，试着把原来的方法用起来。",
+      "setup": "设 n 是大于 1 的整数。如果已经有一套搬 n − 1 个圆盘的方法，并且每个圆盘恰好用到了前面算出的次数，加入一个新的最大盘后，怎样用原来的方法搬完？",
       "questions": [
         {
           "title": "先怎样给最大盘腾出位置？",
@@ -80,6 +76,7 @@ export const proofCopy = {
       ],
       "barWhy": "这些条件句都由刚才的构造得到：已有方法前后各用一次，中间移动一次新加的最大盘。",
       "general": "设 n 是正整数。从一个圆盘的走法开始，把这个构造接着用 n − 1 次，就能让 n 个圆盘从大到小恰好分别移动 1、2、2²、……次完成搬运。把每个圆盘的次数相加，得到这条走法的总步数：",
+      "noException": "所以不会加到某个盘数，就突然做不到了：一个盘的走法已经有了；每增加一个盘，都能用已有的方法构造出新的走法，而且步数恰好达到要求。这样就说明了，对于每个正整数 n，都有一套符合这个步数的走法。",
       "doneTitle": "两部分合起来，才知道这是最少步数",
       "done": "前一页说明：更少的步数不够。这一页说明：这些步数确实够用。",
       "recallTitle": "在脑中把方法接起来",
@@ -95,17 +92,13 @@ export const proofCopy = {
       "eyebrow": "CONTINUE THE REASONING YOU HAVE BUILT",
       "title": "Connect the reasoning you have already understood",
       "intro": "Explaining why the rules require two complete smaller-tower transfers establishes the key inductive inference: each existing disc’s bound applies twice, plus one move for the new largest disc. Here we express that reasoning and connect it to the one-disc starting point.",
-      "structureTitle": "Revisit why each smaller disc participates in two transfers",
-      "structure": [
-        "Before the largest disc first moves, the complete smaller tower must reach another peg. Otherwise the largest disc is still covered, or the peg receiving it contains a smaller disc.",
-        "At the largest disc’s final arrival on the target, the smaller discs form a complete tower on the third peg. They must still be transferred to the target. The largest disc stays there afterwards: leaving would require another arrival to finish, contradicting that this was its final arrival.",
-        "These intervals do not overlap. The same smaller disc must meet its smaller-tower move requirement in each interval. Its established minimum requirement is therefore counted twice."
-      ],
-      "bridgeTitle": "Why does the smaller-tower result apply with different pegs and a larger disc underneath?",
+      "bridgeTitle": "More detail: why does the result still apply when the pegs change?",
       "bridge": "Look only at the smaller discs. Each interval starts and ends with a complete smaller tower on different pegs, and each move obeys the original rules. The larger disc underneath permits no new kind of smaller-disc move. Peg names also do not change the rules. Each interval is therefore itself a complete smaller-tower transfer.",
-      "detoursTitle": "What if the largest disc moves back and forth?",
+      "detoursTitle": "More detail: the count still holds if the largest disc moves back and forth",
       "detours": [
-        "The first interval is before its first move; the second is after its final arrival on the target. They do not overlap, and the largest disc moves at least once between them. Detours cannot remove these two transfers."
+        "Before the largest disc first moves, the smaller discs must already have been transferred as a complete tower from the starting peg to another peg. Otherwise the largest disc cannot move.",
+        "After the largest disc’s final arrival on the target, the smaller discs are still stacked on the third peg and must be transferred to the target. The largest disc cannot leave again: it would have to return, so this would not have been its final arrival.",
+        "These two intervals do not overlap, and each is a complete smaller-tower transfer. Extra moves of the largest disc cannot remove either interval. The smaller-tower result therefore still applies twice."
       ],
       "growTitle": "Start with one disc and build the reasoning",
       "start": "One disc needs at least one move to reach a different peg. This is our established starting point.",
@@ -116,8 +109,8 @@ export const proofCopy = {
         "If two discs must move at least 1 and 2 times respectively, then three discs must move at least 1, 2 and 4 times respectively.",
         "If three discs must move at least 1, 2 and 4 times respectively, then four discs must move at least 1, 2, 4 and 8 times respectively."
       ],
-      "compareTitle": "Compare this result with the route you found",
-      "compare": "We have now ruled out fewer than seven moves for three discs. If you also completed a seven-move route, the two results together establish seven as the minimum. A successful route and this reasoning supply different parts of the argument.",
+      "compareTitle": "Three discs work. What happens as we add more?",
+      "compare": "We can carry out the seven-move route for three discs step by step, so we know seven moves really are enough. What happens as we add more discs? Can we extend a route each time and finish in exactly the number of moves we calculated? Could there be a disc count where this becomes impossible? Keep that question open; we will return to it in “WHY CAN?”.",
       "compactNext": "Next, reason through four discs, then use the walkthrough to connect that reasoning with each disc’s moves.",
       "connect": "Open the reasoning for each disc’s move count",
       "let": "Let n be an integer greater than 1. Before adding a new largest disc, the smaller tower has n − 1 discs.",
@@ -136,9 +129,9 @@ export const proofCopy = {
     can: {
       "eyebrow": "RETURN TO THE QUESTION · ACHIEVE THE BOUND",
       "title": "Why believe it can be done?",
-      "intro": "Earlier, we set aside a question: fewer moves cannot work, but can this many moves actually be achieved? We now return to it. Use the diagrams or work mentally to explain how a method we already have can be used again.",
+      "intro": "Earlier, we set aside a question: we have constructed the seven-move route for three discs, but can we still finish in the calculated number of moves as we add discs? Could it fail at some disc count? We will now use a method we already have to explain why we can extend it each time.",
       "setupTitle": "Can one route achieve every disc’s count together?",
-      "setup": "Let n be an integer greater than 1. We have a method for n − 1 discs that achieves each disc’s established count exactly. Add a new largest disc and use that method to finish the larger tower.",
+      "setup": "Let n be an integer greater than 1. If we have a method for n − 1 discs that achieves each disc’s established count exactly, how can we use it to finish after adding a new largest disc?",
       "questions": [
         {
           "title": "How can we make room for the largest disc?",
@@ -166,6 +159,7 @@ export const proofCopy = {
       ],
       "barWhy": "Each conditional follows from the construction: use the existing method twice with one move of the new largest disc in between.",
       "general": "Let n be a positive integer. Start with the one-disc method and repeat the construction n − 1 times. The n discs then finish with individual counts of 1, 2, 2², … from largest to smallest. Adding these counts gives the route’s total:",
+      "noException": "The construction cannot suddenly fail at some disc count: the one-disc route exists, and each added disc lets us build a new route from the previous method with exactly the required counts. This establishes a route with the calculated total for every positive integer n.",
       "doneTitle": "Both parts together establish the minimum",
       "done": "The previous page showed that fewer moves are insufficient. This page shows that this many moves are sufficient.",
       "recallTitle": "Connect the method in your mind",

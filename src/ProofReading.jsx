@@ -22,6 +22,7 @@ function GrowingSum({ copy }) {
     <ConditionalLines copy={copy} />
     <p>{copy.general}</p><div className="sequence-sum"><Sum /></div>
     {copy.sumNote && <p className="reasoning-sum-note">{copy.sumNote}</p>}
+    {copy.noException && <p>{copy.noException}</p>}
   </section>
 }
 
@@ -72,14 +73,11 @@ function ReadingPage({ kind, teacherLens, onBack, onNext }) {
     <div id={`reasoning-${kind}`} hidden={recalling}>
       {!lower && <section className="reasoning-bridge"><h2>{copy.setupTitle}</h2><p>{copy.setup}</p></section>}
       {lower ? <>
-        <details className="reasoning-structure"><summary>{copy.structureTitle}</summary>
-          {copy.structure.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
-          <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
-          <details><summary>{copy.detoursTitle}</summary>{copy.detours.map((paragraph, i) => <p key={i}>{paragraph}</p>)}</details>
-        </details>
         <details className="reasoning-connection"><summary>{copy.connect}</summary>
           <p>{copy.let}</p><p>{copy.assumption}</p><p>{copy.consequence}</p>
           <p className="reasoning-disc-count">{copy.counting}</p><p>{copy.meaning}</p>
+          <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
+          <details><summary>{copy.detoursTitle}</summary>{copy.detours.map((paragraph, i) => <p key={i}>{paragraph}</p>)}</details>
           <ConditionalLines copy={copy} />
           <p>{copy.general}</p><div className="sequence-sum"><Sum /></div>
           <p className="reasoning-sum-note">{copy.sumNote}</p>
