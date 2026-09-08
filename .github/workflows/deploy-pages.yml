@@ -37,6 +37,18 @@ jobs:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
+      - name: Check out the five-disc preview
+        uses: actions/checkout@v7
+        with:
+          ref: 1995bc294ba503532473765afa8180956528657d
+          path: .preview-five-discs
+
+      - name: Build the five-disc preview
+        run: pnpm exec vite build .preview-five-discs --base=/induction-lab-pd-byte-hao/preview-five-discs/ --outDir=../dist/preview-five-discs --emptyOutDir
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
 
