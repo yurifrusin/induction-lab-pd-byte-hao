@@ -239,9 +239,9 @@ export function NoticeScreen({
         </div>
 
         <div className="notice-summary">
-          <div><strong>{moveCount ?? '?'}</strong><span>{t(moveCount === null ? 'complete a route first' : `moves found with ${count} discs`)}</span></div>
-          <span className="not-equals" aria-hidden="true">≠</span>
-          <div><strong>?</strong><span>{t("minimum proved")}</span></div>
+          <div><strong>{moveCount ?? '—'}</strong><span>{t(moveCount === null ? 'complete a route first' : `moves found with ${count} discs`)}</span></div>
+          <div><span>{t('Still to explain')}</span><strong className="notice-open-question">{t('Could fewer moves work?')}</strong></div>
+          <p className="notice-summary-note">{t('A completed route does not by itself establish the minimum.')}</p>
         </div>
 
         {teacherLens && (
@@ -304,7 +304,7 @@ function ProofStage({ label, math, number, stage }) {
   return (
     <div className="proof-stage">
       <div className="stage-title"><span>{number}</span><p>{t(label)}</p></div>
-      <MiniTower count={4} stage={stage} />
+      <MiniTower count={3} stage={stage} />
       <strong className="stage-math">{math}</strong>
     </div>
   )
@@ -319,13 +319,13 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
       <aside className="proof-rail">
         <div>
           <h1>{t("Could fewer moves work?")}</h1>
-          <p className="lead">{t("Let n > 1 be the number of discs. M(n) is the minimum number of moves to transfer the tower between two pegs.")}</p>
+          <p className="lead">{t('Start with the rules, before counting. To move the largest disc, what must happen to the discs above it and to the peg it moves to?')}</p>
         </div>
 
         <div className="can-must-rail">
           <div className={`logic-item logic-must ${correct ? 'is-complete' : ''}`}>
             <span className="logic-icon">{correct && <CheckIcon />}</span>
-            <div><strong>{t("MUST")}</strong><p>{t("Show every legal solution must pay a cost. This creates a lower bound.")}</p></div>
+            <div><strong>{t("MUST")}</strong><p>{t('Could a different route avoid moving the smaller tower out of the way?')}</p></div>
           </div>
         </div>
 
@@ -348,13 +348,12 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
         {answer === 'some' && <p className="compact-feedback">{t("Some is not enough—the largest disc stays trapped.")}</p>}
         {correct && (
           <div className="lower-bound-result">
-            <p>{t("Before the largest disc's first move: at least M(n − 1) moves. After its last move to C: at least M(n − 1) more. The largest disc moves at least once.")}</p>
-            <strong>M(n) ≥ 1 + 2M(n − 1)</strong>
+            <p>{t('The largest disc must be uncovered, and the peg it moves to must be empty. So every smaller disc must be on the third peg. Explain why moving just some of them would not work.')}</p>
           </div>
         )}
 
         {teacherLens && (
-          <LensNote time={t("EXPLAIN THE GENERAL CASE")}>{t("A route with smaller-transfer counts a and b takes a + 1 + b moves. It need not be shortest. For the lower bound, use the first and last moves of the largest disc, so the argument also covers routes that move it more than once. Ask teachers which student explanation would show understanding.")}</LensNote>
+          <LensNote time={t("EXPLAIN THE GENERAL CASE")}>{t('Ask students to explain both constraints: the largest disc must be uncovered and its destination must be empty. Choosing “all” alone is not yet an explanation. Use the next demonstration to connect these constraints to the repeated smaller task.')}</LensNote>
         )}
 
         {correct && gateMessage && <p className="gate-message" role="status">{t(gateMessage)}</p>}
@@ -365,18 +364,16 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
       </aside>
 
       <div className="proof-canvas">
-        <h2>{t("A route for n > 1 discs")}</h2>
-        <p className="proof-caption">{t("A: start · B: temporary peg · C: target. Clear C before moving the largest disc there.")}</p>
+        <h2>{t('What must be done around the largest-disc move?')}</h2>
+        <p className="proof-caption">{t('The pictures use four discs. Look at the smaller tower before and after the largest disc moves to C. We will count the moves in the next activity.')}</p>
         <div className="proof-stages">
-          <ProofStage label={t("move n − 1 smaller to B")} math="M(n − 1)" number="1" stage="clear" />
+          <ProofStage label={t('Move the smaller tower aside')} number="1" stage="clear" />
           <ArrowIcon className="stage-arrow" size={36} />
           <ProofStage label={t("move largest")} math="1" number="2" stage="largest" />
           <ArrowIcon className="stage-arrow" size={36} />
-          <ProofStage label={t("move n − 1 smaller to C")} math="M(n − 1)" number="3" stage="rebuild" />
+          <ProofStage label={t('Move the smaller tower onto the largest disc')} number="3" stage="rebuild" />
         </div>
-        <div className="proof-sum" aria-label={t("M of n minus one, plus one, plus M of n minus one")}>
-          <span>M(n − 1)</span><b>+</b><span>1</span><b>+</b><span>M(n − 1)</span>
-        </div>
+        <p className="proof-caption">{t('Why does the same smaller task appear twice?')}</p>
       </div>
     </section>
   )
