@@ -44,8 +44,9 @@ function ReadingPage({ kind, teacherLens, onBack, onNext }) {
     </details>
     <div id={`reasoning-${kind}`} hidden={recalling}>
       {!lower && <section className="reasoning-bridge"><h2>{copy.setupTitle}</h2><p>{copy.setup}</p></section>}
-      <Questions questions={copy.questions} reveal={common.reveal} />
+      <Questions questions={copy.questions} reveal={copy.reveal || common.reveal} />
       {lower ? <>
+        <details className="reasoning-visual-help"><summary>{copy.detoursTitle}</summary>{copy.detours.map((paragraph, i) => <p key={i}>{paragraph}</p>)}</details>
         <section className="reasoning-bridge"><h2>{copy.bridgeTitle}</h2><p>{copy.bridge}</p></section>
         <details className="reasoning-connection"><summary>{copy.connect}</summary>
           <p>{copy.let}</p><p>{copy.assumption}</p><p>{copy.consequence}</p>
