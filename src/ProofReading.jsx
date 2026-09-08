@@ -8,10 +8,10 @@ function Sum() {
   return <>1 + 2 + ··· + 2<sup>n − 1</sup></>
 }
 
-function Questions({ questions, reveal }) {
-  return <div className="reasoning-questions">{questions.map(({ title, answer }, i) => <article key={i}>
-    <span className="reasoning-number">0{i + 1}</span>
-    <div><h2>{title}</h2><details><summary>{reveal}</summary><p>{answer}</p></details></div>
+function Questions({ questions, reveal, numbered = true, prompt }) {
+  return <div className={`reasoning-questions${numbered ? '' : ' is-unnumbered'}`}>{questions.map(({ title, answer, supplement }, i) => <article key={i}>
+    {numbered && <span className="reasoning-number">0{i + 1}</span>}
+    <div><h2>{title}</h2>{prompt && <p>{prompt}</p>}<details><summary>{reveal}</summary>{(Array.isArray(answer) ? answer : [answer]).map((paragraph, index) => <p key={index}>{paragraph}</p>)}{supplement}</details></div>
   </article>)}</div>
 }
 
@@ -44,10 +44,11 @@ function ReadingPage({ kind, teacherLens, onBack, onNext }) {
     </details>
     <div id={`reasoning-${kind}`} hidden={recalling}>
       {!lower && <section className="reasoning-bridge"><h2>{copy.setupTitle}</h2><p>{copy.setup}</p></section>}
-      <Questions questions={copy.questions} reveal={copy.reveal || common.reveal} />
+      <Questions questions={lower ? [
+        { ...copy.questions[0], supplement: <details><summary>{copy.detoursTitle}</summary>{copy.detours.map((paragraph, i) => <p key={i}>{paragraph}</p>)}</details> },
+        { title: copy.bridgeTitle, answer: copy.bridge },
+      ] : copy.questions} reveal={copy.reveal || common.reveal} numbered={!lower} prompt={copy.prompt} />
       {lower ? <>
-        <details className="reasoning-visual-help"><summary>{copy.detoursTitle}</summary>{copy.detours.map((paragraph, i) => <p key={i}>{paragraph}</p>)}</details>
-        <section className="reasoning-bridge"><h2>{copy.bridgeTitle}</h2><p>{copy.bridge}</p></section>
         <details className="reasoning-connection"><summary>{copy.connect}</summary>
           <p>{copy.let}</p><p>{copy.assumption}</p><p>{copy.consequence}</p>
           <div className="sequence-sum">{copy.counting}</div><p>{copy.meaning}</p>
