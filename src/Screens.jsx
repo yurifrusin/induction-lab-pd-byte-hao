@@ -308,7 +308,7 @@ function ProofStage({ label, math, number, stage }) {
   return (
     <div className="proof-stage">
       <div className="stage-title"><span>{number}</span><p>{t(label)}</p></div>
-      <MiniTower count={4} stage={stage} />
+      <MiniTower count={5} stage={stage} />
       <strong className="stage-math">{math}</strong>
     </div>
   )

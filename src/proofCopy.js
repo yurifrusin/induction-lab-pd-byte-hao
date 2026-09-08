@@ -1,7 +1,7 @@
 // Explanations follow the structure of the puzzle before introducing notation.
 export const proofCopy = {
   zh: {
-    visualHelp: '需要图示？展开对照', visualNote: '图中以五个圆盘为例，展示最大盘从 A 柱移到 C 柱的前后。上面四个盘的具体移动步骤没有画出。',
+    visualHelp: '需要图示？展开对照', visualNote: '图中以六个圆盘为例，展示最大盘从 A 柱移到 C 柱的前后。上面五个盘的具体移动步骤没有画出。',
     visualCaptions: ['最大碟移动前：小塔在 B 柱，C 柱空着。', '最大碟移动后：小塔还在 B 柱。', '最后还要把小塔搬到 C 柱，叠在最大碟上。'],
     reveal: '想好后，展开解释',
     hide: '收起推理，自己讲一遍', show: '再看推理', back: '返回', next: '这些步数真的够吗？', restart: '重新体验',
@@ -88,7 +88,7 @@ export const proofCopy = {
     },
   },
   en: {
-    visualHelp: 'Need a diagram? Open a reference', visualNote: 'These five-disc pictures show the positions before and after the largest disc moves from A to C. The individual moves used to transfer the four smaller discs are not shown.',
+    visualHelp: 'Need a diagram? Open a reference', visualNote: 'These six-disc pictures show the positions before and after the largest disc moves from A to C. The individual moves used to transfer the five smaller discs are not shown.',
     visualCaptions: ['Before the largest disc moves: the smaller tower is on B and C is empty.', 'After the largest disc moves: the smaller tower is still on B.', 'The smaller tower must still reach C, on top of the largest disc.'],
     reveal: 'Explain it first, then compare', hide: 'Hide the reasoning and explain it yourself', show: 'Show the reasoning again', back: 'Back', next: 'Can these moves actually be achieved?', restart: 'Restart experience',
     lower: {

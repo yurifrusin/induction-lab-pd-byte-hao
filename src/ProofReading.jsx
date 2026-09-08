@@ -67,7 +67,7 @@ function ReadingPage({ kind, teacherLens, onBack, onNext }) {
     <button className="sequence-button reasoning-toggle" type="button" aria-expanded={!recalling} aria-controls={`reasoning-${kind}`} onClick={() => setRecalling(!recalling)}>{recalling ? common.show : common.hide}</button>
     <details className="reasoning-visual-help">
       <summary>{common.visualHelp}</summary><p>{common.visualNote}</p>
-      <div className="reasoning-reference">{common.visualCaptions.map((caption, i) => <figure key={i}><MiniTower count={4} stage={['clear', 'largest', 'rebuild'][i]} /><div className="reasoning-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div><figcaption>{caption}</figcaption></figure>)}</div>
+      <div className="reasoning-reference">{common.visualCaptions.map((caption, i) => <figure key={i}><MiniTower count={5} stage={['clear', 'largest', 'rebuild'][i]} /><div className="reasoning-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div><figcaption>{caption}</figcaption></figure>)}</div>
     </details>
     <div id={`reasoning-${kind}`} hidden={recalling}>
       {!lower && <section className="reasoning-bridge"><h2>{copy.setupTitle}</h2><p>{copy.setup}</p></section>}
