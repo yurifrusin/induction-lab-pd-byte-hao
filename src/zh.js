@@ -167,6 +167,14 @@ export const zh = {
   'Use one to four discs in the STEPS activity.': '“拆解步骤”支持一至四个碟子。',
   'Answer NOTICE correctly and wait for teacher approval of SHORTEST?.': '请先答对“想一想”，并等待教师开放“还能更少吗？”。',
   'Answer SHORTEST? correctly and wait for teacher approval of STEPS.': '请先答对“还能更少吗？”，并等待教师开放“拆解步骤”。',
+  'Where can you use the earlier reasoning?': '刚才的理由，这里还能用吗？',
+  'Before moving anything, explain what must happen before the largest disc can move directly to C.': '先别移动。要让最大碟直接移到 C 柱，必须先完成什么？',
+  'Can the largest disc move directly to C now? Use the movement rules to explain.': '现在最大碟能直接移到 C 柱吗？用移动规则说明理由。',
+  'What remains to finish the tower? Explain which earlier task you can recognise here.': '要把整座塔搬完，还剩下什么？这里又出现了刚才的哪项任务？',
+  'Explain how the smaller-tower reasoning applies to the transfers you just watched. Open the move count when you are ready to compare.': '刚才关于小塔的理由，在这段搬运中怎样用？先自己说一遍，再展开步数对照。',
+  'You have reasoned through two and three discs. Watch four discs now: where can you use the same reasoning? You can return to one, two or three discs to compare.': '刚才已经想清楚了两个、三个碟子的情况。现在观察四个碟子：同一个理由在哪里用得上？需要时可以切回一、二、三个碟子对照。',
+  'Open the move count for this walkthrough': '展开这条走法的步数',
+  'This counts the demonstrated route. The next page explains why the bound you developed continues to hold as the number of discs grows.': '这里数的是演示这条走法所用的步数。下一页接着说明：碟子再多，刚才限制步数的理由为什么仍然成立。',
 };
 
 export const patterns = [

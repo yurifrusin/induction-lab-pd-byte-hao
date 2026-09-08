@@ -9,6 +9,9 @@ import {
 } from './icons.jsx'
 import { MiniTower, Tower } from './Tower.jsx'
 import { STAGES } from './flow.js'
+import { shortestCopy } from './shortestCopy.js'
+import { LowerBoundLadder } from './ProofReading.jsx'
+import './shortest.css'
 
 export function AppHeader({
   activeStage,
@@ -311,26 +314,18 @@ function ProofStage({ label, math, number, stage }) {
 }
 
 export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nextUnlocked = true, gateMessage = '' }) {
-  useLanguage()
+  const locale = useLanguage()
+  const copy = shortestCopy[locale]
   const correct = answer === 'all'
 
   return (
-    <section className="screen prove-screen">
-      <aside className="proof-rail">
-        <div>
-          <h1>{t("Could fewer moves work?")}</h1>
-          <p className="lead">{t('Start with the rules, before counting. To move the largest disc, what must happen to the discs above it and to the peg it moves to?')}</p>
-        </div>
-
-        <div className="can-must-rail">
-          <div className={`logic-item logic-must ${correct ? 'is-complete' : ''}`}>
-            <span className="logic-icon">{correct && <CheckIcon />}</span>
-            <div><strong>{t("MUST")}</strong><p>{t('Could a different route avoid moving the smaller tower out of the way?')}</p></div>
-          </div>
-        </div>
-
-        <fieldset className="sentence-choice">
-          <legend>{t("Before the largest disc moves, ")}<span>______</span>{t(" smaller discs must be together on the other peg.")}</legend>
+    <section className="shortest-screen">
+      <header className="shortest-heading">
+        <h1>{copy.title}</h1>
+        <p>{copy.intro}</p>
+      </header>
+        <fieldset className="sentence-choice shortest-choice">
+          <legend>{copy.question}</legend>
           {['some', 'all'].map((choice) => (
             <label className={`${answer === choice ? 'is-selected' : ''} ${answer === 'some' && choice === 'some' ? 'is-wrong' : ''}`} key={choice}>
               <input
@@ -340,41 +335,36 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
                 type="radio"
               />
               <span className="radio-dot" />
-              {t(choice)}
+              {copy.choices[choice]}
             </label>
           ))}
         </fieldset>
 
-        {answer === 'some' && <p className="compact-feedback">{t("Some is not enough—the largest disc stays trapped.")}</p>}
-        {correct && (
-          <div className="lower-bound-result">
-            <p>{t('The largest disc must be uncovered, and the peg it moves to must be empty. So every smaller disc must be on the third peg. Explain why moving just some of them would not work.')}</p>
+        <p className="shortest-think">{copy.think}</p>
+        {answer === 'some' && <p className="compact-feedback" role="status">{copy.retry}</p>}
+        <details className="shortest-reasoning">
+          <summary>{copy.reveal}</summary>
+          {copy.reasons.map((reason, index) => <p key={index}>{reason}</p>)}
+          <p>{copy.diagramNote}</p>
+          <div className="shortest-diagrams">
+            {['clear', 'largest', 'rebuild'].map((stage, index) => <div key={stage}>
+              <ProofStage label={copy.captions[index]} number={index + 1} stage={stage} />
+              <div className="shortest-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div>
+            </div>)}
           </div>
-        )}
-
+          <h2>{copy.countingTitle}</h2>
+          {copy.counting.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+        </details>
+        <LowerBoundLadder compact />
         {teacherLens && (
-          <LensNote time={t("EXPLAIN THE GENERAL CASE")}>{t('Ask students to explain both constraints: the largest disc must be uncovered and its destination must be empty. Choosing “all” alone is not yet an explanation. Use the next demonstration to connect these constraints to the repeated smaller task.')}</LensNote>
+          <LensNote time={copy.teacherLabel}>{copy.teacher}</LensNote>
         )}
 
         {correct && gateMessage && <p className="gate-message" role="status">{t(gateMessage)}</p>}
-        <div className="proof-rail-actions">
-          <RailButton icon={<ArrowIcon direction="left" />} onClick={onBack}>{t("Back")}</RailButton>
-          <RailButton disabled={!correct || !nextUnlocked} icon={<ArrowIcon />} onClick={onNext} primary>{t(correct && !nextUnlocked ? 'Waiting for teacher' : 'Explore the steps')}</RailButton>
-        </div>
-      </aside>
-
-      <div className="proof-canvas">
-        <h2>{t('What must be done around the largest-disc move?')}</h2>
-        <p className="proof-caption">{t('The pictures use four discs. Look at the smaller tower before and after the largest disc moves to C. We will count the moves in the next activity.')}</p>
-        <div className="proof-stages">
-          <ProofStage label={t('Move the smaller tower aside')} number="1" stage="clear" />
-          <ArrowIcon className="stage-arrow" size={36} />
-          <ProofStage label={t("move largest")} math="1" number="2" stage="largest" />
-          <ArrowIcon className="stage-arrow" size={36} />
-          <ProofStage label={t('Move the smaller tower onto the largest disc')} number="3" stage="rebuild" />
-        </div>
-        <p className="proof-caption">{t('Why does the same smaller task appear twice?')}</p>
-      </div>
+        <footer className="shortest-actions">
+          <RailButton icon={<ArrowIcon direction="left" />} onClick={onBack}>{copy.back}</RailButton>
+          <RailButton disabled={!correct || !nextUnlocked} icon={<ArrowIcon />} onClick={onNext} primary>{correct && !nextUnlocked ? copy.waiting : copy.next}</RailButton>
+        </footer>
     </section>
   )
 }

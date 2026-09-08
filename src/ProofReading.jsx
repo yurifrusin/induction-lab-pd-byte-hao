@@ -29,6 +29,22 @@ function GrowingSum({ copy }) {
   </section>
 }
 
+export function LowerBoundLadder({ compact = false }) {
+  const copy = proofCopy[useLanguage()].lower
+  return <section className={`reasoning-growth reasoning-ladder${compact ? ' is-compact' : ''}`}>
+    <h2>{copy.growTitle}</h2>
+    <p className="reasoning-start">{copy.start}</p>
+    <div className="reasoning-bars"><h3>{copy.barTitle}</h3><p>{copy.barHelp}</p>
+      {copy.bars.map((statement, i) => <details className="reasoning-bar" key={i}>
+        <summary><span>{copy.barLabels[i]}</span><span className="reasoning-bar-prompt">{copy.barPrompts[i]}</span><span className="reasoning-bar-stroke" aria-hidden="true" /></summary>
+        <p>{statement}</p>
+      </details>)}
+    </div>
+    <details className="reasoning-comparison"><summary>{copy.compareTitle}</summary><p>{copy.compare}</p></details>
+    <p className="reasoning-pending">{copy.compactNext}</p>
+  </section>
+}
+
 function ReadingPage({ kind, teacherLens, onBack, onNext }) {
   const locale = useLanguage()
   const common = proofCopy[locale]
@@ -44,20 +60,21 @@ function ReadingPage({ kind, teacherLens, onBack, onNext }) {
     </details>
     <div id={`reasoning-${kind}`} hidden={recalling}>
       {!lower && <section className="reasoning-bridge"><h2>{copy.setupTitle}</h2><p>{copy.setup}</p></section>}
-      <Questions questions={lower ? [
-        { ...copy.questions[0], supplement: <>
+      {lower ? <>
+        <details className="reasoning-structure"><summary>{copy.structureTitle}</summary>
+          {copy.structure.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
           <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
           <details><summary>{copy.detoursTitle}</summary>{copy.detours.map((paragraph, i) => <p key={i}>{paragraph}</p>)}</details>
-        </> },
-      ] : copy.questions} reveal={copy.reveal || common.reveal} numbered={!lower} prompt={copy.prompt} />
-      {lower ? <>
-        <details className="reasoning-connection"><summary>{copy.connect}</summary>
+        </details>
+        <details className="reasoning-connection reasoning-bar"><summary><span>{copy.connect}</span><span className="reasoning-bar-stroke" aria-hidden="true" /></summary>
           <p>{copy.let}</p><p>{copy.assumption}</p><p>{copy.consequence}</p>
           <div className="sequence-sum">{copy.counting}</div><p>{copy.meaning}</p>
-          <GrowingSum copy={copy} />
+          <p>{copy.general}</p><div className="sequence-sum"><Sum /></div>
+          <p className="reasoning-sum-note">{copy.sumNote}</p>
           <p className="reasoning-pending">{copy.pending}</p>
         </details>
       </> : <>
+        <Questions questions={copy.questions} reveal={common.reveal} />
         <section className="reasoning-bridge"><h2>{copy.countTitle}</h2><p>{copy.count}</p><div className="sequence-sum">a + 1 + a = 1 + 2a</div></section>
         <GrowingSum copy={copy} />
         <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p>{copy.done}</p><div className="sequence-sum"><Sum /></div></div>

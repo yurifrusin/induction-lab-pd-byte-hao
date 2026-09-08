@@ -102,6 +102,9 @@
 .sequence-sum sup, .sequence-definition sup { font-size: .65em; }
 .sequence-counting .sequence-sum { margin: 10px 0; }
 .sequence-counting p { font-size: 15px; }
+.sequence-counting > summary { cursor: pointer; color: var(--blue); padding: 6px 0; font-size: 17px; }
+.sequence-counting[open] > summary { margin-bottom: 20px; }
+.sequence-counting > summary:focus-visible { outline: 2px solid var(--amber-bright); outline-offset: 4px; }
 .sequence-single { color: var(--amber-bright); font-weight: 500; }
 .sequence-pair { color: var(--blue); font-weight: 500; }
 .sequence-equals { color: var(--muted); }
@@ -216,6 +219,14 @@
 .reasoning-page p + p { margin-top: 16px; }
 .reasoning-page summary { cursor: pointer; color: var(--blue); line-height: 1.6; padding: 12px 0; }
 .reasoning-page summary:focus-visible { outline: 2px solid var(--amber-bright); outline-offset: 4px; }
+.reasoning-ladder summary { cursor: pointer; color: var(--blue); line-height: 1.6; padding: 12px 0; }
+.reasoning-ladder summary:focus-visible { outline: 2px solid var(--amber-bright); outline-offset: 4px; }
+.reasoning-ladder p { font-size: 17px; line-height: 1.8; }
+.reasoning-ladder h2 { font-size: 24px; line-height: 1.5; margin-bottom: 16px; }
+.reasoning-start { border-left: 3px solid var(--green); padding: 10px 18px; }
+.reasoning-bar-prompt { display: block; margin-top: 10px; font-size: 16px; color: var(--ink); }
+.reasoning-structure { padding: 0 18px 12px; border-bottom: 1px solid var(--line); }
+.reasoning-comparison { margin-bottom: 24px; }
 .reasoning-page [hidden] { display: none; }
 .reasoning-toggle { margin: 0 0 18px; white-space: normal; text-align: left; }
 .reasoning-questions article { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; padding: 28px 0; border-bottom: 1px solid var(--line); }

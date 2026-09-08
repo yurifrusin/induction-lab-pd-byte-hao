@@ -110,17 +110,17 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
   }
 
   const choosePeg = (value) => setWalkthrough((current) => ({ ...current, selectedPeg: value, playing: false }))
-  let pauseTitle = 'First, move the smaller tower'
-  let pausePrompt = 'Predict where the smaller tower must go before the largest disc can move directly to C.'
+  let pauseTitle = 'Where can you use the earlier reasoning?'
+  let pausePrompt = 'Before moving anything, explain what must happen before the largest disc can move directly to C.'
   if (count === 1 && cursor === 0) {
     pauseTitle = 'Start with one disc'
     pausePrompt = 'One legal move transfers the disc from A to C. No smaller tower is needed.'
   } else if (cursor === smallerMoves) {
     pauseTitle = 'Pause before the largest disc'
-    pausePrompt = 'The smaller tower is on B. Why must C be empty before the largest disc moves there?'
+    pausePrompt = 'Can the largest disc move directly to C now? Use the movement rules to explain.'
   } else if (cursor === smallerMoves + 1 && !completed) {
     pauseTitle = 'Pause after the largest disc'
-    pausePrompt = 'The largest disc is on C. Which smaller task appears again, and which peg is temporary now?'
+    pausePrompt = 'What remains to finish the tower? Explain which earlier task you can recognise here.'
   } else if (cursor > smallerMoves + 1 && !completed) {
     pauseTitle = 'Transfer the smaller tower again'
     pausePrompt = 'The smaller tower moves from B to C, using A as its temporary peg.'
@@ -128,7 +128,7 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
     pauseTitle = 'The construction is complete'
     pausePrompt = count === 1
       ? 'One disc reaches its target in one move. This initial case starts the construction.'
-      : 'Point to the one largest-disc move and the two smaller transfers. How does the sum count them?'
+      : 'Explain how the smaller-tower reasoning applies to the transfers you just watched. Open the move count when you are ready to compare.'
   }
   if (deviated) {
     pauseTitle = completed ? 'Your route is complete' : 'You are exploring a different route'
@@ -138,7 +138,7 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
   return (
     <section className="sequence-screen sequence-steps">
       <aside className="sequence-step-controls">
-        <header><span className="sequence-eyebrow">{t("STEPS · BUILD THE PATTERN")}</span><h1>{t("Pause. Predict.")}<br />{t(" Explain.")}</h1><p>{t("Explore one to four discs. Follow a construction from A to C and watch the smaller task appear twice.")}</p></header>
+        <header><span className="sequence-eyebrow">{t("STEPS · BUILD THE PATTERN")}</span><h1>{t("Pause. Predict.")}<br />{t(" Explain.")}</h1><p>{t("You have reasoned through two and three discs. Watch four discs now: where can you use the same reasoning? You can return to one, two or three discs to compare.")}</p></header>
         <div className="disc-control"><span className="control-label">{t("DISCS")}</span><div className="segmented-control" aria-label={t("Walkthrough disc count")}>{[1, 2, 3, 4].map((value) => <button aria-pressed={count === value} className={count === value ? 'is-active' : ''} key={value} onClick={() => setWalkthrough(newWalkthrough(value))} type="button">{value}</button>)}</div></div>
         <div className="sequence-move-counter"><span>{t("MOVES")}</span><strong>{moves}</strong><small>{t(playing ? 'Playing' : completed ? 'Complete' : 'Paused')}</small></div>
         <div className="sequence-controls" role="group" aria-label={t("Walkthrough controls")}>
@@ -152,11 +152,13 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
       <div className="sequence-board-area">
         <div className={`sequence-pause-card${deviated ? ' is-exploring' : ''}`} role="status" aria-live="polite"><span>{t(deviated ? 'YOUR EXPLORATION' : playing ? 'WATCH THE SMALLER TASK' : 'PAUSE & EXPLAIN')}</span><h2>{t(pauseTitle)}</h2><p>{t(feedback || pausePrompt)}</p></div>
         <div className="sequence-board"><Tower count={count} pegs={pegs} onMove={manualMove} selectedPeg={selectedPeg} setSelectedPeg={choosePeg} /></div>
-        <div className="sequence-counting" aria-label={t("Moves in the construction")}>
+        <details className="sequence-counting" key={count}>
+          <summary>{t('Open the move count for this walkthrough')}</summary>
           <span className="sequence-eyebrow">{t("MOVES IN THIS CONSTRUCTION")}</span>
           {count === 1 ? <div className="sequence-sum"><strong>1</strong></div> : <div className="sequence-sum"><span><b className="sequence-single">1</b> + <b className="sequence-pair">2</b>({expandedSum(count - 1)})</span><span className="sequence-equals">=</span><span>{expandedSum(count)}</span></div>}
           <p>{t(count === 1 ? 'The initial case: one disc, one move.' : `One largest-disc move + two transfers of the ${count - 1}-disc tower.`)}</p>
-        </div>
+          <p>{t('This counts the demonstrated route. The next page explains why the bound you developed continues to hold as the number of discs grows.')}</p>
+        </details>
         <SequenceFooter onBack={onBack} onNext={onNext} nextLabel={t("PROVE: rule out fewer")} />
       </div>
     </section>
