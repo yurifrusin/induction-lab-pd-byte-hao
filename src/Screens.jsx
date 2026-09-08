@@ -136,7 +136,8 @@ export function PlayScreen({
       <aside className="control-rail">
         <div>
           <h1>{t("Move the tower.")}<br />{t("Then prove your best.")}</h1>
-          <p className="lead">{t("Move the tower from A to C in as few moves as possible. Move one disc at a time. Never place a larger disc on a smaller one.")}</p>
+          <p className="lead">{t("Move the tower from A to C in as few moves as possible. Move one top disc at a time. Never place a larger disc on a smaller one.")}</p>
+          <p className="lead"><strong>{t('Moves can go both ways between all three pegs: A ↔ B, B ↔ C and A ↔ C. There is no required direction of travel.')}</strong></p>
         </div>
 
         <div className="disc-control">
