@@ -5,6 +5,7 @@ import { isSupabaseConfigured, supabase } from './supabase.js'
 import { classroomAccess, createProgressSync } from './classroomProgress.js'
 import { authErrorMessage, createEmailLinkSender } from './teacherAuth.js'
 import { TeacherPasswordSettings } from './TeacherPasswordSettings.jsx'
+import { createLatestLoader, summarizeAnswers } from './dashboardProgress.js'
 
 const STORAGE_KEY = 'induction-class:v1'
 const STAGE_LABELS = {
@@ -527,7 +528,11 @@ function TeacherDashboard({ authSession, onBack }) {
   const [passwordSettings, setPasswordSettings] = useState(false)
   const [sessions, setSessions] = useState([])
   const [selectedId, setSelectedId] = useState(null)
-  const [participants, setParticipants] = useState([])
+  const [roster, setRoster] = useState({ sessionId: null, rows: [], status: 'loading' })
+  const rosterReady = roster.sessionId === selectedId && roster.status === 'ready'
+  const participants = rosterReady ? roster.rows : []
+  const gatePending = useRef(false)
+  const sessionsRevision = useRef(0)
   const [title, setTitle] = useState(() => t('Year 12 Induction'))
   const [busy, setBusy] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -537,11 +542,13 @@ function TeacherDashboard({ authSession, onBack }) {
   const selectedSession = sessions.find((session) => session.id === selectedId) ?? null
 
   const loadSessions = useCallback(async () => {
+    const revision = ++sessionsRevision.current
     const { data, error: loadError } = await supabase
       .from('class_sessions')
       .select(SESSION_COLUMNS)
       .order('created_at', { ascending: false })
       .limit(12)
+    if (revision !== sessionsRevision.current) return
     if (loadError) {
       setError(friendlyError(loadError))
       return
@@ -561,24 +568,25 @@ function TeacherDashboard({ authSession, onBack }) {
   }, [loadSessions])
 
   useEffect(() => {
-    if (!selectedId) {
-      setParticipants([])
-      return undefined
-    }
-
-    let active = true
-    const loadParticipants = async () => {
+    if (!selectedId) return undefined
+    setRoster({ sessionId: selectedId, rows: [], status: 'loading' })
+    const loader = createLatestLoader(async () => {
       const { data, error: loadError } = await supabase
         .from('participants')
         .select('id, display_name, stage, disc_count, move_count, hint_count, completed, notice_answer, prove_answer, joined_at, updated_at')
         .eq('session_id', selectedId)
         .order('display_name')
-      if (active && !loadError) setParticipants(data ?? [])
-      if (active && loadError) setError(friendlyError(loadError))
-    }
+      if (loadError) throw loadError
+      return data ?? []
+    }, rows => setRoster({ sessionId: selectedId, rows, status: 'ready' }), () => {
+      setRoster({ sessionId: selectedId, rows: [], status: 'error' })
+    })
+    const loadParticipants = () => loader.load()
 
     loadParticipants()
     const interval = window.setInterval(loadParticipants, 5000)
+    window.addEventListener('focus', loadParticipants)
+    window.addEventListener('online', loadParticipants)
     const channel = supabase
       .channel(`induction-session-${selectedId}`)
       .on('postgres_changes', {
@@ -590,8 +598,10 @@ function TeacherDashboard({ authSession, onBack }) {
       .subscribe()
 
     return () => {
-      active = false
+      loader.invalidate()
       window.clearInterval(interval)
+      window.removeEventListener('focus', loadParticipants)
+      window.removeEventListener('online', loadParticipants)
       supabase.removeChannel(channel)
     }
   }, [selectedId])
@@ -619,7 +629,7 @@ function TeacherDashboard({ authSession, onBack }) {
       if (!created) throw new Error('A unique class code could not be created. Please try again.')
       setSessions((current) => [created, ...current])
       setSelectedId(created.id)
-      setParticipants([])
+      setRoster({ sessionId: created.id, rows: [], status: 'loading' })
     } catch (createError) {
       setError(friendlyError(createError))
     } finally {
@@ -655,7 +665,10 @@ function TeacherDashboard({ authSession, onBack }) {
   }
 
   const changeClassGate = async (gate) => {
-    if (!selectedSession || gateBusy) return
+    if (!selectedSession || gatePending.current || !classIsActive || !rosterReady) return
+    if (gate === 'steps' && !selectedSession.shortest_released_at) return
+    gatePending.current = true
+    sessionsRevision.current += 1
     setGateBusy(gate)
     setError('')
     try {
@@ -667,14 +680,16 @@ function TeacherDashboard({ authSession, onBack }) {
     } catch (gateError) {
       setError(friendlyError(gateError))
     } finally {
+      gatePending.current = false
       setGateBusy('')
     }
   }
 
   const completedCount = participants.filter((participant) => ['debrief', 'can'].includes(participant.stage)).length
   const classIsActive = selectedSession?.is_active && new Date(selectedSession.expires_at).getTime() > Date.now()
-  const noticeCorrectCount = participants.filter((participant) => participant.notice_answer === 'possible').length
-  const shortestCorrectCount = participants.filter((participant) => participant.prove_answer === 'all').length
+  const answerSummary = summarizeAnswers(participants)
+  const noticeCorrectCount = answerSummary.notice.correct
+  const shortestCorrectCount = answerSummary.shortest.correct
 
   return (
     <div className="teacher-dashboard">
@@ -734,12 +749,13 @@ function TeacherDashboard({ authSession, onBack }) {
                 </div>
               </section>
 
-              <section className="dashboard-stats" aria-label={t("Class progress summary")}>
+              {!rosterReady && <p role="status">{t(roster.status === 'error' && roster.sessionId === selectedId ? 'Class progress could not be refreshed. Reconnecting…' : 'Loading this class’s progress…')}</p>}
+              {rosterReady && <section className="dashboard-stats" aria-label={t("Class progress summary")}>
                 <div><strong>{participants.length}</strong><span>{t("joined")}</span></div>
                 <div><strong>{participants.filter((participant) => participant.completed).length}</strong><span>{t("towers solved")}</span></div>
                 <div><strong>{completedCount}</strong><span>{t("reached PROVE")}</span></div>
                 <div><strong>{participants.reduce((sum, participant) => sum + participant.hint_count, 0)}</strong><span>{t("hints used")}</span></div>
-              </section>
+              </section>}
 
               <section className="class-gates progress-panel" aria-label={t("Class progression approvals")}>
                 <div className="progress-heading">
@@ -751,7 +767,7 @@ function TeacherDashboard({ authSession, onBack }) {
                 {selectedSession.workflow_version !== 2 ? (
                   <div className="class-gate-actions">
                     <p>{t("This class uses the earlier sequence. Enable the two approval points; learners beyond NOTICE return to NOTICE, with their saved answers kept.")}</p>
-                    <button className="classroom-primary" disabled={!classIsActive || Boolean(gateBusy)} onClick={() => changeClassGate('enable')} type="button">
+                    <button className="classroom-primary" disabled={!rosterReady || !classIsActive || Boolean(gateBusy)} onClick={() => changeClassGate('enable')} type="button">
                       {t(gateBusy === 'enable' ? 'Enabling…' : 'Use guided sequence')}
                     </button>
                   </div>
@@ -759,11 +775,11 @@ function TeacherDashboard({ authSession, onBack }) {
                   <div className="class-gate-actions">
                     <article>
                       <h3>{t("NOTICE → SHORTEST?")}</h3>
-                      <p>{noticeCorrectCount} / {participants.length}{t(" have answered NOTICE correctly.")}</p>
-                      <p>{t('Still to answer correctly:')} {participants.length - noticeCorrectCount}</p>
+                      {rosterReady && <><p>{noticeCorrectCount} / {participants.length}{t(" have answered NOTICE correctly.")}</p>
+                      <p>{t('Not yet correct:')} {answerSummary.notice.incorrect} · {t('Not answered:')} {answerSummary.notice.unanswered}</p></>}
                       <button
                         className="classroom-primary"
-                        disabled={!classIsActive || Boolean(gateBusy) || Boolean(selectedSession.shortest_released_at)}
+                        disabled={!rosterReady || !classIsActive || Boolean(gateBusy) || Boolean(selectedSession.shortest_released_at)}
                         onClick={() => changeClassGate('shortest')}
                         type="button"
                       >
@@ -772,11 +788,11 @@ function TeacherDashboard({ authSession, onBack }) {
                     </article>
                     <article>
                       <h3>{t("SHORTEST? → STEPS")}</h3>
-                      <p>{shortestCorrectCount} / {participants.length}{t(" have answered SHORTEST? correctly.")}</p>
-                      <p>{t('Still to answer correctly:')} {participants.length - shortestCorrectCount}</p>
+                      {rosterReady && <><p>{shortestCorrectCount} / {participants.length}{t(" have answered SHORTEST? correctly.")}</p>
+                      <p>{t('Not yet correct:')} {answerSummary.shortest.incorrect} · {t('Not answered:')} {answerSummary.shortest.unanswered}</p></>}
                       <button
                         className="classroom-primary"
-                        disabled={!classIsActive || Boolean(gateBusy) || !selectedSession.shortest_released_at || Boolean(selectedSession.steps_released_at)}
+                        disabled={!rosterReady || !classIsActive || Boolean(gateBusy) || !selectedSession.shortest_released_at || Boolean(selectedSession.steps_released_at)}
                         onClick={() => changeClassGate('steps')}
                         type="button"
                       >

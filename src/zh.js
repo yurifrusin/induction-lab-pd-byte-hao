@@ -1,5 +1,10 @@
 // Chinese classroom copy. Keys are the original English UI text, not stored data.
 export const zh = {
+  'Not yet correct:': '尚未答对：',
+  'Not answered:': '尚未作答：',
+  'Loading this class’s progress…': '正在读取这节课的进度…',
+  'Class progress could not be refreshed. Reconnecting…': '课堂进度刷新失败，正在重新连接…',
+
   'The email or password is incorrect. If you have not set a password yet, use an email link once, then set a password in your teacher dashboard.': '邮箱或密码不正确。如果还没设置过密码，请先用邮件链接登录一次，再到教师后台设置。',
   'Verify your email address before signing in with a password.': '请先验证邮箱，再使用密码登录。',
   'Sign in to your teacher account again before setting a password.': '请重新登录教师账号，再设置密码。',
