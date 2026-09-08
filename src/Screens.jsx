@@ -308,7 +308,7 @@ function ProofStage({ label, math, number, stage }) {
   return (
     <div className="proof-stage">
       <div className="stage-title"><span>{number}</span><p>{t(label)}</p></div>
-      <MiniTower count={3} stage={stage} />
+      <MiniTower count={4} stage={stage} />
       <strong className="stage-math">{math}</strong>
     </div>
   )
@@ -353,8 +353,7 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
               <div className="shortest-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div>
             </div>)}
           </div>
-          <h2>{copy.countingTitle}</h2>
-          {copy.counting.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+          <p>{copy.constructionNote}</p>
         </details>
         <LowerBoundLadder compact />
         {teacherLens && (
