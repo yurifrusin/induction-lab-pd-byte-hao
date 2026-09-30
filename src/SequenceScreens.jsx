@@ -79,6 +79,13 @@ function SequenceFooter({ onBack, onNext, nextLabel, restart }) {
 export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialProgress }) {
   const language = useLanguage()
   const copy = discCountsCopy[language]
+  const proofUrl = new URL(window.location.href)
+  proofUrl.searchParams.set('stage', 'debrief')
+  const openProof = (event) => {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+    event.preventDefault()
+    onNext()
+  }
   const [walkthrough, setWalkthrough] = useState(() => newWalkthrough(
     [1, 2, 3, 4].includes(initialProgress?.disc_count) ? initialProgress.disc_count : 4,
   ))
@@ -173,7 +180,7 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
         {teacherLens && <TeacherCue>{copy.teacher}</TeacherCue>}
       </aside>
       <div className="sequence-board-area">
-        <div className="sequence-provisional"><strong>{copy.provisionalTitle}</strong><p>{copy.provisionalNote}</p></div>
+        <div className="sequence-provisional"><strong>{copy.provisionalTitle}</strong><p>{copy.provisionalPrefix}<a className="appendix-page-link" href={`${proofUrl.pathname}${proofUrl.search}`} onClick={openProof}>{copy.provisionalQuestion}</a></p></div>
         <div className={`sequence-pause-card${deviated ? ' is-exploring' : ''}`} role="status" aria-live="polite"><span>{copy.status[deviated ? 'exploring' : playing ? 'playing' : 'paused']}</span><h2>{pauseTitle}</h2><p>{feedback ? t(feedback) : pausePrompt}</p></div>
         <div className="sequence-board"><Tower count={count} pegs={pegs} onMove={manualMove} selectedPeg={selectedPeg} setSelectedPeg={choosePeg} /></div>
         <p className="sequence-counting-cue">{copy.focusCue}</p>
