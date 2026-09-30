@@ -18,14 +18,14 @@ export function ExistenceProof() {
     </div>
     <details>
       <summary>{copy.reveal}</summary>
-      <h3 className="existence-assumption-title">{copy.stepTitle}</h3>
       <div className="existence-fitch-scope">
+        <h3 className="existence-assumption-title">{copy.stepTitle}</h3>
         <p><strong className="existence-logic-marker">{copy.assumptionLead}</strong>{copy.assumptionBody}</p>
         <p>{copy.extension}</p>
         <ol>{copy.steps.map((step, index) => <li key={index}>{step}</li>)}</ol>
         <p className="existence-fitch-result">{copy.constructionResult}</p>
+        <p><strong className="existence-logic-marker">{copy.specificLead}</strong>{copy.specificImplication}</p>
       </div>
-      <p><strong className="existence-logic-marker">{copy.specificLead}</strong>{copy.specificImplication}</p>
       <h3 className="existence-implication">{copy.implication}</h3>
       <p>{copy.start}</p>
       <p>{copy.conclusion}</p>
