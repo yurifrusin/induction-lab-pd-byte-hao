@@ -21,6 +21,7 @@ export function ExistenceProof() {
       <h3 className="existence-assumption-title">{copy.stepTitle}</h3><p>{copy.setup}</p>
       <ol>{copy.steps.map((step, index) => <li key={index}>{step}</li>)}</ol>
       <p>{copy.constructionResult}</p>
+      <p>{copy.specificImplication}</p>
       <h3 className="existence-implication">{copy.implication}</h3>
       <p>{copy.start}</p>
       <p>{copy.conclusion}</p>
