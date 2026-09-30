@@ -140,7 +140,7 @@ input:focus-visible + .toggle-track {
 .stage-nav {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   align-self: stretch;
 }
 
@@ -760,6 +760,7 @@ span.hanoi-disk {
 button.hanoi-disk {
   padding: 0;
   cursor: grab;
+  touch-action: none;
 }
 
 button.hanoi-disk:active {
@@ -3147,6 +3148,7 @@ html:lang(zh-CN) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK
 :lang(zh-CN) .sequence-step-controls h1 { font-size: clamp(29px, 2.7vw, 38px); }
 :lang(zh-CN) .lead, :lang(zh-CN) .sequence-screen p { line-height: 1.85; }
 :lang(zh-CN) .stage-nav button { letter-spacing: 0; padding-left: 3px; padding-right: 3px; }
+:lang(zh-CN) .stage-nav .nav-label { white-space: nowrap; }
 :lang(zh-CN) .sequence-sum, :lang(zh-CN) .sequence-definition { font-family: Georgia, "Times New Roman", serif; }
 @media (min-width: 901px) {
   .app-header { grid-template-columns: minmax(195px, .8fr) minmax(390px, 1.6fr) auto; gap: 16px; }
@@ -3171,5 +3173,8 @@ html:lang(zh-CN) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+}
+@media (max-width: 420px) {
+  :lang(zh-CN) .stage-nav button { font-size: 9px; }
 }
 .answer-confirm:disabled { opacity: .45; cursor: not-allowed; }

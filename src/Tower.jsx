@@ -1,5 +1,5 @@
 import { t, useLanguage } from './Language.jsx'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 
 const PEG_NAMES = ['A', 'B', 'C']
 const DISK_COLORS = ['sky', 'teal', 'green', 'amber', 'coral']
@@ -22,6 +22,9 @@ export function Tower({
     () => pegs.map((peg) => peg[peg.length - 1]),
     [pegs],
   )
+  const touchDrag = useRef(null)
+  const ignoreDragClick = useRef(false)
+  const allowNativeDrag = typeof window === 'undefined' || !window.matchMedia('(pointer: coarse)').matches
 
   const choosePeg = (pegIndex) => {
     if (selectedPeg === null) {
@@ -56,6 +59,7 @@ export function Tower({
           {pegs.map((peg, pegIndex) => (
             <div
               className={`peg-zone ${selectedPeg === pegIndex ? 'is-selected' : ''} ${hintMove?.to === pegIndex ? 'is-hint-target' : ''}`}
+              data-peg-index={pegIndex}
               key={PEG_NAMES[pegIndex]}
               onDragOver={(event) => event.preventDefault()}
               onDrop={(event) => onDrop(event, pegIndex)}
@@ -103,10 +107,14 @@ export function Tower({
                         ? `Move selected disc to peg ${PEG_NAMES[pegIndex]}`
                         : `${isSelected ? 'Deselect' : 'Select'} disc ${disk} on peg ${PEG_NAMES[pegIndex]}`)}
                     className={`hanoi-disk disk-${color} is-top ${isSelected ? 'is-selected' : ''} ${hintMove?.from === pegIndex ? 'is-hint-source' : ''}`}
-                    draggable
+                    draggable={allowNativeDrag}
                     key={disk}
                     onClick={(event) => {
                       event.stopPropagation()
+                      if (ignoreDragClick.current) {
+                        ignoreDragClick.current = false
+                        return
+                      }
                       if (selectedPeg !== null && selectedPeg !== pegIndex) {
                         onMove(selectedPeg, pegIndex)
                       } else {
@@ -114,6 +122,30 @@ export function Tower({
                       }
                     }}
                     onDragStart={(event) => onDragStart(event, pegIndex)}
+                    onPointerDown={(event) => {
+                      if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return
+                      touchDrag.current = { pegIndex, pointerId: event.pointerId, x: event.clientX, y: event.clientY, moved: false }
+                      event.currentTarget.setPointerCapture(event.pointerId)
+                    }}
+                    onPointerMove={(event) => {
+                      const drag = touchDrag.current
+                      if (drag && drag.pointerId === event.pointerId && !drag.moved) {
+                        drag.moved = Math.hypot(event.clientX - drag.x, event.clientY - drag.y) > 8
+                      }
+                    }}
+                    onPointerUp={(event) => {
+                      const drag = touchDrag.current
+                      if (!drag || drag.pointerId !== event.pointerId) return
+                      touchDrag.current = null
+                      if (!drag.moved) return
+                      ignoreDragClick.current = true
+                      window.setTimeout(() => { ignoreDragClick.current = false }, 0)
+                      const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.peg-zone')
+                      const destination = Number(target?.dataset.pegIndex)
+                      if (target && Number.isInteger(destination) && destination !== drag.pegIndex) onMove(drag.pegIndex, destination)
+                      else setSelectedPeg(null)
+                    }}
+                    onPointerCancel={() => { touchDrag.current = null }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault()

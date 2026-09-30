@@ -52,6 +52,7 @@
   font-size: 15px;
   line-height: 1.65;
 }
+.shortest-screen .compact-feedback.is-correct { color: var(--green); }
 
 .shortest-reasoning {
   margin: 28px 0;

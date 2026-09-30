@@ -24,7 +24,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   const [history, setHistory] = useState([])
   const [selectedPeg, setSelectedPeg] = useState(null)
   const [hintMove, setHintMove] = useState(null)
-  const [message, setMessage] = useState('Select the top disc, then choose a destination peg.')
+  const [message, setMessage] = useState('Drag the top disc to a peg, or tap a disc and then tap its destination.')
   const [noticeAnswer, setNoticeAnswer] = useState(initialProgress?.notice_answer ?? null)
   const [proveAnswer, setProveAnswer] = useState(initialProgress?.prove_answer ?? null)
   const [stepsProgress, setStepsProgress] = useState(() => ({
@@ -74,7 +74,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     setHintCount(0)
     setMinimumRevealed(false)
     setDemonstrating(false)
-    setMessage('Select the top disc, then choose a destination peg.')
+    setMessage('Drag the top disc to a peg, or tap a disc and then tap its destination.')
   }
 
   const changeStage = (nextStage) => {
@@ -171,7 +171,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
       setDemonstrating(false)
       setMessage(completed
         ? `Solved in ${moveCount} moves. Could fewer moves work? Explain your reasoning.`
-        : 'Select the top disc, then choose a destination peg.')
+        : 'Drag the top disc to a peg, or tap a disc and then tap its destination.')
     }
   }
 

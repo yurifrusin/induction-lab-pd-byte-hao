@@ -349,6 +349,7 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
         <p className="shortest-think">{copy.think}</p>
         <button className="answer-confirm" disabled={!selection || submitted} onClick={() => onAnswer(selection)} type="button">{t('Confirm answer')}</button>
         {submitted && answer === 'some' && <p className="compact-feedback" role="status">{copy.retry}</p>}
+        {correct && <p className="compact-feedback is-correct" role="status">{copy.correct}</p>}
         <details className="shortest-reasoning">
           <summary>{copy.reveal}</summary>
           {copy.reasons.map((reason, index) => <p key={index}>{reason}</p>)}

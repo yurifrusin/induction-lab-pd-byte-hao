@@ -99,7 +99,7 @@
 .sequence-counting { padding: 20px; text-align: center; border: 1px solid var(--line); border-radius: 12px; background: rgba(10, 32, 48, .8); }
 .sequence-sum { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 8px 14px; font-family: var(--serif); font-size: clamp(25px, 2.9vw, 38px); line-height: 1.5; }
 .sequence-sum > span { min-width: 0; }
-.sequence-sum sup, .sequence-definition sup { font-size: .65em; }
+.sequence-sum sup, .sequence-definition sup { font-size: .65em; line-height: 0; vertical-align: super; }
 .sequence-counting .sequence-sum { margin: 10px 0; }
 .sequence-counting p { font-size: 15px; }
 .sequence-counting > summary { cursor: pointer; color: var(--blue); padding: 6px 0; font-size: 17px; }
@@ -247,6 +247,11 @@
 .reasoning-sums li > span { color: var(--muted); }
 .reasoning-sums strong { color: var(--amber-bright); font-family: Georgia, 'Times New Roman', serif; font-size: 22px; font-weight: 400; }
 .reasoning-sum-note { font-size: 14px !important; }
+.reasoning-fitch-outer { margin: 18px 0 22px; padding: 1px 0 12px 22px; border-left: 3px solid var(--blue); border-bottom: 1px solid var(--line-strong); }
+.reasoning-fitch-inner { margin: 14px 0 18px 4px; padding: 1px 0 12px 18px; border-left: 3px solid #ff817e; border-bottom: 1px solid var(--line-strong); }
+.reasoning-fitch-assume { color: #ff817e; }
+.reasoning-fitch-result { color: var(--ink); }
+.reasoning-fitch-universal { margin-top: 22px !important; color: var(--ink); }
 .reasoning-conditionals { margin: 24px 0; padding: 12px 18px; border: 1px solid var(--line); border-radius: 10px; }
 .reasoning-conditional-list { padding: 0; margin: 22px 0; list-style: none; }
 .reasoning-conditional-list li { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center; gap: 20px; margin: 22px 0; }
@@ -271,6 +276,8 @@
   .reasoning-questions article { grid-template-columns: 28px minmax(0, 1fr); gap: 8px; padding: 24px 0; }
   .reasoning-connection { padding: 0 16px 8px; }
   .reasoning-connection > summary { font-size: 20px; }
+  .reasoning-fitch-outer { padding-left: 15px; }
+  .reasoning-fitch-inner { padding-left: 12px; }
   .reasoning-recall { padding-left: 16px; }
   .reasoning-reference { grid-template-columns: 1fr; }
   .reasoning-reference figure { max-width: 300px; width: 100%; margin: 0 auto; }

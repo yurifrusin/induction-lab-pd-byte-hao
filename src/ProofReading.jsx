@@ -6,7 +6,7 @@ import { ArrowIcon, ResetIcon } from './icons.jsx'
 import { MiniTower } from './Tower.jsx'
 
 function Sum() {
-  return <>1 + 2 + ··· + 2<sup>n − 1</sup></>
+  return <>1 + 2 + ··· + 2<sup>(n − 1)</sup></>
 }
 
 function ConditionalLines({ copy }) {
@@ -52,16 +52,34 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
     </details>
     <div id="reasoning-lower" hidden={recalling}>
         <details className="reasoning-connection"><summary>{copy.connect}</summary>
-          <p>{copy.let}</p><p>{copy.assumption}</p><p>{copy.consequence}</p>
-          <p className="reasoning-disc-count">{copy.counting}</p><p>{copy.meaning}</p>
-          <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
-          <details><summary>{copy.detoursTitle}</summary>{copy.detours.map((paragraph, i) => <p key={i}>{paragraph}</p>)}</details>
-          <ConditionalLines copy={copy} />
-          <p>{copy.general}</p><div className="sequence-sum"><Sum /></div>
+          <div className="reasoning-fitch-outer">
+            <p>{copy.let}</p>
+            <div className="reasoning-fitch-inner">
+              <p><strong className="reasoning-fitch-assume">{copy.assumeLead}{copy.assumeColon}</strong> {copy.assumption}</p>
+              <p>{copy.consequence}</p>
+              <p className="reasoning-disc-count">{copy.counting}</p><p>{copy.meaning}</p>
+              <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
+              <details><summary>{copy.detoursTitle}</summary>{copy.detours.map((paragraph, i) => <p key={i}>{paragraph}</p>)}</details>
+              <ConditionalLines copy={copy} />
+            </div>
+            <p className="reasoning-fitch-result">{copy.scopeConclusion}</p>
+          </div>
+          <p className="reasoning-fitch-universal">{copy.general}</p>
+          <div className="sequence-sum"><Sum /></div>
           <p className="reasoning-sum-note">{copy.sumNote}</p>
         </details>
         <details className="reasoning-connection"><summary>{copy.attainTitle}</summary>
-          {copy.attain.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+          <p>{copy.attainBase}</p>
+          <div className="reasoning-fitch-outer">
+            <p>{copy.attainLet}</p>
+            <div className="reasoning-fitch-inner">
+              <p><strong className="reasoning-fitch-assume">{common.lower.assumeLead}{common.lower.assumeColon}</strong> {copy.attainAssumption}</p>
+              <p>{copy.attainStep}</p>
+            </div>
+            <p className="reasoning-fitch-result">{copy.attainResult}</p>
+          </div>
+          <p className="reasoning-fitch-universal">{copy.attainGeneral}</p>
+          <div className="sequence-sum"><Sum /></div>
         </details>
         <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p>{copy.done}</p><div className="sequence-sum"><Sum /></div></div>
     </div>
