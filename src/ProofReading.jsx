@@ -17,7 +17,6 @@ function ConditionalLines({ copy }) {
       <span className="reasoning-conditional-stroke" aria-hidden="true" />
       <p>{statement}</p>
     </li>)}</ul>
-    <p>{copy.barWhy}</p>
   </details>
 }
 
@@ -46,9 +45,8 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
   return <section className="sequence-screen sequence-proof-screen reasoning-page reasoning-lower">
     <header className="sequence-heading"><span className="sequence-eyebrow">{copy.eyebrow}</span><h1>{copy.title}</h1><p>{copy.intro}</p></header>
     <button className="sequence-button reasoning-toggle" type="button" aria-expanded={!recalling} aria-controls="reasoning-lower" onClick={() => setRecalling(!recalling)}>{recalling ? common.show : common.hide}</button>
-    <p className="reasoning-focus-cue">{copy.focusCue}</p>
     <details className="reasoning-visual-help">
-      <summary>{common.visualHelp}</summary><p>{common.visualNote}</p>
+      <summary>{common.visualHelp}</summary>
       <div className="reasoning-reference">{common.visualCaptions.map((caption, i) => <figure key={i}><MiniTower count={5} stage={['clear', 'largest', 'rebuild'][i]} /><div className="reasoning-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div><figcaption>{caption}</figcaption></figure>)}</div>
     </details>
     <div id="reasoning-lower" hidden={recalling}>
@@ -58,9 +56,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
             <div className="reasoning-fitch-inner">
               <p><strong className="reasoning-fitch-assume">{copy.assumeLead}{copy.assumeColon}</strong> {copy.assumption}</p>
               <p>{copy.consequence}</p>
-              <p className="reasoning-disc-count">{copy.counting}</p><p>{copy.meaning}</p>
               <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
-              <details><summary>{copy.detoursTitle}</summary>{copy.detours.map((paragraph, i) => <p key={i}>{paragraph}</p>)}</details>
               <ConditionalLines copy={copy} />
             </div>
             <p className="reasoning-fitch-result">{copy.scopeConclusion}</p>
@@ -80,7 +76,6 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
           </div>
           <p className="reasoning-fitch-universal">{copy.attainGeneral}</p>
           <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p>{copy.done}</p><div className="sequence-sum"><Sum /></div></div>
-          <section className="reasoning-recall"><h2>{copy.recallTitle}</h2><p>{copy.recall}</p></section>
         </details>
     </div>
     {teacherLens && <aside className="sequence-teacher-cue" aria-label={t('Teacher lens')}><strong>{t('TEACHER LENS')}</strong><p>{copy.teacher}</p></aside>}
