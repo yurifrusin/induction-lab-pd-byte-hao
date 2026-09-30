@@ -10,6 +10,15 @@ function Sum() {
   return <>1 + 2 + ··· + 2<sup>(n − 1)</sup></>
 }
 
+function DiscCountText({ value }) {
+  return value.split(/(\[\[counts\]\]|\[\[nextCounts\]\])/).map((part, index) => {
+    if (part === '[[counts]]' || part === '[[nextCounts]]') {
+      return <strong key={index}>1, 2, 2<sup>2</sup>, …, 2<sup>{part === '[[counts]]' ? 'n − 1' : 'n'}</sup></strong>
+    }
+    return part
+  })
+}
+
 export function LowerBoundLadder({ compact = false }) {
   const locale = useLanguage()
   const copy = proofCopy[locale].lower
@@ -45,13 +54,14 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
           <div className="reasoning-fitch-outer">
             <p>{copy.let}</p>
             <div className="reasoning-fitch-inner">
-              <p><strong className="reasoning-fitch-assume">{copy.assumeLead}{copy.assumeColon}</strong> {copy.assumption}</p>
+              <p><strong className="reasoning-fitch-assume">{copy.assumeLead}{copy.assumeColon}</strong> <DiscCountText value={copy.assumption} /></p>
+              <p>{copy.countHelp}</p>
               {copy.lowerSteps.map((step, index) => <p key={index}>{step}</p>)}
               <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
             </div>
-            <p className="reasoning-fitch-result">{copy.scopeConclusion}</p>
+            <p className="reasoning-fitch-result"><DiscCountText value={copy.scopeConclusion} /></p>
           </div>
-          <p className="reasoning-fitch-universal">{copy.general}</p>
+          <p className="reasoning-fitch-universal"><DiscCountText value={copy.general} /></p>
           <div className="sequence-sum"><Sum /></div>
         </details>
         <details className="reasoning-connection"><summary>{copy.attainTitle}</summary>
