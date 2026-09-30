@@ -254,10 +254,11 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
             answer={proveAnswer}
             onAnswer={setProveAnswer}
             onBack={() => changeStage('existence')}
-            onNext={() => changeStage('appendix')}
+            onNext={() => changeStage('steps')}
+            onOpenAppendix={() => changeStage('appendix')}
             teacherLens={presenterMode}
-            nextUnlocked={!stageLocks.appendix}
-            gateMessage={stageLocks.appendix}
+            nextUnlocked={!stageLocks.steps}
+            gateMessage={stageLocks.steps}
           />
         )}
 

@@ -53,6 +53,10 @@
   line-height: 1.65;
 }
 .shortest-screen .compact-feedback.is-correct { color: var(--green); }
+.shortest-appendix-link { margin: 16px 0 28px; line-height: 1.7; }
+.shortest-appendix-link a { color: var(--blue); text-decoration: underline; text-underline-offset: .2em; }
+.shortest-appendix-link [aria-disabled] { color: var(--dim); }
+.shortest-appendix-link small { display: block; color: var(--muted); margin-top: 6px; }
 
 .shortest-closing-question {
   margin: 36px 0 28px;

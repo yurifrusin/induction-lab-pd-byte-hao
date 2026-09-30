@@ -317,12 +317,20 @@ function ProofStage({ label, math, number, stage }) {
   )
 }
 
-export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nextUnlocked = true, gateMessage = '' }) {
+export function ProveScreen({ answer, onAnswer, onBack, onNext, onOpenAppendix, teacherLens, nextUnlocked = true, gateMessage = '' }) {
   const locale = useLanguage()
   const copy = shortestCopy[locale]
   const [selection, setSelection] = useState(answer)
   const submitted = selection != null && selection === answer
   const correct = submitted && answer === 'all'
+  const appendixUrl = new URL(window.location.href)
+  appendixUrl.searchParams.set('stage', 'appendix')
+  const appendixHref = `${appendixUrl.pathname}${appendixUrl.search}`
+  const openAppendix = (event) => {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+    event.preventDefault()
+    if (correct && nextUnlocked) onOpenAppendix()
+  }
 
   return (
     <section className="shortest-screen">
@@ -362,6 +370,11 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
         </details>
         <LowerBoundLadder compact />
         <p className="shortest-closing-question">{copy.closingQuestion}</p>
+        <p className="shortest-appendix-link">{correct && nextUnlocked
+          ? <a href={appendixHref} onClick={openAppendix}>{copy.appendixLink}</a>
+          : <span role="link" aria-disabled="true">{copy.appendixLink}</span>}
+          {(!correct || !nextUnlocked) && <small>{!nextUnlocked ? copy.appendixLocked : copy.answerFirst}</small>}
+        </p>
         {teacherLens && (
           <LensNote time={copy.teacherLabel}>{copy.teacher}</LensNote>
         )}
