@@ -2,6 +2,8 @@ export const existenceCopy = {
   zh: {
     title: '继续加盘，也一定能搬完吗？',
     intro: '三个盘能搬完，是因为我们已经把走法一步步做出来了。可我们不能把每种盘数都试一遍：会不会加到某个数量，就没有走法了？',
+    lead: '先比较两句话：“只要两个碟子有走法，三个碟子就有走法”；“只要三个碟子有走法，四个碟子就有走法”。它们成立的理由与数字 2、3 本身没有关系。',
+    leadQuestion: '真正要想的是：已知较小的一座塔有走法，怎样借助这条走法，保证多一个碟子的塔也能搬完？',
     reveal: '先想一想，再展开证明',
     startTitle: '从一个盘开始',
     start: '一个盘直接移到目标柱，就搬完了。',
@@ -22,6 +24,8 @@ export const existenceCopy = {
   en: {
     title: 'Can we always finish as we add more discs?',
     intro: 'We know three discs can be moved because we have built a route step by step. But we cannot try every disc count. Could there be a count with no route at all?',
+    lead: 'Compare two claims: “If two discs have a route, then three do too”; “If three discs have a route, then four do too.” The reason these claims work does not depend on the particular numbers two and three.',
+    leadQuestion: 'The question is: if a smaller tower has a route, how can that route help us move a tower with one more disc?',
     reveal: 'Think it through, then open the proof',
     startTitle: 'Start with one disc',
     start: 'Move the single disc directly to the target. The task is complete.',

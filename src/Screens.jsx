@@ -328,6 +328,7 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
     <section className="shortest-screen">
       <header className="shortest-heading">
         <h1>{copy.title}</h1>
+        <p>{existenceCopy[locale].intro}</p>
         <p>{copy.intro}</p>
       </header>
         <fieldset className="sentence-choice shortest-choice">

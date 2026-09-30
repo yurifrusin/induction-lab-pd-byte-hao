@@ -1,7 +1,7 @@
 export const shortestCopy = {
   zh: {
     title: '还能更少吗？',
-    intro: '先看移动最大碟需要什么，再从一个碟子开始，一层层想下去。',
+    intro: '上一页已经说明：继续加盘也有走法。现在换一个问题：能不能走得更少？先看移动最大碟前必须发生什么。',
     question: '最大碟准备离开起始柱。上面的小碟子该怎样放？',
     choices: { some: '分开放在另外两根柱上', all: '全部叠在同一根柱上' },
     think: '选好后，试着解释：为什么另一种放法行不通？',
@@ -42,7 +42,7 @@ export const shortestCopy = {
   },
   en: {
     title: 'Could fewer moves work?',
-    intro: 'First explain what lets the largest disc move. Then build the reasoning from one disc onwards.',
+    intro: 'The previous page established a route as more discs are added. Now ask whether fewer moves could work. Start with what must happen before the largest disc moves.',
     question: 'The largest disc is about to leave its starting peg. How must the smaller discs be arranged?',
     choices: { some: 'Spread across the other two pegs', all: 'Stacked together on one peg' },
     think: 'After choosing, explain why the other arrangement would not work.',

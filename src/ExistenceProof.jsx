@@ -5,6 +5,8 @@ export function ExistenceProof() {
   const copy = existenceCopy[useLanguage()]
   return <section className="existence-proof" aria-labelledby="existence-title">
     <h1 id="existence-title">{copy.title}</h1>
+    <p>{copy.lead}</p>
+    <p>{copy.leadQuestion}</p>
     <details>
       <summary>{copy.reveal}</summary>
       <h3>{copy.startTitle}</h3><p>{copy.start}</p>
