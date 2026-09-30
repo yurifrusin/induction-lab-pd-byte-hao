@@ -24,14 +24,13 @@ export function ExistenceProof() {
           <p><strong className="existence-logic-marker">{copy.assumptionLead}</strong>{copy.assumptionBody}</p>
           <p>{copy.extension}</p>
           <ol>{copy.steps.map((step, index) => <li key={index}>{step}</li>)}</ol>
-          <p className="existence-fitch-result">{copy.constructionResult}</p>
+          <p className="existence-fitch-result"><strong className="existence-logic-marker">{copy.constructionLead}</strong>{copy.constructionResult}</p>
         </div>
         <p><strong className="existence-logic-marker">{copy.specificLead}</strong>{copy.specificImplication}</p>
       </div>
       <h3 className="existence-implication">{copy.implication}</h3>
       <p>{copy.start}</p>
-      <h3 className="existence-conclusion-title">{copy.conclusionLead}</h3>
-      <p>{copy.conclusion}</p>
+      <p className="existence-conclusion">{copy.conclusionLead}{copy.conclusion}</p>
     </details>
     <p className="reasoning-pending">{copy.next}</p>
   </section>
