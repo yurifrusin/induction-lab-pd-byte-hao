@@ -96,6 +96,7 @@ export function AppendixProofScreen({ onBack, onNext }) {
       <p>{copy.routeIntro}</p>
       <ol>{copy.routeSteps.map((step) => <li key={step}>{step}</li>)}</ol>
     </section>
+    <h2 className="appendix-proof-label">{copy.proofLabel}</h2>
     <p className="appendix-base">{copy.base}</p>
     <div className="reasoning-fitch-outer">
       <h2>{copy.let}</h2>
@@ -107,7 +108,7 @@ export function AppendixProofScreen({ onBack, onNext }) {
       </div>
       <p className="reasoning-fitch-result"><strong>{copy.implicationLead}</strong>{copy.implication}</p>
     </div>
-    <p className="appendix-conclusion">{copy.conclusion}</p>
+    <p className="appendix-conclusion">{copy.conclusion}<span className="appendix-qed" aria-label={copy.proofEnd}>□</span></p>
     <footer className="sequence-footer">
       <button className="sequence-button" type="button" onClick={onBack}><ArrowIcon direction="left" />{copy.back}</button>
       <button className="sequence-button is-primary" type="button" onClick={onNext}>{copy.restart}<ResetIcon /></button>
