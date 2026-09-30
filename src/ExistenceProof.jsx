@@ -30,6 +30,7 @@ export function ExistenceProof() {
       </div>
       <h3 className="existence-implication">{copy.implication}</h3>
       <p>{copy.start}</p>
+      <h3 className="existence-conclusion-title">{copy.conclusionLead}</h3>
       <p>{copy.conclusion}</p>
     </details>
     <p className="reasoning-pending">{copy.next}</p>
