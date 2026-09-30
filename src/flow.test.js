@@ -39,6 +39,17 @@ test('standalone presenters can navigate without classroom approvals', () => {
   }
 })
 
+test('the shortcut to the appendix preserves approval checks and restoration', () => {
+  assert.equal(accessibleStage('appendix', classroom(true, true), 'possible', 'all'), 'appendix')
+  assert.notEqual(accessibleStage('appendix', classroom(true, false), 'possible', 'all'), 'appendix')
+  assert.notEqual(accessibleStage('appendix', classroom(true, true), 'possible', 'some'), 'appendix')
+  for (const gateStatus of ['loading', 'error', 'ended']) {
+    assert.notEqual(accessibleStage('appendix', { ...classroom(true, true), gateStatus }, 'possible', 'all'), 'appendix')
+  }
+  assert.notEqual(accessibleStage('appendix', { ...classroom(true, true), workflowVersion: 1 }, 'possible', 'all'), 'appendix')
+  assert.equal(storedStage('appendix'), 'debrief')
+})
+
 test('the appendix follows PROVE and stores a compatible classroom stage', () => {
   assert.deepEqual(STAGES.map(({ id }) => id), ['play', 'notice', 'existence', 'prove', 'steps', 'debrief', 'appendix'])
   assert.equal(accessibleStage('can', null, null, null), 'debrief')

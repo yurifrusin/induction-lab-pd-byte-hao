@@ -38,7 +38,7 @@ export const shortestCopy = {
     ],
     teacher: '先让学生解释最大碟为什么能移动，再展开理由与图示。随后从一个碟子开始，让学生把刚刚说明的步数用到两个、三个碟子上。重点听他们能否说清前后两次搬小塔，而不只是选对选项或报出数字。',
     closingQuestion: '我们已经说明：少于这些步不可能。怎样确认恰好用这些步完成的走法确实存在？',
-    back: '返回', next: '拆解步骤', waiting: '等待教师放行',
+    back: '返回', next: '查看附录', waiting: '等待教师放行',
   },
   en: {
     title: 'Could fewer moves work?',
@@ -79,6 +79,6 @@ export const shortestCopy = {
     ],
     teacher: 'Ask students to explain what lets the largest disc move before opening the reasoning and diagrams. Then start with one disc and ask them to use each established bound for two discs and then three. Listen for why the two smaller transfers are needed, rather than just a correct selection or a number.',
     closingQuestion: 'We have shown that fewer moves are impossible. How can we be sure there is a route that finishes in exactly this many moves?',
-    back: 'Back', next: 'Explore the steps', waiting: 'Waiting for teacher',
+    back: 'Back', next: 'View appendix', waiting: 'Waiting for teacher',
   },
 }
