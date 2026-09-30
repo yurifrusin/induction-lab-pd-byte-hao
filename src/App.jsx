@@ -10,7 +10,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   const initialProgress = classroom?.initialProgress
   const initialPlayCount = classroom && initialProgress?.disc_count === 2 ? 2 : classroom ? 3 : 2
   const [stage, setStage] = useState(() => {
-    let requested = initialProgress?.stage ?? 'play'
+    let requested = new URLSearchParams(window.location.search).get('stage') ?? initialProgress?.stage ?? 'play'
     if (classroom && requested === 'notice') {
       try {
         if (window.sessionStorage.getItem(`induction-existence:${classroom.initialProgressKey}`) === 'open') requested = 'existence'
@@ -270,7 +270,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
         )}
 
         {activeStage === 'appendix' && (
-          <AppendixProofScreen onBack={() => changeStage('debrief')} onNext={restartExperience} />
+          <AppendixProofScreen onBack={() => changeStage('debrief')} onNext={restartExperience} onOpenQuestion={() => changeStage('prove')} />
         )}
       </main>
       <p className="sr-only" aria-live="polite">{t(message)}</p>

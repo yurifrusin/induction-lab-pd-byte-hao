@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useLanguage, t } from './Language.jsx'
 import { proofCopy } from './proofCopy.js'
 import { appendixCopy } from './appendixCopy.js'
@@ -87,10 +87,22 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
   </section>
 }
 
-export function AppendixProofScreen({ onBack, onNext }) {
+function LinkedFourthText({ value, href, label, onOpen }) {
+  return value.split('[[shortest]]').map((part, index) => <Fragment key={index}>{index > 0 && <a className="appendix-page-link" href={href} onClick={onOpen}>{label}</a>}{part}</Fragment>)
+}
+
+export function AppendixProofScreen({ onBack, onNext, onOpenQuestion }) {
   const copy = appendixCopy[useLanguage()]
+  const fourthUrl = new URL(window.location.href)
+  fourthUrl.searchParams.set('stage', 'prove')
+  const fourthHref = `${fourthUrl.pathname}${fourthUrl.search}`
+  const openFourth = (event) => {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+    event.preventDefault()
+    onOpenQuestion()
+  }
   return <section className="sequence-screen sequence-proof-screen reasoning-page reasoning-appendix">
-    <header className="sequence-heading"><span className="sequence-eyebrow">{copy.eyebrow}</span><h1>{copy.title}</h1><p>{copy.intro}</p></header>
+    <header className="sequence-heading"><span className="sequence-eyebrow">{copy.eyebrow}</span><h1><a className="appendix-page-link" href={fourthHref} onClick={openFourth}>{copy.title}</a></h1><p>{copy.intro}</p></header>
     <section className="appendix-route">
       <h2>{copy.routeTitle}</h2>
       <p>{copy.routeIntro}</p>
@@ -104,11 +116,11 @@ export function AppendixProofScreen({ onBack, onNext }) {
         <p><strong className="reasoning-fitch-assume">{copy.assumptionLead}</strong> {copy.assumption}</p>
         <p>{copy.extension}</p>
         <ol>{copy.steps.map((step) => <li key={step}>{step}</li>)}</ol>
-        <p><strong className="reasoning-fitch-assume">{copy.resultLead}</strong>{copy.result}</p>
+        <p><strong className="reasoning-fitch-assume">{copy.resultLead}</strong><LinkedFourthText value={copy.result} href={fourthHref} label={copy.shortestPageLabel} onOpen={openFourth} /></p>
       </div>
       <p className="reasoning-fitch-result"><strong>{copy.implicationLead}</strong>{copy.implication}</p>
     </div>
-    <p className="appendix-conclusion">{copy.conclusion}<span className="appendix-qed" aria-label={copy.proofEnd}>□</span></p>
+    <p className="appendix-conclusion"><LinkedFourthText value={copy.conclusion} href={fourthHref} label={copy.shortestPageLabel} onOpen={openFourth} /><span className="appendix-qed" aria-label={copy.proofEnd}>□</span></p>
     <footer className="sequence-footer">
       <button className="sequence-button" type="button" onClick={onBack}><ArrowIcon direction="left" />{copy.back}</button>
       <button className="sequence-button is-primary" type="button" onClick={onNext}>{copy.restart}<ResetIcon /></button>
