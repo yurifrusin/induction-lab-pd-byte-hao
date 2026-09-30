@@ -503,10 +503,13 @@ function formatTime(value) {
 
 function ParticipantRow({ participant }) {
   useLanguage()
+  const stageLabel = participant.stage === 'notice' && participant.notice_answer === 'possible'
+    ? 'NOTICE / CAN WE KEEP GOING?'
+    : STAGE_LABELS[participant.stage] ?? participant.stage
   return (
     <tr>
       <td><strong>{participant.display_name}</strong><small>{t("Joined ")}{formatTime(participant.joined_at)}</small></td>
-      <td><span className={`stage-pill stage-${participant.stage}`}>{t(STAGE_LABELS[participant.stage] ?? participant.stage)}</span></td>
+      <td><span className={`stage-pill stage-${participant.stage}`}>{t(stageLabel)}</span></td>
       <td>{participant.move_count}<small>{participant.disc_count}{t(" discs")}</small></td>
       <td>{participant.hint_count}</td>
       <td>
@@ -774,7 +777,7 @@ function TeacherDashboard({ authSession, onBack }) {
                 ) : (
                   <div className="class-gate-actions">
                     <article>
-                      <h3>{t("NOTICE → SHORTEST?")}</h3>
+                      <h3>{t("NOTICE → CAN WE KEEP GOING?")}</h3>
                       {rosterReady && <><p>{noticeCorrectCount} / {participants.length}{t(" have answered NOTICE correctly.")}</p>
                       <p>{t('Not yet correct:')} {answerSummary.notice.incorrect} · {t('Not answered:')} {answerSummary.notice.unanswered}</p></>}
                       <button
@@ -783,7 +786,7 @@ function TeacherDashboard({ authSession, onBack }) {
                         onClick={() => changeClassGate('shortest')}
                         type="button"
                       >
-                        {t(selectedSession.shortest_released_at ? 'SHORTEST? approved ✓' : gateBusy === 'shortest' ? 'Approving…' : 'Approve class: SHORTEST?')}
+                        {t(selectedSession.shortest_released_at ? 'CAN WE KEEP GOING? approved ✓' : gateBusy === 'shortest' ? 'Approving…' : 'Approve class: CAN WE KEEP GOING?')}
                       </button>
                     </article>
                     <article>
@@ -799,7 +802,7 @@ function TeacherDashboard({ authSession, onBack }) {
                         {t(selectedSession.steps_released_at ? 'STEPS approved ✓' : gateBusy === 'steps' ? 'Approving…' : 'Approve class: STEPS')}
                       </button>
                     </article>
-                    <p className="gate-followup">{t("The existence proof is part of SHORTEST?. After STEPS, learners can continue to PROVE without another class approval.")}</p>
+                    <p className="gate-followup">{t("The existence proof comes before SHORTEST?. After STEPS, learners can continue to PROVE without another class approval.")}</p>
                   </div>
                 )}
               </section>

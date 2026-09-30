@@ -1,10 +1,16 @@
 export const STAGES = [
   { id: 'play', label: 'PLAY' },
   { id: 'notice', label: 'NOTICE' },
+  { id: 'existence', label: 'MORE DISCS?' },
   { id: 'prove', label: 'SHORTEST?' },
   { id: 'steps', label: 'STEPS' },
   { id: 'debrief', label: 'PROVE' },
 ]
+
+// The classroom database predates this inserted page; preserve its stored stage.
+export function storedStage(stage) {
+  return stage === 'existence' ? 'notice' : stage
+}
 
 export function stageLockReason(stage, classroom, noticeAnswer, proveAnswer) {
   if (stage === 'can') stage = 'debrief'
@@ -13,8 +19,8 @@ export function stageLockReason(stage, classroom, noticeAnswer, proveAnswer) {
   if (noticeAnswer !== 'possible') return 'Answer the NOTICE question correctly first.'
   if (classroom.gateStatus !== 'ready') return 'Waiting to confirm classroom approval. Check your connection.'
   if (classroom.workflowVersion !== 2) return 'Your teacher needs to start the guided sequence for this class.'
-  if (!classroom.releases?.shortest) return 'Your answer is correct. Waiting for your teacher to open SHORTEST? for the class.'
-  if (stage === 'prove') return ''
+  if (!classroom.releases?.shortest) return 'Your answer is correct. Waiting for your teacher to open CAN WE KEEP GOING? for the class.'
+  if (stage === 'existence' || stage === 'prove') return ''
   if (proveAnswer !== 'all') return 'Answer the SHORTEST? question correctly first.'
   if (!classroom.releases?.steps) return 'Your answer is correct. Waiting for your teacher to open STEPS for the class.'
   return ''
@@ -24,5 +30,5 @@ export function accessibleStage(requested, classroom, noticeAnswer, proveAnswer)
   if (requested === 'can') requested = 'debrief'
   const stage = STAGES.some(({ id }) => id === requested) ? requested : 'play'
   if (!stageLockReason(stage, classroom, noticeAnswer, proveAnswer)) return stage
-  return stageLockReason('prove', classroom, noticeAnswer, proveAnswer) ? 'notice' : 'prove'
+  return stageLockReason('existence', classroom, noticeAnswer, proveAnswer) ? 'notice' : 'existence'
 }

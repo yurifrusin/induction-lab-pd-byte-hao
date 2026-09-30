@@ -16,7 +16,7 @@ export const existenceCopy = {
     conclusion: '一个盘已经有走法。用刚才的方法，就能构造出两个盘的走法，再构造三个盘的走法，继续往下做。对于每个正整数 n，从一个盘开始接着构造 n − 1 次，就能得到 n 个盘的走法。',
     noException: '不会加到某个盘数就突然失败：起点已经能做到，而且每增加一个盘，都有继续下去的方法。',
     name: '这就是数学归纳法：先说明起点能做到，再说明怎样从少一个盘的走法构造出多一个盘的走法。',
-    next: '有解已经说明了。这套方法要走多少步，又为什么最省步数？下一页用四个盘对照这套构造，分别数每个盘的移动次数。',
+    next: '现在我们知道碟子继续增加也有走法。下一页再问：能不能走得更少？',
     teacher: '先请学生说明两次小塔搬运各自怎样使用已有方法，再展开核对。听他们能否解释柱子的角色变化。等起点与增加一个盘的方法都讲清楚，再介绍“数学归纳法”这个名字。此处先证明有解，随后再讨论这套方法的步数。',
   },
   en: {
@@ -36,7 +36,7 @@ export const existenceCopy = {
     conclusion: 'One disc already has a route. The construction gives a route for two discs, then three, and continues. For every positive integer n, starting with one disc and applying the construction n − 1 times gives a route for n discs.',
     noException: 'There is no disc count at which this suddenly fails: the starting case works, and each added disc has a way to continue.',
     name: 'This is mathematical induction: establish the starting case, then explain how a route for one fewer disc gives a route for one more.',
-    next: 'We have established that a route exists. How many moves does this method take, and why is it shortest? Next, use four discs to play through the construction and count each disc’s moves.',
+    next: 'We now know that a route exists as the number of discs grows. Next, ask whether fewer moves could work.',
     teacher: 'Ask how each smaller-tower transfer uses the existing method before opening the proof. Listen for an explanation of the changing peg roles. Introduce the name “mathematical induction” after the starting case and the extension are clear. Establish existence here, then discuss the method’s move count.',
   },
 }

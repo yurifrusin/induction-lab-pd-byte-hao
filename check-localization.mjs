@@ -5,7 +5,7 @@ import { createServer } from 'vite'
 const server = await createServer({ server: { middlewareMode: true }, appType: 'custom' })
 try {
   const lang = await server.ssrLoadModule('/src/Language.jsx')
-  const { PlayScreen, ProveScreen } = await server.ssrLoadModule('/src/Screens.jsx')
+  const { ExistenceScreen, NoticeScreen, PlayScreen, ProveScreen } = await server.ssrLoadModule('/src/Screens.jsx')
   const { MinimumProofScreen } = await server.ssrLoadModule('/src/SequenceScreens.jsx')
   const props = {count: 3, pegs: [[3,2,1],[],[]], moveCount: 0, message: 'Select a top disc, then choose its destination.', target: 7}
   for (const locale of ['en','zh']) {
@@ -19,9 +19,15 @@ try {
     assert.ok(teacher.includes(hint))
   }
   lang.setLanguage('zh')
+  const notice = renderToStaticMarkup(React.createElement(NoticeScreen, { answer: 'possible', count: 3, nextUnlocked: true }))
+  assert.match(notice, /起点：把三个碟子从 A 柱搬到 C 柱/)
+  assert.match(notice, /三个盘能搬完，是因为我们已经把走法一步步做出来了/)
+  assert.match(notice, /继续加盘，也一定能搬完吗？/)
+  const existence = renderToStaticMarkup(React.createElement(ExistenceScreen))
+  assert.match(existence, /对于每个正整数 n/)
   const shortest = renderToStaticMarkup(React.createElement(ProveScreen))
-  assert.match(shortest, /对于每个正整数 n/)
-  assert.ok(shortest.indexOf('三个圆盘') < shortest.indexOf('existence-proof'))
+  assert.doesNotMatch(shortest, /existence-proof/)
+  assert.match(shortest, /三个圆盘/)
   assert.match(renderToStaticMarkup(React.createElement(MinimumProofScreen)), /这套走法恰好用这些步数完成/)
   assert.equal(lang.t('Yuri'), 'Yuri')
   assert.equal(lang.t('possible'), 'possible')

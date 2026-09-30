@@ -1,15 +1,23 @@
 import { t, useLanguage } from './Language.jsx'
 import { useEffect, useState } from 'react'
 import { findNextShortestMove, isComplete, makePegs, moveDisk, optimalMoves } from './game.js'
-import { AppHeader, NoticeScreen, PlayScreen, ProveScreen } from './Screens.jsx'
+import { AppHeader, ExistenceScreen, NoticeScreen, PlayScreen, ProveScreen } from './Screens.jsx'
 import { MinimumProofScreen, StepsScreen } from './SequenceScreens.jsx'
-import { accessibleStage, stageLockReason, STAGES } from './flow.js'
+import { accessibleStage, stageLockReason, storedStage, STAGES } from './flow.js'
 
 export default function App({ classroom = null, onLeaveClass = null, onOpenClassroom = null, onProgress = null }) {
   useLanguage()
   const initialProgress = classroom?.initialProgress
   const initialPlayCount = classroom && initialProgress?.disc_count === 2 ? 2 : classroom ? 3 : 2
-  const [stage, setStage] = useState(() => accessibleStage(initialProgress?.stage ?? 'play', classroom, initialProgress?.notice_answer, initialProgress?.prove_answer))
+  const [stage, setStage] = useState(() => {
+    let requested = initialProgress?.stage ?? 'play'
+    if (classroom && requested === 'notice') {
+      try {
+        if (window.sessionStorage.getItem(`induction-existence:${classroom.initialProgressKey}`) === 'open') requested = 'existence'
+      } catch { /* Classroom progress still opens without browser storage. */ }
+    }
+    return accessibleStage(requested, classroom, initialProgress?.notice_answer, initialProgress?.prove_answer)
+  })
   const [teacherLens, setTeacherLens] = useState(false)
   const [discCount, setDiscCount] = useState(initialPlayCount)
   const [pegs, setPegs] = useState(() => makePegs(initialPlayCount))
@@ -39,9 +47,18 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   useEffect(() => { window.scrollTo(0, 0) }, [activeStage])
 
   useEffect(() => {
+    if (!classroom) return
+    try {
+      const key = `induction-existence:${classroom.initialProgressKey}`
+      if (activeStage === 'existence') window.sessionStorage.setItem(key, 'open')
+      else window.sessionStorage.removeItem(key)
+    } catch { /* The page remains usable without browser storage. */ }
+  }, [activeStage, classroom?.initialProgressKey])
+
+  useEffect(() => {
     if (!onProgress || (classroom && classroom.gateStatus !== 'ready')) return
     onProgress({
-      stage: activeStage,
+      stage: storedStage(activeStage),
       ...(trackingSteps ? stepsProgress : { disc_count: discCount, move_count: moveCount, hint_count: hintCount, completed }),
       notice_answer: noticeAnswer,
       prove_answer: proveAnswer,
@@ -207,18 +224,22 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
             moveCount={completed ? moveCount : null}
             onAnswer={setNoticeAnswer}
             onBack={() => changeStage('play')}
-            onNext={() => changeStage('prove')}
+            onNext={() => changeStage('existence')}
             teacherLens={presenterMode}
-            nextUnlocked={!stageLocks.prove}
-            gateMessage={stageLocks.prove}
+            nextUnlocked={!stageLocks.existence}
+            gateMessage={stageLocks.existence}
           />
+        )}
+
+        {activeStage === 'existence' && (
+          <ExistenceScreen onBack={() => changeStage('notice')} onNext={() => changeStage('prove')} teacherLens={presenterMode} />
         )}
 
         {activeStage === 'prove' && (
           <ProveScreen
             answer={proveAnswer}
             onAnswer={setProveAnswer}
-            onBack={() => changeStage('notice')}
+            onBack={() => changeStage('existence')}
             onNext={() => changeStage('steps')}
             teacherLens={presenterMode}
             nextUnlocked={!stageLocks.steps}

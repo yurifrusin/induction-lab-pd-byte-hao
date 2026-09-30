@@ -4,8 +4,7 @@ import { existenceCopy } from './existenceCopy.js'
 export function ExistenceProof() {
   const copy = existenceCopy[useLanguage()]
   return <section className="existence-proof" aria-labelledby="existence-title">
-    <h2 id="existence-title">{copy.title}</h2>
-    <p>{copy.intro}</p>
+    <h1 id="existence-title">{copy.title}</h1>
     <details>
       <summary>{copy.reveal}</summary>
       <h3>{copy.startTitle}</h3><p>{copy.start}</p>

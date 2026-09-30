@@ -971,6 +971,19 @@ button.hanoi-disk:active {
   place-items: center;
 }
 
+.notice-checkpoint .notice-tower {
+  width: min(100%, 450px);
+  margin: 0 auto;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(10, 32, 48, 0.55);
+}
+
+.notice-checkpoint .notice-tower .mini-tower-wrap { width: min(100%, 330px); }
+.notice-peg-labels { display: grid; grid-template-columns: repeat(3, 1fr); width: min(100%, 330px); text-align: center; color: var(--muted); }
+.notice-checkpoint .notice-tower figcaption { margin-top: 14px; color: var(--muted); text-align: center; font-size: 15px; }
+
 .found-stamp {
   display: inline-flex;
   align-items: center;

@@ -231,7 +231,7 @@ export function NoticeScreen({
   nextUnlocked = true,
   gateMessage = '',
 }) {
-  useLanguage()
+  const locale = useLanguage()
   const [selection, setSelection] = useState(answer)
   const submitted = selection != null && selection === answer
   const correct = submitted && answer === 'possible'
@@ -242,6 +242,11 @@ export function NoticeScreen({
         <h1>{t('Think about your attempt')}</h1>
         {moveCount != null && <p className="notice-attempt"><strong>{moveCount}</strong><span>{t(`moves found with ${count} discs`)}</span></p>}
       </header>
+      <figure className="notice-tower">
+        <MiniTower count={3} stage="start" />
+        <div className="notice-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div>
+        <figcaption>{t('Starting position: move the three-disc tower from A to C.')}</figcaption>
+      </figure>
         <div className="notice-question-block">
           <h2>{t('Suppose you finish a legal route. What can you conclude?')}</h2>
           <div className="answer-list" role="group" aria-label={t("What has been proved")}>
@@ -274,15 +279,29 @@ export function NoticeScreen({
           {correct && (
             <div className="answer-feedback is-correct">
               <p role="status"><strong>{t('Correct.')}</strong></p>
-              <p>{t('We have found routes for two and three discs. If the number of discs keeps growing, can we still be sure the tower can be moved? Why?')}</p>
+              <p>{existenceCopy[locale].intro}</p>
               {gateMessage && <p className="gate-message" role="status">{t(gateMessage)}</p>}
-              <button disabled={!nextUnlocked} onClick={onNext} type="button">{t(nextUnlocked ? 'Open SHORTEST?' : 'Waiting for teacher')} <ArrowIcon /></button>
+              <button disabled={!nextUnlocked} onClick={onNext} type="button">{t(nextUnlocked ? 'Can we always finish as we add more discs?' : 'Waiting for teacher')} <ArrowIcon /></button>
             </div>
           )}
         </div>
         <div className="notice-back">
           <RailButton icon={<ArrowIcon direction="left" />} onClick={onBack}>{t("Back to play")}</RailButton>
         </div>
+    </section>
+  )
+}
+
+export function ExistenceScreen({ onBack, onNext, teacherLens }) {
+  const locale = useLanguage()
+  return (
+    <section className="shortest-screen existence-screen">
+      <ExistenceProof />
+      {teacherLens && <LensNote time={existenceCopy[locale].title}>{existenceCopy[locale].teacher}</LensNote>}
+      <footer className="shortest-actions">
+        <RailButton icon={<ArrowIcon direction="left" />} onClick={onBack}>{t('Back to NOTICE')}</RailButton>
+        <RailButton icon={<ArrowIcon />} onClick={onNext} primary>{t('Can it be done in fewer moves?')}</RailButton>
+      </footer>
     </section>
   )
 }
@@ -343,9 +362,8 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
           <p>{copy.constructionNote}</p>
         </details>
         <LowerBoundLadder compact />
-        <ExistenceProof />
         {teacherLens && (
-          <LensNote time={copy.teacherLabel}>{copy.teacher} {existenceCopy[locale].teacher}</LensNote>
+          <LensNote time={copy.teacherLabel}>{copy.teacher}</LensNote>
         )}
 
         {correct && gateMessage && <p className="gate-message" role="status">{t(gateMessage)}</p>}
