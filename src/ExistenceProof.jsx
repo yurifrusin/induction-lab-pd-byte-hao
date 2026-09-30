@@ -20,10 +20,10 @@ export function ExistenceProof() {
       <summary>{copy.reveal}</summary>
       <h3 className="existence-assumption-title">{copy.stepTitle}</h3><p>{copy.setup}</p>
       <ol>{copy.steps.map((step, index) => <li key={index}>{step}</li>)}</ol>
-      <p className="existence-implication"><strong>{copy.implication}</strong></p>
-      <h3>{copy.startTitle}</h3><p>{copy.start}</p>
+      <p>{copy.constructionResult}</p>
+      <h3 className="existence-implication">{copy.implication}</h3>
+      <p>{copy.start}</p>
       <p>{copy.conclusion}</p>
-      <p className="existence-name">{copy.name}</p>
     </details>
     <p className="reasoning-pending">{copy.next}</p>
   </section>
