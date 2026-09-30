@@ -33,12 +33,13 @@ export const shortestCopy = {
         title: '三个圆盘，至少要移动几步？',
         prompt: '根据图示中的同一个理由，上面的两盘塔要搬几遍？',
         reasons: [
-          '根据图示中的同一个理由，上面的两盘塔前后要搬两遍，最大盘移动一步。搬一遍两盘塔最少要（1 + 2）步，所以三个盘的最短步数是：',
+          '根据图示中的同一个理由，移动最大盘之前和它最后到达目标柱之后，上面的两盘塔各要完整搬一次。最大盘自己至少移动一步。搬一次两盘塔至少要（1 + 2）步，所以三个盘至少要走：',
         ],
         count: '（1 + 2(1 + 2)）步，即 7 步',
       },
     ],
     teacher: '先让学生解释最大碟为什么能移动，再展开理由与图示。随后从一个碟子开始，让学生把刚刚说明的步数用到两个、三个碟子上。重点听他们能否说清前后两次搬小塔，而不只是选对选项或报出数字。',
+    closingQuestion: '我们已经说明：少于这些步不可能。怎样确认恰好用这些步完成的走法确实存在？',
     back: '返回', next: '拆解步骤', waiting: '等待教师放行',
   },
   en: {
@@ -75,12 +76,13 @@ export const shortestCopy = {
         title: 'How many moves must three discs take?',
         prompt: 'Using the same reasoning as in the diagrams, how many times must the two-disc tower be transferred?',
         reasons: [
-          'For the same reason shown in the diagrams, the two-disc tower must be transferred twice, with one move of the largest disc between them. Each two-disc transfer takes a minimum of (1 + 2) moves. The minimum for three discs is therefore:',
+          'For the same reason shown in the diagrams, the two-disc tower must be transferred completely before the largest disc first moves and again after its final arrival on the target. The largest disc itself moves at least once. Each two-disc transfer needs at least (1 + 2) moves, so three discs need at least:',
         ],
         count: '(1 + 2(1 + 2)) moves, that is, 7 moves',
       },
     ],
     teacher: 'Ask students to explain what lets the largest disc move before opening the reasoning and diagrams. Then start with one disc and ask them to use each established bound for two discs and then three. Listen for why the two smaller transfers are needed, rather than just a correct selection or a number.',
+    closingQuestion: 'We have shown that fewer moves are impossible. How can we be sure there is a route that finishes in exactly this many moves?',
     back: 'Back', next: 'Explore the steps', waiting: 'Waiting for teacher',
   },
 }

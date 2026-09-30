@@ -54,6 +54,17 @@
 }
 .shortest-screen .compact-feedback.is-correct { color: var(--green); }
 
+.shortest-closing-question {
+  margin: 36px 0 28px;
+  padding: 20px 24px;
+  border-left: 3px solid var(--amber-bright);
+  background: rgba(239, 170, 60, .07);
+  color: var(--ink);
+  font-size: clamp(19px, 2.5vw, 24px);
+  font-weight: 600;
+  line-height: 1.65;
+}
+
 .shortest-reasoning {
   margin: 28px 0;
   padding: 20px 0;

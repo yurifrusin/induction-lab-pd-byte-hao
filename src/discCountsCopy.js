@@ -15,7 +15,7 @@ export const discCountsCopy = {
     next: '把理由连起来',
     status: { playing: '对照刚才的理由', paused: '停下来说明理由', exploring: '你的实际走法' },
     pause: {
-      start: ['先回想刚才的构造', '小塔先移开，最大盘再移动，小塔最后搬到 C。开始前想一想：这条走法的步数还能怎样数？'],
+      start: ['先想怎样计数', '开始演示前，先说说你打算怎样计算这条走法的总步数。'],
       one: ['从一个圆盘开始', '只有这个圆盘需要移动。从 A 移到 C，一步就完成。先说出理由，再演示这一步。'],
       before: ['最大圆盘即将移动', '上面的小塔已完整移开，C 也空出来了。先说明这一步为什么现在可以走。'],
       after: ['塔还没有搬完', '最大圆盘已到 C。接下来要搬哪一部分？与刚才的做法有什么关系？'],
@@ -42,7 +42,7 @@ export const discCountsCopy = {
     next: 'Connect the reasoning',
     status: { playing: 'CONNECT THE MOVES WITH YOUR REASONING', paused: 'PAUSE & EXPLAIN', exploring: 'YOUR ACTUAL ROUTE' },
     pause: {
-      start: ['Recall the construction', 'Move the smaller tower away, move the largest disc, then transfer the smaller tower to C. Before starting, consider another way to count this route.'],
+      start: ['Plan how to count', 'Before starting the walkthrough, explain how you plan to calculate its total moves.'],
       one: ['Start with one disc', 'Only this disc needs to move. One move from A to C finishes the task. Explain why, then play through that move.'],
       before: ['The largest disc can move next', 'The smaller tower has moved away and C is empty. Explain why this move is now possible.'],
       after: ['The tower is not finished yet', 'The largest disc is on C. Which part must move next, and how does that relate to the earlier method?'],

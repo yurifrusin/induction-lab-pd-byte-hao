@@ -363,6 +363,7 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
           <p>{copy.constructionNote}</p>
         </details>
         <LowerBoundLadder compact />
+        <p className="shortest-closing-question">{copy.closingQuestion}</p>
         {teacherLens && (
           <LensNote time={copy.teacherLabel}>{copy.teacher}</LensNote>
         )}
