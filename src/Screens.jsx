@@ -279,7 +279,7 @@ export function NoticeScreen({
           {correct && (
             <div className="answer-feedback is-correct">
               <p role="status"><strong>{t('Correct.')}</strong></p>
-              <p>{existenceCopy[locale].intro}</p>
+              <p className="notice-existence-prompt">{existenceCopy[locale].intro}</p>
               {gateMessage && <p className="gate-message" role="status">{t(gateMessage)}</p>}
               <button disabled={!nextUnlocked} onClick={onNext} type="button">{t(nextUnlocked ? 'Can we always finish as we add more discs?' : 'Waiting for teacher')} <ArrowIcon /></button>
             </div>

@@ -1092,6 +1092,11 @@ button.hanoi-disk:active {
   color: var(--green);
 }
 
+.notice-checkpoint .notice-existence-prompt {
+  font-size: clamp(19px, 2.2vw, 22px);
+  line-height: 1.7;
+}
+
 /* Shared mini towers */
 .mini-tower-wrap {
   position: relative;
