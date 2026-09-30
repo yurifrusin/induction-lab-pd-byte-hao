@@ -66,7 +66,6 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
           </div>
           <p className="reasoning-fitch-universal">{copy.general}</p>
           <div className="sequence-sum"><Sum /></div>
-          <p className="reasoning-sum-note">{copy.sumNote}</p>
         </details>
         <details className="reasoning-connection"><summary>{copy.attainTitle}</summary>
           <p>{copy.attainBase}</p>
@@ -79,9 +78,8 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
             <p className="reasoning-fitch-result">{copy.attainResult}</p>
           </div>
           <p className="reasoning-fitch-universal">{copy.attainGeneral}</p>
-          <div className="sequence-sum"><Sum /></div>
+          <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p>{copy.done}</p><div className="sequence-sum"><Sum /></div></div>
         </details>
-        <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p>{copy.done}</p><div className="sequence-sum"><Sum /></div></div>
     </div>
     <section className="reasoning-recall"><h2>{copy.recallTitle}</h2><p>{copy.recall}</p></section>
     {teacherLens && <aside className="sequence-teacher-cue" aria-label={t('Teacher lens')}><strong>{t('TEACHER LENS')}</strong><p>{copy.teacher}</p></aside>}

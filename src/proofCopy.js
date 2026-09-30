@@ -43,7 +43,6 @@ export const proofCopy = {
       "meaning": "比如，原来小塔中最大的圆盘，每段至少动一次，合起来至少两次；原来第二大的圆盘，每段至少动两次，合起来至少四次。新增的最大盘自己至少动一次。这个理由不依赖某个特定的圆盘数量。",
       "scopeConclusion": "所以，对于这个 n，从大到小各盘至少要移动 1、2、2²、……次。",
       "general": "从一个盘至少要移动一次这个起点出发，逐个增加盘数时，都能把较小塔的逐盘下界推到新塔。因此，对于每个正整数 n，n 个盘从大到小各盘至少要移动 1、2、2²、……、2⁽ⁿ⁻¹⁾ 次。每一步只移动一个盘，把这些次数相加，就得到总步数下界：",
-      "sumNote": "和式的每一项对应一个圆盘：最大盘至少动 1 次，第二大至少动 2 次，再小一个至少动 2² 次，依次继续，共有 n 项。",
       "recallTitle": "把最短步数的理由讲完整",
       "recall": "先说明这套走法让每个盘动了几次，再说明这些次数为什么不能更少。让和式里的每一项都对应到一个盘。需要时可以回看解释。",
       "teacher": "第三页已经完整证明了有解。这里把逐盘计数与移动规则联系起来：同一个盘的次数为什么要在小塔搬运中用两次？学生应同时说明构造达到这些次数，以及别的走法不能少于这些次数。两处都接上一个盘的起点，体现同一种归纳结构。",
@@ -54,7 +53,7 @@ export const proofCopy = {
       "attainAssumption": "按已构造的方法搬 n 个盘时，从大到小各盘恰好分别移动 1、2、2²、……次。",
       "attainStep": "在下面加一个最大盘后，先按原方法搬小塔，再移动新最大盘，最后再按原方法搬小塔。",
       "attainResult": "因此，n+1 个盘从大到小，恰好分别移动 1、2、2²、……、2ⁿ 次。",
-      "attainGeneral": "从一个盘的起点开始逐步构造。对于每个正整数 n，n 个盘从大到小恰好分别移动 1、2、2²、……、2⁽ⁿ⁻¹⁾ 次。这些次数相加，正好达到刚才证明的下界。",
+      "attainGeneral": "从一个盘的起点开始逐步构造。对于每个正整数 n，n 个盘从大到小恰好分别移动 1、2、2²、……、2⁽ⁿ⁻¹⁾ 次。",
       "doneTitle": "这就是最少步数",
       "done": "这套走法恰好用这些步数完成，而更少的步数不够。因此，最少步数是："
     }
@@ -102,7 +101,6 @@ export const proofCopy = {
       "meaning": "The largest disc within the smaller tower needs at least one move per interval, giving at least two. The next needs at least two per interval, giving at least four. The new largest disc itself needs at least one. This reasoning does not depend on a particular disc count.",
       "scopeConclusion": "So for this n, the lower bounds for the discs, from largest to smallest, are 1, 2, 2², … .",
       "general": "Starting with the base case of one disc, each time we add a disc we can extend the lower bounds from the smaller tower to the new tower. Therefore, for every positive integer n, the lower bounds for n discs from largest to smallest are 1, 2, 2², …, 2⁽ⁿ⁻¹⁾. Since each move moves one disc, adding these counts gives the total lower bound:",
-      "sumNote": "Each term belongs to a disc: the largest must move at least 1 time, the next at least 2, the next at least 2², continuing for n terms.",
       "recallTitle": "Explain why the route is shortest",
       "recall": "Explain how often this method moves each disc, then why fewer moves cannot work. Match each term of the sum to a disc. Reopen the explanations when useful.",
       "teacher": "The third page has established existence. Connect individual counts to the movement rules: why does the same disc’s count apply twice in the smaller transfers? Students should explain both that the construction achieves these counts and that other routes cannot use fewer. Connect both arguments to one disc to expose their shared inductive structure.",
@@ -113,7 +111,7 @@ export const proofCopy = {
       "attainAssumption": "By the construction for n discs, its discs from largest to smallest move exactly 1, 2, 2², … times.",
       "attainStep": "Add a new largest disc underneath. Use the existing method to move the smaller tower, move the new largest disc, then use the method again to move the smaller tower.",
       "attainResult": "Therefore the n + 1 discs move exactly 1, 2, 2², …, 2ⁿ times from largest to smallest.",
-      "attainGeneral": "Starting from one disc and extending the construction, for every positive integer n the n discs move exactly 1, 2, 2², …, 2⁽ⁿ⁻¹⁾ times from largest to smallest. Their sum meets the lower bound just established.",
+      "attainGeneral": "Starting from one disc and extending the construction, for every positive integer n the n discs move exactly 1, 2, 2², …, 2⁽ⁿ⁻¹⁾ times from largest to smallest.",
       "doneTitle": "This is the minimum",
       "done": "The constructed route finishes in exactly this many moves, and fewer moves are impossible. The minimum is therefore:"
     }
