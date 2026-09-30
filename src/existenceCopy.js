@@ -2,8 +2,8 @@ export const existenceCopy = {
   zh: {
     title: '继续加盘，也一定能搬完吗？',
     intro: '三个盘能搬完，是因为我们已经把走法一步步做出来了。可我们不能把每种盘数都试一遍：会不会加到某个数量，就没有走法了？',
-    lead: '“只要2个碟子有走法，2+1个碟子（3个碟子）就有走法”；“只要3个碟子有走法，3+1个碟子（4个碟子）就有走法”。它们成立的理由与数字 2、3 本身没有关系。',
-    leadQuestion: '真正要想的是：已知较小的一座塔有走法，怎样借助这条走法，保证多一个碟子的塔也能搬完？',
+    lead: '先想两次“多一个盘”：已会搬 2 个盘，怎样借此搬 2+1 个盘？已会搬 3 个盘，怎样借此搬 3+1 个盘？',
+    leadQuestion: '这两次的做法有什么相同之处？如果继续加盘，刚才的想法还能用吗？',
     diagramCaptions: ['先把上面五个盘搬到 B，留出 C', '把最大盘从 A 移到 C', '再把五个小盘从 B 搬到 C'],
     reveal: '先想一想，再展开证明',
     startTitle: '从一个盘开始',
@@ -25,8 +25,8 @@ export const existenceCopy = {
   en: {
     title: 'Can we always finish as we add more discs?',
     intro: 'We know three discs can be moved because we have built a route step by step. But we cannot try every disc count. Could there be a count with no route at all?',
-    lead: '“If 2 discs have a route, then 2 + 1 discs (3 discs) do too”; “If 3 discs have a route, then 3 + 1 discs (4 discs) do too.” The reason these claims work does not depend on the particular numbers 2 and 3.',
-    leadQuestion: 'The question is: if a smaller tower has a route, how can that route help us move a tower with one more disc?',
+    lead: 'Think about adding one disc twice: if you can move 2 discs, how could that route help you move 2 + 1 discs? If you can move 3 discs, how could it help you move 3 + 1 discs?',
+    leadQuestion: 'What is the same in both methods? Could the same idea work as you keep adding discs?',
     diagramCaptions: ['Move the five smaller discs to B, leaving C empty', 'Move the largest disc from A to C', 'Move the five smaller discs from B to C'],
     reveal: 'Think it through, then open the proof',
     startTitle: 'Start with one disc',
