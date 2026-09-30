@@ -1,5 +1,6 @@
 // Chinese classroom copy. Keys are the original English UI text, not stored data.
 export const zh = {
+  'Confirm answer': '确认答案',
   'Not yet correct:': '尚未答对：',
   'Not answered:': '尚未作答：',
   'Loading this class’s progress…': '正在读取这节课的进度…',

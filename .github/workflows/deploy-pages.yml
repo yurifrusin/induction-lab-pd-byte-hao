@@ -56,6 +56,9 @@ jobs:
           path: .preview-four-discs
 
       - name: Build the four-disc preview
+        run: node scripts/add-answer-confirmation.mjs .preview-four-discs
+
+      - name: Build the four-disc preview website
         run: pnpm exec vite build .preview-four-discs --base=/induction-lab-pd-byte-hao/preview-four-discs/ --outDir=../dist/preview-four-discs --emptyOutDir
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}

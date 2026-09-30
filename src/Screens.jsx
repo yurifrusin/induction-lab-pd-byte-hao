@@ -1,4 +1,5 @@
 import { t, useLanguage, LanguageSwitcher } from './Language.jsx'
+import { useState } from 'react'
 import {
   ArrowIcon,
   EyeIcon,
@@ -231,7 +232,9 @@ export function NoticeScreen({
   gateMessage = '',
 }) {
   useLanguage()
-  const correct = answer === 'possible'
+  const [selection, setSelection] = useState(answer)
+  const submitted = selection != null && selection === answer
+  const correct = submitted && answer === 'possible'
 
   return (
     <section className="screen notice-screen notice-checkpoint">
@@ -243,18 +246,18 @@ export function NoticeScreen({
           <h2>{t('Suppose you finish a legal route. What can you conclude?')}</h2>
           <div className="answer-list" role="group" aria-label={t("What has been proved")}>
             <button
-              aria-pressed={answer === 'possible'}
-              className={answer === 'possible' ? 'is-selected is-correct' : ''}
-              onClick={() => onAnswer('possible')}
+              aria-pressed={selection === 'possible'}
+              className={selection === 'possible' ? 'is-selected' : ''}
+              onClick={() => setSelection('possible')}
               type="button"
             >
               <span className="radio-dot" />
               <span><strong>{t('A route with that number of moves exists.')}</strong></span>
             </button>
             <button
-              aria-pressed={answer === 'minimum'}
-              className={answer === 'minimum' ? 'is-selected is-wrong' : ''}
-              onClick={() => onAnswer('minimum')}
+              aria-pressed={selection === 'minimum'}
+              className={selection === 'minimum' ? 'is-selected' : ''}
+              onClick={() => setSelection('minimum')}
               type="button"
             >
               <span className="radio-dot" />
@@ -262,7 +265,9 @@ export function NoticeScreen({
             </button>
           </div>
 
-          {answer === 'minimum' && (
+          <button className="answer-confirm" disabled={!selection || submitted} onClick={() => onAnswer(selection)} type="button">{t('Confirm answer')}</button>
+
+          {submitted && answer === 'minimum' && (
             <p className="answer-feedback is-wrong" role="status">{t('Try again.')}</p>
           )}
 
@@ -295,7 +300,9 @@ function ProofStage({ label, math, number, stage }) {
 export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nextUnlocked = true, gateMessage = '' }) {
   const locale = useLanguage()
   const copy = shortestCopy[locale]
-  const correct = answer === 'all'
+  const [selection, setSelection] = useState(answer)
+  const submitted = selection != null && selection === answer
+  const correct = submitted && answer === 'all'
 
   return (
     <section className="shortest-screen">
@@ -306,11 +313,11 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
         <fieldset className="sentence-choice shortest-choice">
           <legend>{copy.question}</legend>
           {['some', 'all'].map((choice) => (
-            <label className={`${answer === choice ? 'is-selected' : ''} ${answer === 'some' && choice === 'some' ? 'is-wrong' : ''}`} key={choice}>
+            <label className={`${selection === choice ? 'is-selected' : ''} ${submitted && answer === 'some' && choice === 'some' ? 'is-wrong' : ''}`} key={choice}>
               <input
-                checked={answer === choice}
+                checked={selection === choice}
                 name="necessary-discs"
-                onChange={() => onAnswer(choice)}
+                onChange={() => setSelection(choice)}
                 type="radio"
               />
               <span className="radio-dot" />
@@ -320,7 +327,8 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
         </fieldset>
 
         <p className="shortest-think">{copy.think}</p>
-        {answer === 'some' && <p className="compact-feedback" role="status">{copy.retry}</p>}
+        <button className="answer-confirm" disabled={!selection || submitted} onClick={() => onAnswer(selection)} type="button">{t('Confirm answer')}</button>
+        {submitted && answer === 'some' && <p className="compact-feedback" role="status">{copy.retry}</p>}
         <details className="shortest-reasoning">
           <summary>{copy.reveal}</summary>
           {copy.reasons.map((reason, index) => <p key={index}>{reason}</p>)}
