@@ -60,7 +60,7 @@ export const zh = {
   'Invite everyone to join with a nickname. After a short attempt, check the dashboard together. Ask teachers what they would ask a student who reports a move count without explaining it.': '请每位参与者用昵称加入，尝试后一起看教师后台。请教师想想：学生只报出步数，没有说明理由，你会怎样追问？',
   'Unknown moves plus one plus unknown moves': '未知步数，加一步，再加未知步数',
   'Try three discs': '接着试三个盘', 'Think about your attempt': '想想刚才的尝试',
-  'Suppose you finish a legal route. What can you conclude?': '如果你按规则搬完了一次，能确定哪件事？',
+  'Suppose you finish a legal route. What can you conclude?': '按规则完成一次搬运，这件事本身能说明什么？',
   'A route with that number of moves exists.': '这么多步可以搬完。',
   'No route uses fewer moves.': '不可能用更少的步数搬完。',
   'Try again.': '再想一想，重新选择。', 'Correct.': '答对了。',
