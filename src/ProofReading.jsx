@@ -80,9 +80,9 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
           </div>
           <p className="reasoning-fitch-universal">{copy.attainGeneral}</p>
           <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p>{copy.done}</p><div className="sequence-sum"><Sum /></div></div>
+          <section className="reasoning-recall"><h2>{copy.recallTitle}</h2><p>{copy.recall}</p></section>
         </details>
     </div>
-    <section className="reasoning-recall"><h2>{copy.recallTitle}</h2><p>{copy.recall}</p></section>
     {teacherLens && <aside className="sequence-teacher-cue" aria-label={t('Teacher lens')}><strong>{t('TEACHER LENS')}</strong><p>{copy.teacher}</p></aside>}
     <footer className="sequence-footer">
       <button className="sequence-button" type="button" onClick={onBack}><ArrowIcon direction="left" />{common.back}</button>
