@@ -1,5 +1,6 @@
 import { useLanguage } from './Language.jsx'
 import { existenceCopy } from './existenceCopy.js'
+import { MiniTower } from './Tower.jsx'
 
 export function ExistenceProof() {
   const copy = existenceCopy[useLanguage()]
@@ -8,6 +9,13 @@ export function ExistenceProof() {
     <p>{copy.intro}</p>
     <p>{copy.lead}</p>
     <p>{copy.leadQuestion}</p>
+    <div className="shortest-diagrams existence-diagrams">
+      {['clear', 'largest', 'rebuild'].map((stage, index) => <div key={stage}>
+        <div className="stage-title"><span>{index + 1}</span><p>{copy.diagramCaptions[index]}</p></div>
+        <MiniTower count={5} stage={stage} />
+        <div className="shortest-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div>
+      </div>)}
+    </div>
     <details>
       <summary>{copy.reveal}</summary>
       <h3>{copy.startTitle}</h3><p>{copy.start}</p>
