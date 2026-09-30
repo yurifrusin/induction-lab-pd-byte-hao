@@ -64,6 +64,7 @@ export const zh = {
   'A route with that number of moves exists.': '这么多步可以搬完。',
   'No route uses fewer moves.': '不可能用更少的步数搬完。',
   'Try again.': '再想一想，重新选择。', 'Correct.': '答对了。',
+  'We have found routes for two and three discs. If the number of discs keeps growing, can we still be sure the tower can be moved? Why?': '两个、三个碟子我们已经找到走法。碟子继续增加，还能保证搬得完吗？为什么？',
   'Still to answer correctly:': '还未答对：',
   'Could six moves work?': '六步能完成吗？', 'Could fewer moves work?': '还能少走几步吗？',
   'We found a seven-move route for three discs. Could six moves or fewer work?': '三个碟子，我们已经找到七步的走法。六步或更少，能完成吗？',

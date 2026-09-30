@@ -274,6 +274,7 @@ export function NoticeScreen({
           {correct && (
             <div className="answer-feedback is-correct">
               <p role="status"><strong>{t('Correct.')}</strong></p>
+              <p>{t('We have found routes for two and three discs. If the number of discs keeps growing, can we still be sure the tower can be moved? Why?')}</p>
               {gateMessage && <p className="gate-message" role="status">{t(gateMessage)}</p>}
               <button disabled={!nextUnlocked} onClick={onNext} type="button">{t(nextUnlocked ? 'Open SHORTEST?' : 'Waiting for teacher')} <ArrowIcon /></button>
             </div>
