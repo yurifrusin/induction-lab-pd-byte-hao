@@ -175,14 +175,13 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
       <div className="sequence-board-area">
         <div className={`sequence-pause-card${deviated ? ' is-exploring' : ''}`} role="status" aria-live="polite"><span>{copy.status[deviated ? 'exploring' : playing ? 'playing' : 'paused']}</span><h2>{pauseTitle}</h2><p>{feedback ? t(feedback) : pausePrompt}</p></div>
         <div className="sequence-board"><Tower count={count} pegs={pegs} onMove={manualMove} selectedPeg={selectedPeg} setSelectedPeg={choosePeg} /></div>
-        <DiscCounts count={count} discMoves={discMoves} moves={moves} copy={copy} />
+        <p className="sequence-counting-cue">{copy.focusCue}</p>
         <details className="sequence-counting" key={count}>
           <summary>{t('Open the move count for this walkthrough')}</summary>
+          <DiscCounts count={count} discMoves={discMoves} moves={moves} copy={copy} />
           <span className="sequence-eyebrow">{t("MOVES IN THIS CONSTRUCTION")}</span>
           {count === 1 ? <div className="sequence-sum"><strong>1</strong></div> : <div className="sequence-sum"><span><b className="sequence-single">1</b> + <b className="sequence-pair">2</b>({expandedSum(count - 1)})</span><span className="sequence-equals">=</span><span>{expandedSum(count)}</span></div>}
           <p>{t(count === 1 ? 'The initial case: one disc, one move.' : `One largest-disc move + two transfers of the ${count - 1}-disc tower.`)}</p>
-          <p>{copy.sumNote}</p>
-          <p>{copy.connection}</p>
         </details>
         <SequenceFooter onBack={onBack} onNext={onNext} nextLabel={copy.next} />
       </div>

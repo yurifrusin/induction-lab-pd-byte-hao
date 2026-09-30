@@ -105,6 +105,8 @@
 .sequence-counting > summary { cursor: pointer; color: var(--blue); padding: 6px 0; font-size: 17px; }
 .sequence-counting[open] > summary { margin-bottom: 20px; }
 .sequence-counting > summary:focus-visible { outline: 2px solid var(--amber-bright); outline-offset: 4px; }
+.sequence-counting-cue { max-width: 860px; margin: 0 auto 20px; padding: 12px 16px; border-left: 3px solid var(--amber); background: rgba(239, 170, 60, .07); line-height: 1.7; }
+.sequence-counting .disc-counts { padding: 0; border: 0; background: none; text-align: left; }
 .sequence-single { color: var(--amber-bright); font-weight: 500; }
 .sequence-pair { color: var(--blue); font-weight: 500; }
 .sequence-equals { color: var(--muted); }
