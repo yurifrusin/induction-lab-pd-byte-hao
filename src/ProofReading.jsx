@@ -11,9 +11,9 @@ function Sum() {
 }
 
 function DiscCountText({ value }) {
-  return value.split(/(\[\[counts\]\]|\[\[nextCounts\]\])/).map((part, index) => {
-    if (part === '[[counts]]') return <strong key={index}>1, 2, 2<sup>2</sup>, …, 2<sup>n − 1</sup></strong>
-    if (part === '[[nextCounts]]') return <strong key={index}>1, 2 × 1, 2 × 2, 2 × 2<sup>2</sup>, …, 2 × 2<sup>n − 1</sup></strong>
+  return value.split(/(\[\[[TG](?:1|n|next)\]\])/).map((part, index) => {
+    const match = part.match(/^\[\[([TG])(1|n|next)\]\]$/)
+    if (match) return <span key={index} style={{ whiteSpace: 'nowrap' }}>{match[1]}<sub>{match[2] === 'next' ? 'n + 1' : match[2]}</sub></span>
     return part
   })
 }
@@ -49,32 +49,34 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
     </details>
     <div id="reasoning-lower" hidden={recalling}>
         <details className="reasoning-connection"><summary>{copy.connect}</summary>
-          <p>{copy.lowerBase}</p>
+          <p><DiscCountText value={copy.definition} /></p>
+          <p><DiscCountText value={copy.lowerBase} /></p>
           <div className="reasoning-fitch-outer">
             <p>{copy.let}</p>
             <div className="reasoning-fitch-inner">
               <p><strong className="reasoning-fitch-assume">{copy.assumeLead}{copy.assumeColon}</strong> <DiscCountText value={copy.assumption} /></p>
-              {copy.lowerSteps.map((step, index) => <p key={index}>{step}</p>)}
+              {copy.lowerSteps.map((step, index) => <p key={index}><DiscCountText value={step} /></p>)}
               <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
               <p><DiscCountText value={copy.innerConclusion} /></p>
             </div>
             <p className="reasoning-fitch-result"><DiscCountText value={copy.scopeConclusion} /></p>
           </div>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.general} /></p>
-          <div className="sequence-sum"><Sum /></div>
         </details>
         <details className="reasoning-connection"><summary>{copy.attainTitle}</summary>
-          <p>{copy.attainBase}</p>
+          <p><DiscCountText value={copy.attainDefinition} /></p>
+          <p><DiscCountText value={copy.attainRecurrence} /></p>
+          <p><DiscCountText value={copy.attainBase} /></p>
           <div className="reasoning-fitch-outer">
             <p>{copy.attainLet}</p>
             <div className="reasoning-fitch-inner">
-              <p><strong className="reasoning-fitch-assume">{common.lower.assumeLead}{common.lower.assumeColon}</strong> {copy.attainAssumption}</p>
-              <p>{copy.attainStep}</p>
+              <p><strong className="reasoning-fitch-assume">{common.lower.assumeLead}{common.lower.assumeColon}</strong> <DiscCountText value={copy.attainAssumption} /></p>
+              <p><DiscCountText value={copy.attainStep} /></p>
             </div>
-            <p className="reasoning-fitch-result">{copy.attainResult}</p>
+            <p className="reasoning-fitch-result"><DiscCountText value={copy.attainResult} /></p>
           </div>
-          <p className="reasoning-fitch-universal">{copy.attainGeneral}</p>
-          <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p>{copy.done}</p><div className="sequence-sum"><Sum /></div></div>
+          <p className="reasoning-fitch-universal"><DiscCountText value={copy.attainGeneral} /></p>
+          <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum">T<sub>n</sub> = G<sub>n</sub> = <Sum /></div></div>
         </details>
     </div>
     {teacherLens && <aside className="sequence-teacher-cue" aria-label={t('Teacher lens')}><strong>{t('TEACHER LENS')}</strong><p>{copy.teacher}</p></aside>}

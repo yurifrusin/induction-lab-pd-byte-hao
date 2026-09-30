@@ -1,4 +1,4 @@
-// Explanations connect a constructed route with individual move bounds.
+// Lower bounds and the constructed route are counted independently.
 export const proofCopy = {
   "zh": {
     "visualHelp": "需要图示？展开对照",
@@ -23,26 +23,29 @@ export const proofCopy = {
       "let": "设 n 是一个正整数。",
       "assumeLead": "假设",
       "assumeColon": "：",
-      "assumption": "搬完 n 个盘时，从大到小，每个盘分别至少要移动 [[counts]] 次。",
-      "innerConclusion": "这样，搬完 n+1 个盘时，每个盘从大到小分别至少要移动 [[nextCounts]] 次。",
-      "scopeConclusion": "所以，对于这个 n，如果搬完 n 个盘时，每个盘从大到小分别至少要移动 [[counts]] 次，那么搬完 n+1 个盘时，每个盘从大到小分别至少要移动 [[nextCounts]] 次。",
-      "general": "所以总步数至少是：",
-      "teacher": "第三页已经完整证明了有解。这里把逐盘计数与移动规则联系起来：同一个盘的次数为什么要在小塔搬运中用两次？学生应同时说明构造达到这些次数，以及别的走法不能少于这些次数。两处都接上一个盘的起点，体现同一种归纳结构。",
+      "assumption": "搬完 n 个盘的每条走法都至少需要 [[Tn]] 步。",
+      "innerConclusion": "这样，搬完 n+1 个盘至少需要 [[Tn]] + 1 + [[Tn]] = [[Tnext]] 步。",
+      "scopeConclusion": "所以，对于这个 n，如果搬完 n 个盘至少需要 [[Tn]] 步，那么搬完 n+1 个盘至少需要 [[Tnext]] 步。",
+      "general": "结合一个盘的起点，由数学归纳法，对于每个正整数 n，搬完 n 个盘至少需要 [[Tn]] 步。",
+      "teacher": "先用归纳法证明每条走法至少需要 Tₙ 步，再独立计算构造走法的步数 Gₙ。两者具有相同的起点和递推关系；证明 Gₙ = Tₙ，才把不能更少与确实做得到接在一起。",
       "attainTitle": "怎样恰好达到这个下界？",
-      "attainBase": "一个盘直接移到目标柱，恰好移动一次。",
-      "attainLet": "设 n 是正整数，考察 n+1 个盘的构造走法。",
-      "attainAssumption": "按已构造的方法搬 n 个盘时，每个盘恰好达到自己的次数下界。",
-      "attainStep": "在下面加一个最大盘后，按原方法前后各搬一次小塔，中间移动新最大盘。原有各盘的次数因此翻倍，新最大盘恰好移动一次。",
-      "attainResult": "因此，n+1 个盘的这条走法也让每个盘恰好达到自己的次数下界。",
-      "attainGeneral": "从一个盘的一步走法出发，以上构造可以逐次用于更多盘。因此，对于每个正整数 n，都存在一条走法，恰好达到各盘的次数下界。",
+      "attainBase": "先看一个盘：[[G1]] = [[T1]] = 1。",
+      "attainLet": "设 n 是一个正整数。",
+      "attainAssumption": "[[Gn]] = [[Tn]]。",
+      "attainStep": "这样，[[Gnext]] = 2[[Gn]] + 1 = 2[[Tn]] + 1 = [[Tnext]]。",
+      "attainResult": "所以，对于这个 n，如果 [[Gn]] = [[Tn]]，那么 [[Gnext]] = [[Tnext]]。",
+      "attainGeneral": "由数学归纳法，对于每个正整数 n，[[Gn]] = [[Tn]]。因此，确实有一条走法恰好用 [[Tn]] 步搬完。",
       "doneTitle": "这就是最少步数",
-      "done": "别的走法不能低于这个下界；这套走法恰好达到它。因此，最少步数是：",
-      "lowerBase": "只有一个盘时，要从一根柱搬到另一根柱，至少得移动一次。",
+      "done": "每条走法至少需要 [[Tn]] 步，这套走法恰好用了 [[Gn]] = [[Tn]] 步。因此，最少步数就是 [[Tn]]。展开递推关系，可写成：",
+      "lowerBase": "只有一个盘时，至少需要移动一次，也就是至少需要 [[T1]] 步。",
       "lowerSteps": [
         "现在考虑 n+1 个盘。最大盘第一次移动前，它上面的小盘必须全部移开，接收最大盘的柱子也必须空着。因此，这 n 个小盘已经从起始柱完整搬到了另一根柱上。",
         "再看最大盘最后一次到达目标柱的那一步：小盘不能在最大盘上，也不能在目标柱上，只能完整叠在第三根柱上。接下来，它们还必须完整搬到目标柱，任务才算完成。",
-        "同一座 n 盘小塔前后各搬一次，因此每个小盘至少要移动的次数都翻倍。最大盘本身至少移动一次。"
-      ]
+        "前后两次小塔搬运各至少需要 [[Tn]] 步，最大盘本身至少移动一次。"
+      ],
+      "definition": "先定义数列：[[T1]] = 1，[[Tnext]] = 2[[Tn]] + 1。这里还没有把 [[Tn]] 称为最少步数。",
+      "attainDefinition": "设 [[Gn]] 是按这套搬法搬完 n 个盘所用的步数。一个盘直接搬到目标柱；更多盘则先把小塔搬到临时柱，再移动最大盘，最后把小塔搬到目标柱，两次都沿用这套搬法。",
+      "attainRecurrence": "因此，[[G1]] = 1，[[Gnext]] = 2[[Gn]] + 1。两次数的是同一座小塔的搬运步数，柱子换名字不会改变步数。"
     }
   },
   "en": {
@@ -68,26 +71,29 @@ export const proofCopy = {
       "let": "Let n be a positive integer.",
       "assumeLead": "Assume",
       "assumeColon": ":",
-      "assumption": "Completing an n-disc transfer requires at least [[counts]] moves respectively for the discs from largest to smallest.",
-      "innerConclusion": "Thus, completing an (n + 1)-disc transfer requires at least [[nextCounts]] moves respectively for the discs from largest to smallest.",
-      "scopeConclusion": "So for this n, if completing an n-disc transfer requires at least [[counts]] moves respectively from largest disc to smallest, then completing an (n + 1)-disc transfer requires at least [[nextCounts]] moves respectively in the same order.",
-      "general": "So the total number of moves is at least:",
-      "teacher": "The third page has established existence. Connect individual counts to the movement rules: why does the same disc’s count apply twice in the smaller transfers? Students should explain both that the construction achieves these counts and that other routes cannot use fewer. Connect both arguments to one disc to expose their shared inductive structure.",
+      "assumption": "Every completed transfer of n discs requires at least [[Tn]] moves.",
+      "innerConclusion": "Thus, completing an (n + 1)-disc transfer requires at least [[Tn]] + 1 + [[Tn]] = [[Tnext]] moves.",
+      "scopeConclusion": "So for this n, if completing an n-disc transfer requires at least [[Tn]] moves, completing an (n + 1)-disc transfer requires at least [[Tnext]] moves.",
+      "general": "Together with the one-disc case, mathematical induction shows that, for every positive integer n, completing an n-disc transfer requires at least [[Tn]] moves.",
+      "teacher": "Use induction to show that every route needs at least Tₙ moves, then independently count the constructed route using Gₙ. Proving Gₙ = Tₙ connects the lower bound to an achievable route.",
       "attainTitle": "How can a route achieve this bound?",
-      "attainBase": "One disc moves directly to the target, exactly once.",
-      "attainLet": "Let n be a positive integer and consider the constructed route for n + 1 discs.",
-      "attainAssumption": "By the construction for n discs, each disc reaches its own move lower bound exactly.",
-      "attainStep": "Add a new largest disc underneath. Use the existing method to transfer the smaller tower twice, moving the new largest disc between the transfers. Each existing disc's count doubles; the new largest disc moves exactly once.",
-      "attainResult": "Therefore the constructed n + 1-disc route also achieves each disc's move lower bound exactly.",
-      "attainGeneral": "Start with the one-move route for one disc and extend this construction. For every positive integer n, a route achieves every disc's lower bound exactly.",
+      "attainBase": "For one disc, [[G1]] = [[T1]] = 1.",
+      "attainLet": "Let n be a positive integer.",
+      "attainAssumption": "[[Gn]] = [[Tn]].",
+      "attainStep": "Thus, [[Gnext]] = 2[[Gn]] + 1 = 2[[Tn]] + 1 = [[Tnext]].",
+      "attainResult": "So for this n, if [[Gn]] = [[Tn]], then [[Gnext]] = [[Tnext]].",
+      "attainGeneral": "By mathematical induction, [[Gn]] = [[Tn]] for every positive integer n. This method therefore completes the transfer in exactly [[Tn]] moves.",
       "doneTitle": "This is the minimum",
-      "done": "No route can go below the bound; this route achieves it. The minimum is therefore:",
-      "lowerBase": "One disc needs at least one move to reach another peg.",
+      "done": "Every route requires at least [[Tn]] moves, and this method uses exactly [[Gn]] = [[Tn]] moves. Hence [[Tn]] is the minimum. Expanding the recurrence gives:",
+      "lowerBase": "One disc requires at least one move, which is [[T1]].",
       "lowerSteps": [
         "Consider n + 1 discs. Before the largest disc first moves, every smaller disc must leave it, and the receiving peg must be empty. The n smaller discs have therefore already been transferred as a complete tower to another peg.",
         "Now consider the largest disc’s final arrival at the target. The smaller discs can be neither on it nor on the target peg. They must be stacked on the third peg, and must still be transferred completely to the target to finish.",
-        "The same n-disc tower is transferred once before and once after, so each smaller disc’s lower bound doubles. The largest disc itself moves at least once."
-      ]
+        "Each of the two smaller-tower transfers requires at least [[Tn]] moves. The largest disc itself moves at least once."
+      ],
+      "definition": "Define a sequence by [[T1]] = 1 and [[Tnext]] = 2[[Tn]] + 1. We have not yet identified [[Tn]] as the minimum.",
+      "attainDefinition": "Let [[Gn]] be the number of moves used by this method for n discs. Move one disc directly to the target. For a larger tower, transfer the smaller tower to the spare peg, move the largest disc, and transfer the smaller tower to the target, using the same method for both smaller transfers.",
+      "attainRecurrence": "Therefore, [[G1]] = 1 and [[Gnext]] = 2[[Gn]] + 1. Both transfers involve the same smaller tower; renaming the pegs does not change the move count."
     }
   }
 }
