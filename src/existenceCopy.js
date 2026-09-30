@@ -2,8 +2,9 @@ export const existenceCopy = {
   zh: {
     title: '继续加盘，也一定能搬完吗？',
     intro: '三个盘能搬完，是因为我们已经把走法一步步做出来了。可我们不能把每种盘数都试一遍：会不会加到某个数量，就没有走法了？',
-    lead: '先想两次“多一个盘”：已会搬 2 个盘，怎样借此搬 2+1 个盘？已会搬 3 个盘，怎样借此搬 3+1 个盘？',
-    leadQuestion: '这两次的做法有什么相同之处？如果继续加盘，刚才的想法还能用吗？',
+    lead: '已会搬 2 个盘，怎样借此搬 2+1 个盘？已会搬 3 个盘，怎样借此搬 3+1 个盘？',
+    leadQuestion: '这两次的做法有什么相同之处？对于每个盘数 n，只要已会搬 n 个盘，就能借此搬 n+1 个盘吗？',
+    startDiagramCaption: '六个盘的起始位置：从 A 搬到 C。',
     diagramCaptions: ['先把上面五个盘搬到 B，留出 C', '把最大盘从 A 移到 C', '再把五个小盘从 B 搬到 C'],
     reveal: '先想一想，再展开证明',
     start: '又因为只有一个盘时，直接把它移到目标柱就搬完了。',
@@ -29,8 +30,9 @@ export const existenceCopy = {
   en: {
     title: 'Can we always finish as we add more discs?',
     intro: 'We know three discs can be moved because we have built a route step by step. But we cannot try every disc count. Could there be a count with no route at all?',
-    lead: 'Think about adding one disc twice: if you can move 2 discs, how could that route help you move 2 + 1 discs? If you can move 3 discs, how could it help you move 3 + 1 discs?',
-    leadQuestion: 'What is the same in both methods? Could the same idea work as you keep adding discs?',
+    lead: 'If you can move 2 discs, how could that route help you move 2 + 1 discs? If you can move 3 discs, how could it help you move 3 + 1 discs?',
+    leadQuestion: 'What is the same in both methods? For every disc count n, if you can move n discs, can that method help you move n + 1 discs?',
+    startDiagramCaption: 'Six discs at the start: move the tower from A to C.',
     diagramCaptions: ['Move the five smaller discs to B, leaving C empty', 'Move the largest disc from A to C', 'Move the five smaller discs from B to C'],
     reveal: 'Think it through, then open the proof',
     start: 'And with just one disc, we can move it directly to the target peg.',
