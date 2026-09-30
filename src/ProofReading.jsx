@@ -98,6 +98,10 @@ export function AppendixProofScreen({ onBack, onNext, onOpenQuestion }) {
   }
   return <section className="sequence-screen sequence-proof-screen reasoning-page reasoning-appendix">
     <header className="sequence-heading"><span className="sequence-eyebrow">{copy.eyebrow}</span><h1><a className="appendix-page-link" href={fourthHref} onClick={openFourth}>{copy.title}</a></h1><p><LinkedFourthText value={copy.intro} href={fourthHref} label={copy.shortestPageLabel} onOpen={openFourth} /></p></header>
+    <aside className="appendix-alternative">
+      <h2>{copy.alternativeTitle}</h2>
+      <p>{copy.alternativeText}</p>
+    </aside>
     <section className="appendix-route">
       <h2>{copy.routeTitle}</h2>
       <p>{copy.routeIntro}</p>

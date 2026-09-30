@@ -260,6 +260,9 @@
 .reasoning-fitch-universal { margin-top: 22px !important; color: var(--ink); }
 .reasoning-appendix { padding: 40px 28px 56px; }
 .reasoning-appendix .sequence-heading { margin-bottom: 28px; }
+.appendix-alternative { margin: 24px 0; padding: clamp(18px, 4vw, 28px); border: 2px solid #e8b85c; border-radius: 12px; background: rgba(232, 184, 92, .1); }
+.appendix-alternative h2 { margin: 0 0 12px; color: #f4cb7d; font-size: clamp(23px, 3vw, 30px); line-height: 1.4; }
+.appendix-alternative p { margin: 0; }
 .appendix-route { margin: 26px 0; padding: 24px 26px; border: 1px solid var(--line); border-radius: 10px; background: rgba(13, 38, 56, .45); }
 .reasoning-appendix ol { margin: 18px 0; padding-left: 1.5em; }
 .reasoning-appendix li { margin: 12px 0; color: var(--ink); font-size: 17px; line-height: 1.75; }

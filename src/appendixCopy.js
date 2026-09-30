@@ -2,6 +2,8 @@ export const appendixCopy = {
   zh: {
     eyebrow: '附录 · 不先计算步数',
     title: '为什么恰好用这些步完成的走法确实存在？',
+    alternativeTitle: '另一种更直接的证明：这套搬法能达到下界',
+    alternativeText: '前一页通过比较两个数列的起点和递推关系，证明构造走法的步数等于下界。这里直接从搬法出发：小塔能达到下界，就能构造出大塔达到下界的走法。',
     shortestPageLabel: '“还能更少吗？”',
     intro: '[[shortest]]已经说明：少于这些步不可能。这里不先算出具体步数，而是证明这套搬法确实能达到下界。',
     routeTitle: '先说清这套搬法',
@@ -34,6 +36,8 @@ export const appendixCopy = {
   en: {
     eyebrow: 'APPENDIX · WITHOUT COUNTING THE MOVES FIRST',
     title: 'Why does a route achieving this bound exist?',
+    alternativeTitle: 'A more direct alternative proof: this method achieves the bound',
+    alternativeText: 'The preceding page compares the starting values and recurrences of two sequences to show that the constructed route achieves the bound. Here we reason directly about the method: a smaller-tower route that achieves the bound lets us construct one for the larger tower.',
     shortestPageLabel: 'SHORTEST?',
     intro: '[[shortest]] showed why fewer moves cannot work. Without calculating the exact count first, prove that this method reaches the bound.',
     routeTitle: 'Describe the method',
