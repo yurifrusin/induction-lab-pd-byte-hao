@@ -46,7 +46,6 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
   return <section className="sequence-screen sequence-proof-screen reasoning-page reasoning-lower">
     <header className="sequence-heading"><span className="sequence-eyebrow">{copy.eyebrow}</span><h1>{copy.title}</h1><p>{copy.intro}</p></header>
     <button className="sequence-button reasoning-toggle" type="button" aria-expanded={!recalling} aria-controls="reasoning-lower" onClick={() => setRecalling(!recalling)}>{recalling ? common.show : common.hide}</button>
-    <p className="reasoning-focus-cue">{copy.focusCue}</p>
     <details className="reasoning-visual-help">
       <summary>{common.visualHelp}</summary><p>{common.visualNote}</p>
       <div className="reasoning-reference">{common.visualCaptions.map((caption, i) => <figure key={i}><MiniTower count={5} stage={['clear', 'largest', 'rebuild'][i]} /><div className="reasoning-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div><figcaption>{caption}</figcaption></figure>)}</div>
@@ -69,6 +68,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
           <div className="sequence-sum"><Sum /></div>
         </details>
         <details className="reasoning-connection"><summary>{copy.attainTitle}</summary>
+          <p className="reasoning-focus-cue">{copy.focusCue}</p>
           <p>{copy.attainBase}</p>
           <div className="reasoning-fitch-outer">
             <p>{copy.attainLet}</p>
