@@ -146,6 +146,8 @@
 .existence-proof summary:focus-visible { outline: 2px solid var(--amber-bright); outline-offset: 4px; }
 .existence-proof ol { padding-left: 24px; }
 .existence-proof li { padding-left: 6px; margin: 14px 0; }
+.existence-fitch-scope { margin: 18px 0 24px 4px; padding: 1px 0 14px 24px; border-left: 3px solid #ff817e; border-bottom: 1px solid var(--line-strong); }
+.existence-proof .existence-fitch-result { margin-bottom: 0; color: var(--ink); }
 .existence-proof .existence-implication { color: var(--ink); padding: 12px 16px; border-left: 3px solid var(--green); }
 .existence-proof .existence-name { color: var(--amber-bright); }
 
@@ -175,6 +177,10 @@
 
   .shortest-screen .shortest-diagrams .stage-title {
     min-height: 0;
+  }
+
+  .existence-fitch-scope {
+    padding-left: 16px;
   }
 
   .shortest-actions {
