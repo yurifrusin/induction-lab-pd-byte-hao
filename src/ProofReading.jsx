@@ -10,17 +10,6 @@ function Sum() {
   return <>1 + 2 + ··· + 2<sup>(n − 1)</sup></>
 }
 
-function ConditionalLines({ copy }) {
-  return <details className="reasoning-conditionals">
-    <summary>{copy.barTitle}</summary>
-    <p>{copy.barHelp}</p>
-    <ul className="reasoning-conditional-list">{copy.bars.map((statement, i) => <li key={i}>
-      <span className="reasoning-conditional-stroke" aria-hidden="true" />
-      <p>{statement}</p>
-    </li>)}</ul>
-  </details>
-}
-
 export function LowerBoundLadder({ compact = false }) {
   const locale = useLanguage()
   const copy = proofCopy[locale].lower
@@ -52,13 +41,13 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
     </details>
     <div id="reasoning-lower" hidden={recalling}>
         <details className="reasoning-connection"><summary>{copy.connect}</summary>
+          <p>{copy.lowerBase}</p>
           <div className="reasoning-fitch-outer">
             <p>{copy.let}</p>
             <div className="reasoning-fitch-inner">
               <p><strong className="reasoning-fitch-assume">{copy.assumeLead}{copy.assumeColon}</strong> {copy.assumption}</p>
-              <p>{copy.consequence}</p>
+              {copy.lowerSteps.map((step, index) => <p key={index}>{step}</p>)}
               <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
-              <ConditionalLines copy={copy} />
             </div>
             <p className="reasoning-fitch-result">{copy.scopeConclusion}</p>
           </div>
