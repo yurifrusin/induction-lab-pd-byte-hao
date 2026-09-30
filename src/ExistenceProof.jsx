@@ -18,7 +18,7 @@ export function ExistenceProof() {
     </div>
     <details>
       <summary>{copy.reveal}</summary>
-      <h3>{copy.stepTitle}</h3><p>{copy.setup}</p>
+      <h3 className="existence-assumption-title">{copy.stepTitle}</h3><p>{copy.setup}</p>
       <ol>{copy.steps.map((step, index) => <li key={index}>{step}</li>)}</ol>
       <p className="existence-implication"><strong>{copy.implication}</strong></p>
       <h3>{copy.startTitle}</h3><p>{copy.start}</p>

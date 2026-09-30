@@ -8,8 +8,8 @@ export const existenceCopy = {
     reveal: '先想一想，再展开证明',
     startTitle: '再看起点：一个盘',
     start: '一个盘直接移到目标柱，就有走法。',
-    stepTitle: '已有一座小塔的走法，怎样多搬一个盘？',
-    setup: '假设已经知道如何把一座小塔搬到另一根柱上。现在在它下面加一个更大的盘。',
+    stepTitle: '设 n 是自然数',
+    setup: '假设已经知道怎样把 n 个盘搬到另一根柱上。现在在它们下面加一个更大的盘。',
     steps: [
       '用已有的方法，把上面的小塔从 A 搬到 B，留出 C。',
       '把最大盘从 A 移到 C。',
@@ -30,8 +30,8 @@ export const existenceCopy = {
     reveal: 'Think it through, then open the proof',
     startTitle: 'Now check the starting case: one disc',
     start: 'Move one disc directly to the target. A route exists.',
-    stepTitle: 'How can a route for a smaller tower help us move one more disc?',
-    setup: 'Suppose we already know how to move a smaller tower to another peg. Add a larger disc underneath it.',
+    stepTitle: 'Let n be a natural number',
+    setup: 'Suppose we already know how to move n discs to another peg. Add a larger disc underneath them.',
     steps: [
       'Use the existing method to move the smaller tower from A to B, leaving C empty.',
       'Move the largest disc from A to C.',
