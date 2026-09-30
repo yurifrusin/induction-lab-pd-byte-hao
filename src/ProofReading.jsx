@@ -11,7 +11,9 @@ function Sum() {
 }
 
 function DiscCountText({ value }) {
-  return value.split(/(\[\[[TG](?:1|n|next)\]\])/).map((part, index) => {
+  return value.split(/(\[\[(?:[TG](?:1|n|next)|counts|nextCounts)\]\])/).map((part, index) => {
+    if (part === '[[counts]]') return <strong key={index}>1, 2, 2<sup>2</sup>, …, 2<sup>n − 1</sup></strong>
+    if (part === '[[nextCounts]]') return <strong key={index}>1, 2 × 1, 2 × 2, 2 × 2<sup>2</sup>, …, 2 × 2<sup>n − 1</sup></strong>
     const match = part.match(/^\[\[([TG])(1|n|next)\]\]$/)
     if (match) return <span key={index} style={{ whiteSpace: 'nowrap' }}>{match[1]}<sub>{match[2] === 'next' ? 'n + 1' : match[2]}</sub></span>
     return part
@@ -49,7 +51,6 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
     </details>
     <div id="reasoning-lower" hidden={recalling}>
         <details className="reasoning-connection"><summary>{copy.connect}</summary>
-          <p><DiscCountText value={copy.definition} /></p>
           <p><DiscCountText value={copy.lowerBase} /></p>
           <div className="reasoning-fitch-outer">
             <p>{copy.let}</p>
@@ -62,6 +63,9 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
             <p className="reasoning-fitch-result"><DiscCountText value={copy.scopeConclusion} /></p>
           </div>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.general} /></p>
+          <div className="sequence-sum"><Sum /></div>
+          <p><DiscCountText value={copy.boundName} /></p>
+          <div className="sequence-sum">T<sub>n</sub> = <Sum /></div>
         </details>
         <details className="reasoning-connection"><summary>{copy.attainTitle}</summary>
           <p><DiscCountText value={copy.attainDefinition} /></p>
