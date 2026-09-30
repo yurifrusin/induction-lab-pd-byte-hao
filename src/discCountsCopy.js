@@ -2,7 +2,9 @@ export const discCountsCopy = {
   zh: {
     eyebrow: '拆解步骤 · 对照理由',
     heading: '把刚才构造的走法演示出来',
-    intro: '刚才已经构造出一条搬塔走法。现在用四个盘逐步演示，先想怎样说明这条走法的步数，再展开核对。',
+    intro: '先用四个盘演示构造走法，再核对它实际用了多少步。',
+    provisionalTitle: '暂时假设',
+    provisionalNote: '沿用上一页的思路，可以提出更多盘数的步数下界。暂时假设：确实有走法恰好达到这个下界。若能证明这一点，下界就是最短步数。四盘演示只能核对一个例子；还需要用数学归纳法证明，盘数增加后仍能达到下界。',
     focusCue: '先别从几个总步数里猜规律。看着眼前这条走法，除了从头到尾数步骤，还能怎样整理这些移动？',
     openCount: '先想好，再展开核对',
     title: '每个圆盘已经移动几次？',
@@ -30,7 +32,9 @@ export const discCountsCopy = {
   en: {
     eyebrow: 'STEPS · PLAY THROUGH THE REASONING',
     heading: 'Play through the method we constructed',
-    intro: 'We have constructed a way to move the tower. Now step through the four-disc route, think about how to explain its move count, and then open the count to check.',
+    intro: 'Play through the constructed four-disc route, then check how many moves it actually uses.',
+    provisionalTitle: 'For now, assume',
+    provisionalNote: 'The previous reasoning suggests move lower bounds for larger towers. For now, assume a route actually achieves each bound. If we can prove that, the bound is the minimum. A four-disc walkthrough checks only one example; mathematical induction must show why the bound remains achievable as the tower grows.',
     focusCue: 'Do not rush to guess a pattern from a few totals. Looking at this route, how else could you organise its moves besides counting them in order?',
     openCount: 'Think first, then open the count',
     title: 'How many times has each disc moved?',

@@ -173,6 +173,7 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
         {teacherLens && <TeacherCue>{copy.teacher}</TeacherCue>}
       </aside>
       <div className="sequence-board-area">
+        <div className="sequence-provisional"><strong>{copy.provisionalTitle}</strong><p>{copy.provisionalNote}</p></div>
         <div className={`sequence-pause-card${deviated ? ' is-exploring' : ''}`} role="status" aria-live="polite"><span>{copy.status[deviated ? 'exploring' : playing ? 'playing' : 'paused']}</span><h2>{pauseTitle}</h2><p>{feedback ? t(feedback) : pausePrompt}</p></div>
         <div className="sequence-board"><Tower count={count} pegs={pegs} onMove={manualMove} selectedPeg={selectedPeg} setSelectedPeg={choosePeg} /></div>
         <p className="sequence-counting-cue">{copy.focusCue}</p>

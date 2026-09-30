@@ -90,6 +90,9 @@
 .sequence-teacher-cue p { font-size: 15px; }
 
 .sequence-board-area { min-width: 0; padding: 30px clamp(18px, 3vw, 44px) 24px; }
+.sequence-provisional { max-width: 860px; margin: 0 auto 24px; padding: 20px 24px; border: 1px solid rgba(239, 170, 60, .42); border-left: 4px solid var(--amber-bright); border-radius: 10px; background: rgba(239, 170, 60, .1); }
+.sequence-provisional strong { display: block; margin-bottom: 8px; color: var(--amber-bright); font-size: 19px; }
+.sequence-provisional p { color: var(--ink); font-size: 17px; line-height: 1.7; }
 .sequence-pause-card { max-width: 860px; margin: 0 auto; padding: 18px 22px; border-left: 3px solid var(--amber); background: rgba(239, 170, 60, .06); }
 .sequence-pause-card > span { color: var(--amber-bright); font-size: 11px; font-weight: 700; letter-spacing: .1em; }
 .sequence-pause-card h2 { margin: 8px 0; font-size: 24px; font-weight: 500; line-height: 1.25; }
