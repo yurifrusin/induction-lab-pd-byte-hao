@@ -7,7 +7,7 @@ import { ArrowIcon, ResetIcon } from './icons.jsx'
 import { MiniTower } from './Tower.jsx'
 
 function Sum() {
-  return <>1 + 2 + ··· + 2<sup>(n − 1)</sup></>
+  return <span>1 + 2 + ··· + <span style={{ whiteSpace: 'nowrap' }}>2<sup>n − 1</sup></span></span>
 }
 
 function DiscCountText({ value }) {
@@ -51,7 +51,6 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
     </details>
     <div id="reasoning-lower" hidden={recalling}>
         <details className="reasoning-connection"><summary>{copy.connect}</summary>
-          <p><DiscCountText value={copy.lowerBase} /></p>
           <div className="reasoning-fitch-outer">
             <p>{copy.let}</p>
             <div className="reasoning-fitch-inner">
@@ -62,10 +61,11 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
             </div>
             <p className="reasoning-fitch-result"><DiscCountText value={copy.scopeConclusion} /></p>
           </div>
+          <p><DiscCountText value={copy.lowerBase} /></p>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.general} /></p>
           <div className="sequence-sum"><Sum /></div>
           <p><DiscCountText value={copy.boundName} /></p>
-          <div className="sequence-sum">T<sub>n</sub> = <Sum /></div>
+          <div className="sequence-sum"><span>T<sub>n</sub> = <Sum /></span></div>
         </details>
         <details className="reasoning-connection"><summary>{copy.attainTitle}</summary>
           <p><DiscCountText value={copy.attainDefinition} /></p>
@@ -80,7 +80,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
             <p className="reasoning-fitch-result"><DiscCountText value={copy.attainResult} /></p>
           </div>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.attainGeneral} /></p>
-          <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum">T<sub>n</sub> = G<sub>n</sub> = <Sum /></div></div>
+          <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum"><span>T<sub>n</sub> = G<sub>n</sub> = <Sum /></span></div></div>
         </details>
     </div>
     {teacherLens && <aside className="sequence-teacher-cue" aria-label={t('Teacher lens')}><strong>{t('TEACHER LENS')}</strong><p>{copy.teacher}</p></aside>}

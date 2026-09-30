@@ -26,7 +26,7 @@ export const proofCopy = {
       "assumption": "搬完 n 个盘时，从大到小，每个盘分别至少要移动 [[counts]] 次。",
       "innerConclusion": "这样，搬完 n+1 个盘时，每个盘从大到小分别至少要移动 [[nextCounts]] 次。",
       "scopeConclusion": "所以，对于这个 n，如果搬完 n 个盘时，每个盘从大到小分别至少要移动 [[counts]] 次，那么搬完 n+1 个盘时，每个盘从大到小分别至少要移动 [[nextCounts]] 次。",
-      "general": "结合一个盘的起点，由数学归纳法，对于每个正整数 n，每个盘从大到小分别至少要移动 [[counts]] 次。因此，总步数至少是：",
+      "general": "因此，由数学归纳法，对于每个正整数 n，每个盘从大到小分别至少要移动 [[counts]] 次。总步数至少是：",
       "teacher": "先按每个圆盘的移动次数证明下界，再用 Tₙ 给得到的和式命名。独立计算构造走法的步数 Gₙ，证明 Gₙ = Tₙ，才把不能更少与确实做得到接在一起。",
       "attainTitle": "怎样恰好达到这个下界？",
       "attainBase": "先看一个盘：[[G1]] = [[T1]] = 1。",
@@ -45,7 +45,7 @@ export const proofCopy = {
       ],
       "attainDefinition": "设 [[Gn]] 是按这套搬法搬完 n 个盘所用的步数。一个盘直接搬到目标柱；更多盘则先把小塔搬到临时柱，再移动最大盘，最后把小塔搬到目标柱，两次都沿用这套搬法。",
       "attainRecurrence": "因此，[[G1]] = 1，[[Gnext]] = 2[[Gn]] + 1。两次数的是同一座小塔的搬运步数，柱子换名字不会改变步数。",
-      "boundName": "把这个步数下界记作 [[Tn]]。由这个和式可得 [[T1]] = 1，[[Tnext]] = 2[[Tn]] + 1。"
+      "boundName": "把这个步数下界记作 [[Tn]]。一个盘至少移动一次；多一个盘，就需要前后两次小塔搬运，再加最大盘至少一步。这个搬运结构给出 [[T1]] = 1，[[Tnext]] = 2[[Tn]] + 1。刚才按每个盘分别计数的证明，也让我们理解了这个数列的通项为什么是下面的和式："
     }
   },
   "en": {
@@ -74,7 +74,7 @@ export const proofCopy = {
       "assumption": "Completing an n-disc transfer requires at least [[counts]] moves respectively for the discs from largest to smallest.",
       "innerConclusion": "Thus, completing an (n + 1)-disc transfer requires at least [[nextCounts]] moves respectively for the discs from largest to smallest.",
       "scopeConclusion": "So for this n, if completing an n-disc transfer requires at least [[counts]] moves respectively from largest disc to smallest, then completing an (n + 1)-disc transfer requires at least [[nextCounts]] moves respectively in the same order.",
-      "general": "Together with the one-disc case, mathematical induction shows that, for every positive integer n, the discs from largest to smallest require at least [[counts]] moves respectively. The total is therefore at least:",
+      "general": "Therefore, by mathematical induction, for every positive integer n, the discs from largest to smallest require at least [[counts]] moves respectively. The total is at least:",
       "teacher": "First establish the lower bound by considering each disc, then name the resulting sum Tₙ. Independently count the constructed route using Gₙ. Proving Gₙ = Tₙ connects the lower bound to an achievable route.",
       "attainTitle": "How can a route achieve this bound?",
       "attainBase": "For one disc, [[G1]] = [[T1]] = 1.",
@@ -93,7 +93,7 @@ export const proofCopy = {
       ],
       "attainDefinition": "Let [[Gn]] be the number of moves used by this method for n discs. Move one disc directly to the target. For a larger tower, transfer the smaller tower to the spare peg, move the largest disc, and transfer the smaller tower to the target, using the same method for both smaller transfers.",
       "attainRecurrence": "Therefore, [[G1]] = 1 and [[Gnext]] = 2[[Gn]] + 1. Both transfers involve the same smaller tower; renaming the pegs does not change the move count.",
-      "boundName": "Denote this lower bound by [[Tn]]. The sum gives [[T1]] = 1 and [[Tnext]] = 2[[Tn]] + 1."
+      "boundName": "Call this move lower bound [[Tn]]. One disc needs at least one move. Adding a disc requires two smaller-tower transfers and at least one move of the largest disc. This structure gives [[T1]] = 1 and [[Tnext]] = 2[[Tn]] + 1. Counting each disc separately also explains why the sequence has the following sum as its general term:"
     }
   }
 }
