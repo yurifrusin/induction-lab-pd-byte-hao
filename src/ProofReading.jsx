@@ -12,9 +12,8 @@ function Sum() {
 
 function DiscCountText({ value }) {
   return value.split(/(\[\[counts\]\]|\[\[nextCounts\]\])/).map((part, index) => {
-    if (part === '[[counts]]' || part === '[[nextCounts]]') {
-      return <strong key={index}>1, 2, 2<sup>2</sup>, …, 2<sup>{part === '[[counts]]' ? 'n − 1' : 'n'}</sup></strong>
-    }
+    if (part === '[[counts]]') return <strong key={index}>1, 2, 2<sup>2</sup>, …, 2<sup>n − 1</sup></strong>
+    if (part === '[[nextCounts]]') return <strong key={index}>1, 2 × 1, 2 × 2, 2 × 2<sup>2</sup>, …, 2 × 2<sup>n − 1</sup></strong>
     return part
   })
 }

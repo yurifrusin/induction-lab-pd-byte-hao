@@ -41,7 +41,7 @@ export const proofCopy = {
       "lowerSteps": [
         "现在考虑 n+1 个盘。最大盘第一次移动前，它上面的小盘必须全部移开，接收最大盘的柱子也必须空着。因此，这 n 个小盘已经从起始柱完整搬到了另一根柱上。",
         "再看最大盘最后一次到达目标柱的那一步：小盘不能在最大盘上，也不能在目标柱上，只能完整叠在第三根柱上。接下来，它们还必须完整搬到目标柱，任务才算完成。",
-        "前后两次搬的是同一座 n 盘小塔，而且是两段不重叠的移动。根据假设，每个小盘在每一段都至少要动相应的次数；合起来，各自至少要动两倍。最大盘本身至少动一次。"
+        "同一座 n 盘小塔前后各搬一次，因此每个小盘至少要移动的次数都翻倍。最大盘本身至少移动一次。"
       ]
     }
   },
@@ -86,7 +86,7 @@ export const proofCopy = {
       "lowerSteps": [
         "Consider n + 1 discs. Before the largest disc first moves, every smaller disc must leave it, and the receiving peg must be empty. The n smaller discs have therefore already been transferred as a complete tower to another peg.",
         "Now consider the largest disc’s final arrival at the target. The smaller discs can be neither on it nor on the target peg. They must be stacked on the third peg, and must still be transferred completely to the target to finish.",
-        "These are two non-overlapping transfers of the same n-disc tower. By the assumption, each smaller disc needs its stated number of moves in each transfer, giving at least twice that number altogether. The largest disc itself moves at least once."
+        "The same n-disc tower is transferred once before and once after, so each smaller disc’s lower bound doubles. The largest disc itself moves at least once."
       ]
     }
   }
