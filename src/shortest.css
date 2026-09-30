@@ -146,8 +146,9 @@
 .existence-proof summary:focus-visible { outline: 2px solid var(--amber-bright); outline-offset: 4px; }
 .existence-proof ol { padding-left: 24px; }
 .existence-proof li { padding-left: 6px; margin: 14px 0; }
-.existence-fitch-scope { margin: 18px 0 24px 4px; padding: 1px 0 14px 24px; border-left: 3px solid #ff817e; border-bottom: 1px solid var(--line-strong); }
+.existence-fitch-scope { margin: 18px 0 24px 4px; padding: 1px 0 14px 24px; border-left: 3px solid var(--blue); border-bottom: 1px solid var(--line-strong); }
 .existence-fitch-scope .existence-assumption-title { margin-top: 12px; }
+.existence-fitch-inner { margin: 14px 0 18px 4px; padding: 1px 0 12px 20px; border-left: 3px solid #ff817e; border-bottom: 1px solid var(--line-strong); }
 .existence-proof .existence-fitch-result { color: var(--ink); }
 .existence-proof .existence-implication { color: var(--ink); padding: 12px 16px; border-left: 3px solid var(--green); }
 .existence-proof .existence-name { color: var(--amber-bright); }
@@ -182,6 +183,10 @@
 
   .existence-fitch-scope {
     padding-left: 16px;
+  }
+
+  .existence-fitch-inner {
+    padding-left: 14px;
   }
 
   .shortest-actions {
