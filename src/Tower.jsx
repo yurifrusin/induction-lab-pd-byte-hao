@@ -1,5 +1,5 @@
 import { t, useLanguage } from './Language.jsx'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 const PEG_NAMES = ['A', 'B', 'C']
 const DISK_COLORS = ['sky', 'teal', 'green', 'amber', 'coral']
@@ -24,6 +24,19 @@ export function Tower({
   )
   const touchDrag = useRef(null)
   const ignoreDragClick = useRef(false)
+  const clearTouchDrag = () => {
+    const drag = touchDrag.current
+    if (!drag) return
+    cancelAnimationFrame(drag.frame)
+    drag.element.style.removeProperty('transform')
+    drag.element.classList.remove('is-touch-dragging')
+    drag.zone.style.removeProperty('z-index')
+    drag.targets.forEach(({ element }) => element.classList.remove('is-drag-target'))
+    touchDrag.current = null
+  }
+  useEffect(() => clearTouchDrag, [pegs, count])
+  const destinationAt = (drag, x, y) => drag.targets.find(({ rect }) =>
+    x >= rect.left && x <= rect.right && y >= rect.top - 50 && y <= rect.bottom + 25)
   const allowNativeDrag = typeof window === 'undefined' || !window.matchMedia('(pointer: coarse)').matches
 
   const choosePeg = (pegIndex) => {
@@ -124,28 +137,44 @@ export function Tower({
                     onDragStart={(event) => onDragStart(event, pegIndex)}
                     onPointerDown={(event) => {
                       if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return
-                      touchDrag.current = { pegIndex, pointerId: event.pointerId, x: event.clientX, y: event.clientY, moved: false }
+                      if (!event.isPrimary || touchDrag.current) return
+                      const element = event.currentTarget
+                      const zone = element.closest('.peg-zone')
+                      const targets = [...zone.parentElement.querySelectorAll('.peg-zone')].map(element => ({ element, rect: element.getBoundingClientRect() }))
+                      touchDrag.current = { pegIndex, pointerId: event.pointerId, x: event.clientX, y: event.clientY, moved: false, element, zone, targets, frame: 0, baseTransform: getComputedStyle(element).transform }
                       event.currentTarget.setPointerCapture(event.pointerId)
                     }}
                     onPointerMove={(event) => {
                       const drag = touchDrag.current
-                      if (drag && drag.pointerId === event.pointerId && !drag.moved) {
-                        drag.moved = Math.hypot(event.clientX - drag.x, event.clientY - drag.y) > 8
-                      }
+                      if (!drag || drag.pointerId !== event.pointerId) return
+                      drag.dx = event.clientX - drag.x
+                      drag.dy = event.clientY - drag.y
+                      if (!drag.moved && Math.hypot(drag.dx, drag.dy) <= 5) return
+                      drag.moved = true
+                      drag.destination = destinationAt(drag, event.clientX, event.clientY)
+                      if (drag.frame) return
+                      drag.frame = requestAnimationFrame(() => {
+                        drag.frame = 0
+                        drag.element.classList.add('is-touch-dragging')
+                        drag.zone.style.zIndex = '10'
+                        drag.element.style.transform = `translate3d(${drag.dx}px, ${drag.dy}px, 0) ${drag.baseTransform === 'none' ? '' : drag.baseTransform}`
+                        drag.targets.forEach(({ element }) => element.classList.toggle('is-drag-target', element === drag.destination?.element && Number(element.dataset.pegIndex) !== drag.pegIndex))
+                      })
                     }}
                     onPointerUp={(event) => {
                       const drag = touchDrag.current
                       if (!drag || drag.pointerId !== event.pointerId) return
-                      touchDrag.current = null
+                      const target = destinationAt(drag, event.clientX, event.clientY)?.element
+                      clearTouchDrag()
                       if (!drag.moved) return
                       ignoreDragClick.current = true
                       window.setTimeout(() => { ignoreDragClick.current = false }, 0)
-                      const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.peg-zone')
                       const destination = Number(target?.dataset.pegIndex)
                       if (target && Number.isInteger(destination) && destination !== drag.pegIndex) onMove(drag.pegIndex, destination)
                       else setSelectedPeg(null)
                     }}
-                    onPointerCancel={() => { touchDrag.current = null }}
+                    onPointerCancel={clearTouchDrag}
+                    onLostPointerCapture={clearTouchDrag}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault()

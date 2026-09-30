@@ -696,6 +696,7 @@ span.hanoi-disk {
 
 .peg-zone:hover .target-ring,
 .peg-zone.is-selected .target-ring,
+.peg-zone.is-drag-target .target-ring,
 .peg-zone.is-hint-target .target-ring {
   border-color: #58d3c2;
   background: rgba(75, 210, 191, 0.07);
@@ -761,7 +762,12 @@ button.hanoi-disk {
   padding: 0;
   cursor: grab;
   touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
+
+.hanoi-disk.is-touch-dragging { will-change: transform; transition: none; pointer-events: none; }
 
 button.hanoi-disk:active {
   cursor: grabbing;
