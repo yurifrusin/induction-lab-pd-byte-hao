@@ -3,7 +3,7 @@ export const appendixCopy = {
     eyebrow: '附录 · 不先计算步数',
     title: '为什么恰好用这些步完成的走法确实存在？',
     shortestPageLabel: '“还能更少吗？”',
-    intro: '前面已经说明不能用更少的步数完成。这里不先算出具体步数，而是证明这套搬法确实能达到下界。',
+    intro: '[[shortest]]已经说明：少于这些步不可能。这里不先算出具体步数，而是证明这套搬法确实能达到下界。',
     routeTitle: '先说清这套搬法',
     routeIntro: '只有一个盘，就直接移到目标柱。盘数更多时，反复使用下面三步；每次搬小塔，三根柱子的角色可以改变。',
     routeSteps: [
@@ -35,7 +35,7 @@ export const appendixCopy = {
     eyebrow: 'APPENDIX · WITHOUT COUNTING THE MOVES FIRST',
     title: 'Why does a route achieving this bound exist?',
     shortestPageLabel: 'SHORTEST?',
-    intro: 'We have shown that fewer moves cannot work. Without calculating the exact count first, prove that this method reaches the bound.',
+    intro: '[[shortest]] showed why fewer moves cannot work. Without calculating the exact count first, prove that this method reaches the bound.',
     routeTitle: 'Describe the method',
     routeIntro: 'With one disc, move it directly to the target. With more discs, repeat the three steps below; the pegs can change roles during each smaller-tower transfer.',
     routeSteps: [
