@@ -70,15 +70,6 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
         <details className="reasoning-connection"><summary>{copy.attainTitle}</summary>
           <p><DiscCountText value={copy.attainDefinition} /></p>
           <p><DiscCountText value={copy.attainRecurrence} /></p>
-          <p><DiscCountText value={copy.attainBase} /></p>
-          <div className="reasoning-fitch-outer">
-            <p>{copy.attainLet}</p>
-            <div className="reasoning-fitch-inner">
-              <p><strong className="reasoning-fitch-assume">{common.lower.assumeLead}{common.lower.assumeColon}</strong> <DiscCountText value={copy.attainAssumption} /></p>
-              <p><DiscCountText value={copy.attainStep} /></p>
-            </div>
-            <p className="reasoning-fitch-result"><DiscCountText value={copy.attainResult} /></p>
-          </div>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.attainGeneral} /></p>
           <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum"><span>T<sub>n</sub> = G<sub>n</sub> = <Sum /></span></div></div>
         </details>
