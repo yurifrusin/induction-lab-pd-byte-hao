@@ -5,11 +5,12 @@ export const STAGES = [
   { id: 'prove', label: 'SHORTEST?' },
   { id: 'steps', label: 'STEPS' },
   { id: 'debrief', label: 'PROVE' },
+  { id: 'appendix', label: 'APPENDIX' },
 ]
 
-// The classroom database predates this inserted page; preserve its stored stage.
+// The classroom database predates these inserted pages; preserve supported stored stages.
 export function storedStage(stage) {
-  return stage === 'existence' ? 'notice' : stage
+  return stage === 'existence' ? 'notice' : stage === 'appendix' ? 'debrief' : stage
 }
 
 export function stageLockReason(stage, classroom, noticeAnswer, proveAnswer) {

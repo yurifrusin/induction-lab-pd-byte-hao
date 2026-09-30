@@ -2,7 +2,7 @@ import { t, useLanguage } from './Language.jsx'
 import { useEffect, useState } from 'react'
 import { findNextShortestMove, isComplete, makePegs, moveDisk, optimalMoves } from './game.js'
 import { AppHeader, ExistenceScreen, NoticeScreen, PlayScreen, ProveScreen } from './Screens.jsx'
-import { MinimumProofScreen, StepsScreen } from './SequenceScreens.jsx'
+import { AppendixProofScreen, MinimumProofScreen, StepsScreen } from './SequenceScreens.jsx'
 import { accessibleStage, stageLockReason, storedStage, STAGES } from './flow.js'
 
 export default function App({ classroom = null, onLeaveClass = null, onOpenClassroom = null, onProgress = null }) {
@@ -14,6 +14,11 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     if (classroom && requested === 'notice') {
       try {
         if (window.sessionStorage.getItem(`induction-existence:${classroom.initialProgressKey}`) === 'open') requested = 'existence'
+      } catch { /* Classroom progress still opens without browser storage. */ }
+    }
+    if (classroom && requested === 'debrief') {
+      try {
+        if (window.sessionStorage.getItem(`induction-appendix:${classroom.initialProgressKey}`) === 'open') requested = 'appendix'
       } catch { /* Classroom progress still opens without browser storage. */ }
     }
     return accessibleStage(requested, classroom, initialProgress?.notice_answer, initialProgress?.prove_answer)
@@ -42,7 +47,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   const showMinimum = presenterMode && minimumRevealed
   const activeStage = accessibleStage(stage, classroom, noticeAnswer, proveAnswer)
   const stageLocks = Object.fromEntries(STAGES.map(({ id }) => [id, stageLockReason(id, classroom, noticeAnswer, proveAnswer)]))
-  const trackingSteps = ['steps', 'debrief'].includes(activeStage)
+  const trackingSteps = ['steps', 'debrief', 'appendix'].includes(activeStage)
 
   useEffect(() => { window.scrollTo(0, 0) }, [activeStage])
 
@@ -53,6 +58,15 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
       if (activeStage === 'existence') window.sessionStorage.setItem(key, 'open')
       else window.sessionStorage.removeItem(key)
     } catch { /* The page remains usable without browser storage. */ }
+  }, [activeStage, classroom?.initialProgressKey])
+
+  useEffect(() => {
+    if (!classroom) return
+    try {
+      const key = `induction-appendix:${classroom.initialProgressKey}`
+      if (activeStage === 'appendix') window.sessionStorage.setItem(key, 'open')
+      else window.sessionStorage.removeItem(key)
+    } catch { /* Classroom progress still opens without browser storage. */ }
   }, [activeStage, classroom?.initialProgressKey])
 
   useEffect(() => {
@@ -252,7 +266,11 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
         )}
 
         {activeStage === 'debrief' && (
-          <MinimumProofScreen teacherLens={presenterMode} onBack={() => changeStage('steps')} onNext={restartExperience} />
+          <MinimumProofScreen teacherLens={presenterMode} onBack={() => changeStage('steps')} onNext={() => changeStage('appendix')} />
+        )}
+
+        {activeStage === 'appendix' && (
+          <AppendixProofScreen onBack={() => changeStage('debrief')} onNext={restartExperience} />
         )}
       </main>
       <p className="sr-only" aria-live="polite">{t(message)}</p>

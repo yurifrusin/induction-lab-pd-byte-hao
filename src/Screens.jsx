@@ -353,14 +353,12 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nex
         <details className="shortest-reasoning">
           <summary>{copy.reveal}</summary>
           {copy.reasons.map((reason, index) => <p key={index}>{reason}</p>)}
-          <p>{copy.diagramNote}</p>
           <div className="shortest-diagrams">
             {['clear', 'largest', 'rebuild'].map((stage, index) => <div key={stage}>
               <ProofStage label={copy.captions[index]} number={index + 1} stage={stage} />
               <div className="shortest-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div>
             </div>)}
           </div>
-          <p>{copy.constructionNote}</p>
         </details>
         <LowerBoundLadder compact />
         <p className="shortest-closing-question">{copy.closingQuestion}</p>

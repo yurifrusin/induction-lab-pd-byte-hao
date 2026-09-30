@@ -140,15 +140,15 @@ input:focus-visible + .toggle-track {
 .stage-nav {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   align-self: stretch;
 }
 
 .stage-nav::after {
   position: absolute;
-  right: 8.333%;
+  right: 7.143%;
   bottom: 17px;
-  left: 8.333%;
+  left: 7.143%;
   height: 2px;
   background: #304150;
   content: "";

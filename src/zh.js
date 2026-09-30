@@ -42,7 +42,7 @@ export const zh = {
   "Move the smaller tower onto the largest disc": "再把小塔搬到 C 柱，叠在最大碟上",
   "Why does the same smaller task appear twice?": "为什么前后两次遇到的是同一个搬小塔的问题？",
   'Induction Lab': '数学归纳实验室',
-  'PLAY': '动手试试', 'NOTICE': '想一想', 'MORE DISCS?': '继续加盘', 'SHORTEST?': '还能更少吗？', 'STEPS': '拆解步骤', 'PROVE': '说明理由', 'WHY CAN?': '为何做得到？',
+  'PLAY': '动手试试', 'NOTICE': '想一想', 'MORE DISCS?': '继续加盘', 'SHORTEST?': '还能更少吗？', 'STEPS': '拆解步骤', 'PROVE': '说明理由', 'APPENDIX': '附录', 'WHY CAN?': '为何做得到？',
   'Playing': '操作中', 'Noticing': '思考中', 'Shortest?': '还能更少吗？', 'Steps': '拆解步骤', 'Prove': '说明理由',
   'NOTICE / CAN WE KEEP GOING?': '想一想／继续加盘',
   'Activity sequence': '活动流程', 'Skip to activity': '跳到活动内容',

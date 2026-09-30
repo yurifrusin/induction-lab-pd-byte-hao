@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLanguage, t } from './Language.jsx'
 import { proofCopy } from './proofCopy.js'
+import { appendixCopy } from './appendixCopy.js'
 import { shortestCopy } from './shortestCopy.js'
 import { ArrowIcon, ResetIcon } from './icons.jsx'
 import { MiniTower } from './Tower.jsx'
@@ -81,7 +82,35 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
     {teacherLens && <aside className="sequence-teacher-cue" aria-label={t('Teacher lens')}><strong>{t('TEACHER LENS')}</strong><p>{copy.teacher}</p></aside>}
     <footer className="sequence-footer">
       <button className="sequence-button" type="button" onClick={onBack}><ArrowIcon direction="left" />{common.back}</button>
-      <button className="sequence-button is-primary" type="button" onClick={onNext}>{common.restart}<ResetIcon /></button>
+      <button className="sequence-button is-primary" type="button" onClick={onNext}>{locale === 'zh' ? '查看附录' : 'Open the appendix'}<ArrowIcon /></button>
+    </footer>
+  </section>
+}
+
+export function AppendixProofScreen({ onBack, onNext }) {
+  const copy = appendixCopy[useLanguage()]
+  return <section className="sequence-screen sequence-proof-screen reasoning-page reasoning-appendix">
+    <header className="sequence-heading"><span className="sequence-eyebrow">{copy.eyebrow}</span><h1>{copy.title}</h1><p>{copy.intro}</p></header>
+    <section className="appendix-route">
+      <h2>{copy.routeTitle}</h2>
+      <p>{copy.routeIntro}</p>
+      <ol>{copy.routeSteps.map((step) => <li key={step}>{step}</li>)}</ol>
+    </section>
+    <p className="appendix-base">{copy.base}</p>
+    <div className="reasoning-fitch-outer">
+      <h2>{copy.let}</h2>
+      <div className="reasoning-fitch-inner">
+        <p><strong className="reasoning-fitch-assume">{copy.assumptionLead}</strong> {copy.assumption}</p>
+        <p>{copy.extension}</p>
+        <ol>{copy.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+        <p><strong className="reasoning-fitch-assume">{copy.resultLead}</strong>{copy.result}</p>
+      </div>
+      <p className="reasoning-fitch-result"><strong>{copy.implicationLead}</strong>{copy.implication}</p>
+    </div>
+    <p className="appendix-conclusion">{copy.conclusion}</p>
+    <footer className="sequence-footer">
+      <button className="sequence-button" type="button" onClick={onBack}><ArrowIcon direction="left" />{copy.back}</button>
+      <button className="sequence-button is-primary" type="button" onClick={onNext}>{copy.restart}<ResetIcon /></button>
     </footer>
   </section>
 }
