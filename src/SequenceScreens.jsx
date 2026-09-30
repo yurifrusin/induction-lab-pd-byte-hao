@@ -177,7 +177,7 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
         <div className="sequence-board"><Tower count={count} pegs={pegs} onMove={manualMove} selectedPeg={selectedPeg} setSelectedPeg={choosePeg} /></div>
         <p className="sequence-counting-cue">{copy.focusCue}</p>
         <details className="sequence-counting" key={count}>
-          <summary>{t('Open the move count for this walkthrough')}</summary>
+          <summary>{copy.openCount}</summary>
           <DiscCounts count={count} discMoves={discMoves} moves={moves} copy={copy} />
           <span className="sequence-eyebrow">{t("MOVES IN THIS CONSTRUCTION")}</span>
           {count === 1 ? <div className="sequence-sum"><strong>1</strong></div> : <div className="sequence-sum"><span><b className="sequence-single">1</b> + <b className="sequence-pair">2</b>({expandedSum(count - 1)})</span><span className="sequence-equals">=</span><span>{expandedSum(count)}</span></div>}
