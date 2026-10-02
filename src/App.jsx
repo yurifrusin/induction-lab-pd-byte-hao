@@ -42,6 +42,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   const [hintCount, setHintCount] = useState(0)
   const [minimumRevealed, setMinimumRevealed] = useState(false)
   const [demonstrating, setDemonstrating] = useState(false)
+  const [expandStepsOnReturn, setExpandStepsOnReturn] = useState(false)
 
   const moveCount = history.length
   const target = optimalMoves(discCount)
@@ -106,6 +107,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
 
   const changeStage = (nextStage) => {
     if (stageLockReason(nextStage, classroom, noticeAnswer, proveAnswer)) return
+    setExpandStepsOnReturn(activeStage === 'debrief' && nextStage === 'steps')
     setStage(nextStage)
     setSelectedPeg(null)
     setHintMove(null)
@@ -276,7 +278,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
         )}
 
         {activeStage === 'steps' && (
-          <StepsScreen teacherLens={presenterMode} onBack={() => changeStage('prove')} onNext={() => changeStage('debrief')} onProgress={setStepsProgress} initialProgress={stepsProgress} />
+          <StepsScreen teacherLens={presenterMode} onBack={() => changeStage('prove')} onNext={() => changeStage('debrief')} onProgress={setStepsProgress} initialProgress={stepsProgress} expandOnReturn={expandStepsOnReturn} />
         )}
 
         {activeStage === 'debrief' && (

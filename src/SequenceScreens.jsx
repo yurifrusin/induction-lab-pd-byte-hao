@@ -76,7 +76,7 @@ function SequenceFooter({ onBack, onNext, nextLabel, restart }) {
   )
 }
 
-export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialProgress }) {
+export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialProgress, expandOnReturn = false }) {
   const language = useLanguage()
   const copy = discCountsCopy[language]
   const proofUrl = new URL(window.location.href)
@@ -190,7 +190,7 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
         <div className={`sequence-pause-card${deviated ? ' is-exploring' : ''}`} role="status" aria-live="polite"><span>{copy.status[deviated ? 'exploring' : playing ? 'playing' : 'paused']}</span><h2>{pauseTitle}</h2><p>{feedback ? t(feedback) : pausePrompt}</p></div>
         <div className="sequence-board"><Tower count={count} pegs={pegs} onMove={manualMove} selectedPeg={selectedPeg} setSelectedPeg={choosePeg} /></div>
         <p className="sequence-counting-cue">{copy.focusCue}</p>
-        <details className="sequence-counting" key={count}>
+        <details className="sequence-counting" key={count} open={expandOnReturn}>
           <summary>{copy.openCount}</summary>
           <DiscCounts count={count} discMoves={discMoves} moves={moves} copy={copy} />
           <span className="sequence-eyebrow">{t("MOVES IN THIS CONSTRUCTION")}</span>
