@@ -11,7 +11,7 @@ test('NOTICE needs both a correct answer and a class release', () => {
 })
 
 test('later pages require both classroom gates and both answers', () => {
-  for (const stage of ['steps', 'debrief', 'appendix', 'can']) {
+  for (const stage of ['steps', 'debrief', 'appendix', 'appendix2', 'can']) {
     assert.notEqual(stageLockReason(stage, classroom(true, false), 'possible', 'all'), '')
     assert.notEqual(stageLockReason(stage, classroom(true, true), 'possible', 'some'), '')
     assert.notEqual(stageLockReason(stage, classroom(false, true), 'possible', 'all'), '')
@@ -34,7 +34,7 @@ test('restored navigation cannot bypass a missing gate', () => {
 })
 
 test('standalone presenters can navigate without classroom approvals', () => {
-  for (const stage of ['play', 'notice', 'existence', 'prove', 'steps', 'debrief', 'appendix', 'can']) {
+  for (const stage of ['play', 'notice', 'existence', 'prove', 'steps', 'debrief', 'appendix', 'appendix2', 'can']) {
     assert.equal(stageLockReason(stage, null, null, null), '')
   }
 })
@@ -51,11 +51,22 @@ test('the shortcut to the appendix preserves approval checks and restoration', (
 })
 
 test('the appendix follows PROVE and stores a compatible classroom stage', () => {
-  assert.deepEqual(STAGES.map(({ id }) => id), ['play', 'notice', 'existence', 'prove', 'steps', 'debrief', 'appendix'])
+  assert.deepEqual(STAGES.map(({ id }) => id), ['play', 'notice', 'existence', 'prove', 'steps', 'debrief', 'appendix', 'appendix2'])
   assert.equal(accessibleStage('can', null, null, null), 'debrief')
   assert.equal(stageLockReason('prove', classroom(true, false), 'possible', null), '')
   assert.notEqual(stageLockReason('steps', classroom(true, false), 'possible', 'all'), '')
   assert.equal(storedStage('existence'), 'notice')
   assert.equal(storedStage('prove'), 'prove')
   assert.equal(storedStage('appendix'), 'debrief')
+})
+
+test('Appendix 2 deep links respect answers, releases and offline state', () => {
+  assert.equal(storedStage('appendix2'), 'debrief')
+  assert.equal(accessibleStage('appendix2', classroom(true, true), 'possible', 'all'), 'appendix2')
+  assert.notEqual(accessibleStage('appendix2', classroom(true, true), null, 'all'), 'appendix2')
+  assert.notEqual(accessibleStage('appendix2', classroom(true, true), 'possible', null), 'appendix2')
+  for (const gateStatus of ['loading', 'error', 'ended']) {
+    assert.notEqual(accessibleStage('appendix2', { ...classroom(true, true), gateStatus }, 'possible', 'all'), 'appendix2')
+  }
+  assert.notEqual(accessibleStage('appendix2', { ...classroom(true, true), workflowVersion: 1 }, 'possible', 'all'), 'appendix2')
 })

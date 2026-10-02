@@ -1,5 +1,5 @@
 import { t, useLanguage, LanguageSwitcher } from './Language.jsx'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   ArrowIcon,
   EyeIcon,
@@ -27,6 +27,10 @@ export function AppHeader({
 }) {
   useLanguage()
   const activeIndex = STAGES.findIndex(({ id }) => id === activeStage)
+  const navRef = useRef(null)
+  useEffect(() => {
+    navRef.current?.children[activeIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  }, [activeIndex])
 
   return (
     <header className="app-header">
@@ -40,7 +44,7 @@ export function AppHeader({
         <span>{t("Induction Lab")}</span>
       </button>
 
-      <nav className="stage-nav" aria-label={t("Activity sequence")}>
+      <nav ref={navRef} className="stage-nav" style={{ '--stage-count': STAGES.length }} aria-label={t("Activity sequence")}>
         {STAGES.map(({ id, label }, index) => (
           <button
             aria-current={activeStage === id ? 'step' : undefined}

@@ -29,17 +29,17 @@ export const proofCopy = {
       "general": "因此，由数学归纳法，对于每个正整数 n，每个盘从大到小分别至少要移动 [[counts]] 次。总步数至少是：",
       "teacher": "先按每个圆盘的移动次数证明下界，再用 Tₙ 给得到的和式命名。独立计算构造走法的步数 Gₙ，证明 Gₙ = Tₙ，才把不能更少与确实做得到接在一起。",
       "attainTitle": "怎样恰好达到这个下界？",
-      "attainGeneral": "[[Gn]] 与 [[Tn]] 的起点和递推关系相同，因此对于每个正整数 n，[[Gn]] = [[Tn]]。这套搬法恰好达到前面得到的下界。",
+      "attainGeneral": "[[Gn]] 与 [[Tn]] 的起点和递推关系相同，因此对于每个正整数 n，[[Gn]] = [[Tn]]。也就是说，前面得到的这个下界确实能达到。",
       "doneTitle": "这就是最少步数",
-      "done": "每条走法至少需要 [[Tn]] 步，这套走法恰好用了 [[Gn]] = [[Tn]] 步。因此，最少步数就是 [[Tn]]。展开递推关系，可写成：",
+      "done": "这套搬法所用的步数 [[Gn]] 等于下界 [[Tn]]，因此它恰好用最少步数搬完：",
       "lowerBase": "只有一个盘时，要从一根柱搬到另一根柱，至少得移动一次。",
       "lowerSteps": [
         "现在考虑 n+1 个盘。最大盘第一次移动前，它上面的小盘必须全部移开，接收最大盘的柱子也必须空着。因此，这 n 个小盘已经从起始柱完整搬到了另一根柱上。",
         "再看最大盘最后一次到达目标柱的那一步：小盘不能在最大盘上，也不能在目标柱上，只能完整叠在第三根柱上。接下来，它们还必须完整搬到目标柱，任务才算完成。",
         "同一座 n 盘小塔前后各搬一次，因此每个小盘至少要移动的次数都翻倍。最大盘本身至少移动一次。"
       ],
-      "attainDefinition": "在“继续加盘”中，我们已经证明：对于每个正整数 n，这套搬法都能按规则搬完 n 个盘。因此，可以把它所用的步数记作 [[Gn]]。一个盘直接搬到目标柱；更多盘则先把小塔搬到临时柱，再移动最大盘，最后把小塔搬到目标柱，两次都沿用这套搬法。",
-      "attainRecurrence": "因此，[[G1]] = 1，[[Gnext]] = 2[[Gn]] + 1。两次数的是同一座小塔的搬运步数，柱子换名字不会改变步数。",
+      "attainDefinition": "按这套搬法完成搬运，搬完 n 个盘所用的步数记作 [[Gn]]。",
+      "attainRecurrence": "一个盘只需一步，所以 [[G1]] = 1。多一个盘时，先用[[routeMethod]]把小塔搬到临时柱，移动最大盘，再用[[sameMethod]]把小塔搬到目标柱（有别于[[existenceContrast]]：这里两次都沿用这套搬法）。两次搬小塔各用 [[Gn]] 步，最大盘用一步，所以 [[Gnext]] = 2[[Gn]] + 1。",
       "boundName": "把这个步数下界记作 [[Tn]]。一个盘至少移动一次；多一个盘，就需要前后两次小塔搬运，再加最大盘至少一步。这个搬运结构给出 [[T1]] = 1，[[Tnext]] = 2[[Tn]] + 1。刚才按每个盘分别计数的证明，也让我们理解了这个数列的通项为什么是下面的和式："
     }
   },
@@ -72,17 +72,17 @@ export const proofCopy = {
       "general": "Therefore, by mathematical induction, for every positive integer n, the discs from largest to smallest require at least [[counts]] moves respectively. The total is at least:",
       "teacher": "First establish the lower bound by considering each disc, then name the resulting sum Tₙ. Independently count the constructed route using Gₙ. Proving Gₙ = Tₙ connects the lower bound to an achievable route.",
       "attainTitle": "How can a route achieve this bound?",
-      "attainGeneral": "[[Gn]] and [[Tn]] have the same starting value and recurrence, so [[Gn]] = [[Tn]] for every positive integer n. This method therefore achieves the lower bound established earlier.",
+      "attainGeneral": "[[Gn]] and [[Tn]] have the same starting value and recurrence. Therefore, for every positive integer n, [[Gn]] = [[Tn]]: this lower bound is achievable.",
       "doneTitle": "This is the minimum",
-      "done": "Every route requires at least [[Tn]] moves, and this method uses exactly [[Gn]] = [[Tn]] moves. Hence [[Tn]] is the minimum. Expanding the recurrence gives:",
+      "done": "This method’s move count [[Gn]] equals the lower bound [[Tn]], so it completes the transfer in the fewest moves:",
       "lowerBase": "One disc needs at least one move to reach another peg.",
       "lowerSteps": [
         "Consider n + 1 discs. Before the largest disc first moves, every smaller disc must leave it, and the receiving peg must be empty. The n smaller discs have therefore already been transferred as a complete tower to another peg.",
         "Now consider the largest disc’s final arrival at the target. The smaller discs can be neither on it nor on the target peg. They must be stacked on the third peg, and must still be transferred completely to the target to finish.",
         "The same n-disc tower is transferred once before and once after, so each smaller disc’s lower bound doubles. The largest disc itself moves at least once."
       ],
-      "attainDefinition": "On MORE DISCS?, we proved that this method completes a legal transfer for every positive integer n. We can therefore define [[Gn]] as the number of moves it uses for n discs. Move one disc directly to the target. For a larger tower, transfer the smaller tower to the spare peg, move the largest disc, and transfer the smaller tower to the target, using the same method for both smaller transfers.",
-      "attainRecurrence": "Therefore, [[G1]] = 1 and [[Gnext]] = 2[[Gn]] + 1. Both transfers involve the same smaller tower; renaming the pegs does not change the move count.",
+      "attainDefinition": "Denote the number of moves this method uses to move n discs by [[Gn]].",
+      "attainRecurrence": "One disc needs one move, so [[G1]] = 1. With one more disc, use [[routeMethod]] to transfer the smaller tower to the spare peg, move the largest disc, then use [[sameMethod]] to transfer the smaller tower to the target (unlike [[existenceContrast]], both transfers use this method). Each smaller-tower transfer uses [[Gn]] moves, and the largest disc uses one move, so [[Gnext]] = 2[[Gn]] + 1.",
       "boundName": "Call this move lower bound [[Tn]]. One disc needs at least one move. Adding a disc requires two smaller-tower transfers and at least one move of the largest disc. This structure gives [[T1]] = 1 and [[Tnext]] = 2[[Tn]] + 1. Counting each disc separately also explains why the sequence has the following sum as its general term:"
     }
   }

@@ -4,6 +4,7 @@ import { findNextShortestMove, isComplete, makePegs, moveDisk, optimalMoves } fr
 import { AppHeader, ExistenceScreen, NoticeScreen, PlayScreen, ProveScreen } from './Screens.jsx'
 import { AppendixProofScreen, MinimumProofScreen, StepsScreen } from './SequenceScreens.jsx'
 import { accessibleStage, stageLockReason, storedStage, STAGES } from './flow.js'
+import { CombinedProofScreen } from './CombinedProof.jsx'
 
 export default function App({ classroom = null, onLeaveClass = null, onOpenClassroom = null, onProgress = null }) {
   useLanguage()
@@ -18,7 +19,9 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     }
     if (classroom && requested === 'debrief') {
       try {
-        if (window.sessionStorage.getItem(`induction-appendix:${classroom.initialProgressKey}`) === 'open') requested = 'appendix'
+        const savedAppendix = window.sessionStorage.getItem(`induction-appendix:${classroom.initialProgressKey}`)
+        if (savedAppendix === 'open') requested = 'appendix'
+        if (savedAppendix === 'appendix2') requested = 'appendix2'
       } catch { /* Classroom progress still opens without browser storage. */ }
     }
     return accessibleStage(requested, classroom, initialProgress?.notice_answer, initialProgress?.prove_answer)
@@ -47,9 +50,18 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
   const showMinimum = presenterMode && minimumRevealed
   const activeStage = accessibleStage(stage, classroom, noticeAnswer, proveAnswer)
   const stageLocks = Object.fromEntries(STAGES.map(({ id }) => [id, stageLockReason(id, classroom, noticeAnswer, proveAnswer)]))
-  const trackingSteps = ['steps', 'debrief', 'appendix'].includes(activeStage)
+  const trackingSteps = ['steps', 'debrief', 'appendix', 'appendix2'].includes(activeStage)
 
-  useEffect(() => { window.scrollTo(0, 0) }, [activeStage])
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    if (activeStage === 'existence' && url.searchParams.get('highlight') === 'existence-proof') {
+      document.getElementById('existence-proof-entry')?.scrollIntoView({ block: 'start' })
+      url.searchParams.delete('highlight')
+      window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)
+    } else {
+      window.scrollTo(0, 0)
+    }
+  }, [activeStage])
 
   useEffect(() => {
     if (!classroom) return
@@ -65,6 +77,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
     try {
       const key = `induction-appendix:${classroom.initialProgressKey}`
       if (activeStage === 'appendix') window.sessionStorage.setItem(key, 'open')
+      else if (activeStage === 'appendix2') window.sessionStorage.setItem(key, 'appendix2')
       else window.sessionStorage.removeItem(key)
     } catch { /* Classroom progress still opens without browser storage. */ }
   }, [activeStage, classroom?.initialProgressKey])
@@ -267,11 +280,15 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
         )}
 
         {activeStage === 'debrief' && (
-          <MinimumProofScreen teacherLens={presenterMode} onBack={() => changeStage('steps')} onNext={() => changeStage('appendix')} />
+          <MinimumProofScreen teacherLens={presenterMode} onBack={() => changeStage('steps')} onNext={() => changeStage('appendix')} onOpenExistence={() => changeStage('existence')} />
         )}
 
         {activeStage === 'appendix' && (
-          <AppendixProofScreen onBack={() => changeStage('debrief')} onNext={restartExperience} onOpenQuestion={() => changeStage('prove')} />
+          <AppendixProofScreen onBack={() => changeStage('debrief')} onNext={() => changeStage('appendix2')} onOpenQuestion={() => changeStage('prove')} />
+        )}
+
+        {activeStage === 'appendix2' && (
+          <CombinedProofScreen onBack={() => changeStage('appendix')} onRestart={restartExperience} />
         )}
       </main>
       <p className="sr-only" aria-live="polite">{t(message)}</p>

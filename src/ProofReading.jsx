@@ -1,9 +1,9 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useLanguage, t } from './Language.jsx'
 import { proofCopy } from './proofCopy.js'
 import { appendixCopy } from './appendixCopy.js'
 import { shortestCopy } from './shortestCopy.js'
-import { ArrowIcon, ResetIcon } from './icons.jsx'
+import { ArrowIcon } from './icons.jsx'
 import { MiniTower } from './Tower.jsx'
 
 function Sum() {
@@ -37,11 +37,41 @@ export function LowerBoundLadder({ compact = false }) {
   </section>
 }
 
-export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
+export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistence }) {
   const locale = useLanguage()
   const common = proofCopy[locale]
   const copy = common.lower
+  const routeCopy = appendixCopy[locale]
+  const [routeFlash, setRouteFlash] = useState(0)
   const [recalling, setRecalling] = useState(false)
+  const [highlightAttainment] = useState(() => new URLSearchParams(window.location.search).get('highlight') === 'attain-bound')
+  useEffect(() => {
+    if (!highlightAttainment) return
+    const url = new URL(window.location.href)
+    url.searchParams.delete('highlight')
+    window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)
+  }, [highlightAttainment])
+  const existenceUrl = new URL(window.location.href)
+  existenceUrl.searchParams.set('stage', 'existence')
+  existenceUrl.searchParams.set('highlight', 'existence-proof')
+  const renderAttainment = (value) => value.split(/(\[\[existence\]\]|\[\[existenceContrast\]\]|\[\[sameMethod\]\]|\[\[routeMethod\]\])/).map((part, index) => {
+    if (part === '[[sameMethod]]') return <strong key={index} className="same-method-emphasis">{locale === 'zh' ? '同样的搬法' : 'the same method'}</strong>
+    if (part === '[[routeMethod]]') return <a key={index} className="appendix-page-link" href="#attainment-route" onClick={(event) => {
+      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+      event.preventDefault()
+      document.getElementById('attainment-route')?.scrollIntoView({ block: 'start' })
+      setRouteFlash(value => value + 1)
+    }}>{locale === 'zh' ? '这套搬法' : 'this method'}</a>
+    if (part === '[[existence]]' || part === '[[existenceContrast]]') return <a key={index} className="appendix-page-link" href={`${existenceUrl.pathname}${existenceUrl.search}`} onClick={(event) => {
+      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+      event.preventDefault()
+      const targetUrl = new URL(window.location.href)
+      targetUrl.searchParams.set('highlight', 'existence-proof')
+      window.history.replaceState(null, '', `${targetUrl.pathname}${targetUrl.search}`)
+      onOpenExistence()
+    }}>{part === '[[existenceContrast]]' ? (locale === 'zh' ? '第三页的存在性证明' : 'the existence proof on page three') : (locale === 'zh' ? '“继续加盘，也一定能搬完吗？”' : '“Can we always finish as we add more discs?”')}</a>
+    return <DiscCountText key={index} value={part} />
+  })
   return <section className="sequence-screen sequence-proof-screen reasoning-page reasoning-lower">
     <header className="sequence-heading"><span className="sequence-eyebrow">{copy.eyebrow}</span><h1>{copy.title}</h1><p>{copy.intro}</p></header>
     <button className="sequence-button reasoning-toggle" type="button" aria-expanded={!recalling} aria-controls="reasoning-lower" onClick={() => setRecalling(!recalling)}>{recalling ? common.show : common.hide}</button>
@@ -67,9 +97,15 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext }) {
           <p><DiscCountText value={copy.boundName} /></p>
           <div className="sequence-sum"><span>T<sub>n</sub> = <Sum /></span></div>
         </details>
-        <details className="reasoning-connection"><summary>{copy.attainTitle}</summary>
-          <p><DiscCountText value={copy.attainDefinition} /></p>
-          <p><DiscCountText value={copy.attainRecurrence} /></p>
+        <details id="attain-bound" className={`reasoning-connection${highlightAttainment ? ' is-highlighted' : ''}`}><summary>{copy.attainTitle}</summary>
+          <p>{renderAttainment(locale === 'zh' ? '设 n 是一个正整数。在[[existence]]中，我们已经证明 n 个盘能搬完。' : 'Let n be a positive integer. On [[existence]], we proved that n discs can be moved.')}</p>
+          <section id="attainment-route" key={routeFlash} style={{ scrollMarginTop: '150px', animation: routeFlash ? 'proof-entry-flash 1.5s ease-out' : undefined }}>
+            <h3>{locale === 'zh' ? '现在给出一种搬法' : 'Now describe a method'}</h3>
+            <p>{routeCopy.routeIntro}</p>
+            <ol>{routeCopy.routeSteps.map(step => <li key={step}>{step}</li>)}</ol>
+          </section>
+          <p>{renderAttainment(copy.attainDefinition)}</p>
+          <p>{renderAttainment(copy.attainRecurrence)}</p>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.attainGeneral} /></p>
           <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum"><span>T<sub>n</sub> = G<sub>n</sub> = <Sum /></span></div></div>
         </details>
@@ -122,7 +158,7 @@ export function AppendixProofScreen({ onBack, onNext, onOpenQuestion }) {
     <p className="appendix-conclusion"><LinkedFourthText value={copy.conclusion} href={fourthHref} label={copy.shortestPageLabel} onOpen={openFourth} /><span className="appendix-qed" aria-label={copy.proofEnd}>□</span></p>
     <footer className="sequence-footer">
       <button className="sequence-button" type="button" onClick={onBack}><ArrowIcon direction="left" />{copy.back}</button>
-      <button className="sequence-button is-primary" type="button" onClick={onNext}>{copy.restart}<ResetIcon /></button>
+      <button className="sequence-button is-primary" type="button" onClick={onNext}>{t('APPENDIX 2')}<ArrowIcon /></button>
     </footer>
   </section>
 }
